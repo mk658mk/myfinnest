@@ -1,0 +1,40 @@
+/* ============================================================
+   header.css — Hero / page header styles
+   My Finance Nest
+   ============================================================ */
+
+.hero {
+  text-align: center;
+  padding: 52px 20px 36px;
+  background: linear-gradient(160deg, rgba(245,158,11,.07), transparent);
+}
+.hero h1 {
+  font-family: Georgia, serif;
+  font-size: 2.2rem;
+  font-weight: 400;
+  color: var(--tx);
+  margin-bottom: 10px;
+}
+.hero p {
+  color: var(--mu);
+  font-size: 1rem;
+  max-width: 540px;
+  margin: 0 auto 0;
+}
+
+/* ══════════════════════════════════════
+   Light theme overrides
+══════════════════════════════════════ */
+html.light .hero {
+  background: linear-gradient(160deg, rgba(217,119,6,.07), transparent);
+}
+html.light .hero h1 { color: #1a2440; }
+html.light .hero p  { color: var(--mu); }
+
+/* ══════════════════════════════════════
+   Responsive
+══════════════════════════════════════ */
+@media (max-width: 768px) {
+  .hero { padding: 36px 16px 28px; }
+  .hero h1 { font-size: 1.6rem; }
+}

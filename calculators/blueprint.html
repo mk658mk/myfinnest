@@ -17,64 +17,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3885698230040302" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="../styles/blueprint.css">
+
+  <link rel="stylesheet" href="../styles/navbar.css">
+  <link rel="stylesheet" href="../styles/footer.css">
 </head>
 <body>
 
 
 
-<!-- NAV -->
-<nav>
-  <div class="hbg" onclick="openMenu()" aria-label="Menu" role="button" tabindex="0" onkeydown="if(event.key==='Enter')openMenu()">
-    <span></span><span></span><span></span>
-  </div>
-  <div class="brand" onclick="go('home')">
-    <span id="nav-sym">₹</span> My Finance Nest
-    <small id="nav-sub">SMART MONEY TOOLS</small>
-  </div>
-  <div class="nav-right">
-    
-    <div class="nav-links"><a href="../terms_privacy/about.html" target="_blank" rel="noopener" data-icon="about"><span class="nav-lbl">About</span></a><a href="../terms_privacy/disclaimer.html" target="_blank" rel="noopener" data-icon="disclaimer"><span class="nav-lbl">Disclaimer</span></a><a href="../terms_privacy/privacy.html" target="_blank" rel="noopener" data-icon="privacy"><span class="nav-lbl">Privacy</span></a><a href="../terms_privacy/terms.html" target="_blank" rel="noopener" data-icon="terms"><span class="nav-lbl">Terms</span></a></div><button class="tt" id="theme-toggle" onclick="toggleTheme()"><span class="ttd">🌙</span><span class="ttl">☀️</span></button>
-  </div>
-</nav>
-
-<!-- OVERLAY + SIDE MENU -->
-<div class="ov" id="ov" onclick="closeMenu()"></div>
-<div class="sm" id="sm">
-  <div class="mhdr">
-    <span class="mhdr-brand"><span id="menu-sym">₹</span> My Finance Nest</span>
-    <button class="mclose" onclick="closeMenu()">✕</button>
-  </div>
-  
-  <div class="mi" onclick="go('home')"><div class="ic">🏠</div><div class="lb">Home</div></div>
-  <hr class="mdiv">
-  <div class="mi" onclick="go('si')"><div class="ic">📐</div><div class="lb">Simple Interest Calculator</div></div>
-  <div class="mi" onclick="go('ci')"><div class="ic">📈</div><div class="lb">Compound Interest Calculator</div></div>
-  <div class="mi" onclick="go('emi')"><div class="ic">🏦</div><div class="lb">EMI Calculator</div></div>
-  <div class="mi" onclick="go('prepay')"><div class="ic">💳</div><div class="lb">Loan Prepayment Calculator</div></div>
-  <div class="mi act" onclick="go('bp')"><div class="ic">🌳</div><div class="lb">Child's Future &amp; Retirement</div></div>
-  <div class="mi" onclick="go('retire')"><div class="ic">🌴</div><div class="lb">Retirement Planning Calculator</div></div>
-  <div class="mi" onclick="go('fire')"><div class="ic">🔥</div><div class="lb">FIRE Calculator</div></div>
-  <div class="mi" onclick="go('infl')"><div class="ic">📊</div><div class="lb">Inflation Calculator</div></div>
-  <div class="mi" id="menu-crore-item" onclick="go('crore')"><div class="ic">🏆</div><div class="lb" id="menu-crore-lbl">First Crore Calculator</div></div>
-  <div class="mi" onclick="go('swp')"><div class="ic">💸</div><div class="lb">SWP Calculator</div></div>
-  <div class="mi" id="menu-nps-item" onclick="go('nps')"><div class="ic">🏛️</div><div class="lb">NPS Calculator</div></div>
-  <hr class="mdiv">
-  <hr class="mdiv"><div class="mi" onclick="window.open('../terms_privacy/about.html','_blank')"><div class="ic">🌱</div><div class="lb">About Us</div></div><div class="mi" onclick="window.open('../terms_privacy/disclaimer.html','_blank')"><div class="ic">⚠️</div><div class="lb">Disclaimer</div></div><div class="mi" onclick="window.open('../terms_privacy/privacy.html','_blank')"><div class="ic">🔒</div><div class="lb">Privacy Policy</div></div><div class="mi" onclick="window.open('../terms_privacy/terms.html','_blank')"><div class="ic">📜</div><div class="lb">Terms of Use</div></div><div id="upstox-menu" style="display:block;padding:10px 16px">
-    <a href="https://upstox.onelink.me/0H1s/FY9686" target="_blank" rel="noopener sponsored" style="text-decoration:none;display:block">
-      <div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.22);border-radius:11px;padding:12px 13px;transition:border-color .2s" onmouseover="this.style.borderColor='#F59E0B'" onmouseout="this.style.borderColor='rgba(245,158,11,.22)'">
-        <div style="font-size:12px;font-weight:700;color:var(--ac);margin-bottom:4px">📈 Open a Demat Account — Upstox</div>
-        <div style="font-size:10px;color:var(--mu);line-height:1.5;margin-bottom:6px">₹0 delivery brokerage. Start investing in stocks &amp; mutual funds today.</div>
-        <div style="font-size:9px;color:var(--dm);line-height:1.5;font-style:italic;margin-bottom:7px">🙏 Signing up via our link costs you nothing extra — it helps us keep this website free and build more tools for you.</div>
-        <div style="background:var(--ac);color:#000;font-weight:bold;font-size:10px;padding:6px 12px;border-radius:7px;text-align:center;font-family:var(--mono)">Open Free Account →</div>
-      </div>
-    </a>
-  </div>
-  <div style="padding:10px 16px;font-size:10px;color:var(--dm);font-family:var(--mono);line-height:1.5">⚠️ Educational use only.<br>Not financial advice.</div>
-</div>
-
-<!-- ══════════════════════════════════════
-     BLUEPRINT PAGE
-══════════════════════════════════════ -->
+<div id="navbar-container"></div>
 <div class="pg" id="pg-bp">
   <div class="wrap-wide">
     <div class="back" onclick="go('home')">← Home</div>
@@ -606,15 +557,47 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 })();
 </script>
-<footer style="background:var(--sf);border-top:1px solid var(--bd);padding:28px 20px;font-size:.82rem;color:var(--dm);font-family:var(--mono);text-align:center;">
-  <div style="margin-bottom:10px">© 2025 My Finance Nest. All rights reserved.</div>
-  <div>
-    <a href="../terms_privacy/about.html" target="_blank" rel="noopener" style="color:var(--mu);text-decoration:none;margin:0 8px">About Us</a>
-    <a href="../terms_privacy/privacy.html" target="_blank" rel="noopener" style="color:var(--mu);text-decoration:none;margin:0 8px">Privacy Policy</a>
-    <a href="../terms_privacy/terms.html" target="_blank" rel="noopener" style="color:var(--mu);text-decoration:none;margin:0 8px">Terms of Use</a>
-    <a href="../terms_privacy/disclaimer.html" target="_blank" rel="noopener" style="color:var(--mu);text-decoration:none;margin:0 8px">Disclaimer</a>
-  </div>
-  <div style="margin-top:10px;font-size:10px;color:var(--dm)">⚠️ Educational use only. Not financial advice.</div>
-</footer>
+<div id="footer-container"></div>
+
+<script>
+/* ── Component Loader ─────────────────────────────────────────
+   Fetches navbar and footer from the components/ folder one
+   level up and injects them into their placeholder containers.
+   mfnInit() is re-called once both are loaded so dynamic
+   labels (currency symbols, nav labels, etc.) are applied.
+   ──────────────────────────────────────────────────────────── */
+(function () {
+  var components = [
+    { url: '../components/navbar.html',  id: 'navbar-container' },
+    { url: '../components/footer.html',  id: 'footer-container' }
+  ];
+
+  var loaded = 0;
+
+  function tryReinit() {
+    loaded++;
+    if (loaded === components.length) {
+      try { if (typeof mfnInit === 'function') mfnInit(); } catch (e) {}
+    }
+  }
+
+  components.forEach(function (c) {
+    fetch(c.url)
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.text();
+      })
+      .then(function (html) {
+        var el = document.getElementById(c.id);
+        if (el) el.innerHTML = html;
+        tryReinit();
+      })
+      .catch(function () {
+        tryReinit();
+      });
+  });
+})();
+</script>
+
 </body>
 </html>
