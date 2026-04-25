@@ -1,0 +1,59 @@
+/* ============================================================
+   footer.css — Site footer styles
+   My Finance Nest
+   ============================================================ */
+
+footer {
+  background: var(--sf);
+  border-top: 1px solid var(--bd);
+  padding: 28px 20px;
+  font-size: .82rem;
+  color: var(--dm);
+  font-family: var(--mono);
+  text-align: center;
+}
+
+.footer-copy {
+  margin-bottom: 10px;
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.footer-links a {
+  color: var(--mu);
+  text-decoration: none;
+  margin: 0 8px;
+  transition: color .2s;
+}
+.footer-links a:hover {
+  color: var(--ac);
+}
+
+.footer-disclaimer {
+  margin-top: 10px;
+  font-size: 10px;
+  color: var(--dm);
+}
+
+/* ══════════════════════════════════════
+   Light theme overrides
+══════════════════════════════════════ */
+html.light footer {
+  background: var(--sf);
+  border-top-color: var(--bd);
+}
+html.light .footer-links a { color: var(--mu); }
+html.light .footer-links a:hover { color: var(--ac); }
+
+/* ══════════════════════════════════════
+   Responsive
+══════════════════════════════════════ */
+@media (max-width: 480px) {
+  .footer-links { flex-direction: column; gap: 6px; }
+  .footer-links a { margin: 0; }
+}

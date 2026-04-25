@@ -1,0 +1,268 @@
+<!-- © 2025 My Finance Nest. All rights reserved. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Personal finance blog by My Finance Nest — SIP, EMI, FIRE, retirement planning, tax saving and more for Indians."/>
+  <meta name="keywords" content="personal finance blog india, SIP guide, EMI explained, FIRE calculator, retirement planning india"/>
+  <meta property="og:title" content="Blog | My Finance Nest — Personal Finance Articles"/>
+  <meta property="og:description" content="Simple, jargon-free guides on SIP, EMI, FIRE, retirement and more — written for everyday Indians building real wealth."/>
+  <meta property="og:type" content="website"/>
+  <meta name="robots" content="index, follow"/>
+  <title>Blog | My Finance Nest — Personal Finance Articles</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23060B14'/><text y='72' x='50' text-anchor='middle' font-size='64' font-family='system-ui'>🪺</text></svg>">
+  <link rel="stylesheet" href="styles/home.css">
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="hbg" onclick="openMenu()" aria-label="Open menu" role="button" tabindex="0" onkeydown="if(event.key==='Enter')openMenu()">
+    <span></span><span></span><span></span>
+  </div>
+  <div class="brand" onclick="window.location.href='https://www.myfinnest.com/'">
+    <span>₹</span> My Finance Nest <small>SMART MONEY TOOLS</small>
+  </div>
+  <div class="nav-right">
+    <div class="nav-links">
+      <!-- <a href="https://www.myfinnest.com/" rel="noopener" data-icon="home"><span class="nav-lbl">Home</span></a>
+      <a href="#" data-icon="blog"><span class="nav-lbl">Blog</span></a> -->
+      <a href="https://www.myfinnest.com/terms_privacy/about.html" target="_blank" rel="noopener" data-icon="about"><span class="nav-lbl">About</span></a>
+      <a href="https://www.myfinnest.com/terms_privacy/disclaimer.html" target="_blank" rel="noopener" data-icon="disclaimer"><span class="nav-lbl">Disclaimer</span></a>
+      <a href="https://www.myfinnest.com/terms_privacy/privacy.html" target="_blank" rel="noopener" data-icon="privacy"><span class="nav-lbl">Privacy</span></a>
+      <a href="https://www.myfinnest.com/terms_privacy/terms.html" target="_blank" rel="noopener" data-icon="terms"><span class="nav-lbl">Terms</span></a>
+    </div>
+    <button class="tt" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+      <span class="ttd">🌙</span><span class="ttl">☀️</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ── MOBILE OVERLAY ── -->
+<div class="ov" id="ov" onclick="closeMenu()"></div>
+
+<!-- ── MOBILE SLIDE MENU ── -->
+<div class="sm" id="sm">
+  <div class="mhdr">
+    <span class="mhdr-brand">₹ My Finance Nest</span>
+    <button class="mclose" onclick="closeMenu()">✕</button>
+  </div>
+  <div class="mi" onclick="window.location.href='https://www.myfinnest.com/'"><div class="ic">🏠</div><div class="lb">Home</div></div>
+  <div class="mi act" onclick="closeMenu()"><div class="ic">📝</div><div class="lb">Blog</div></div>
+  <hr class="mdiv">
+  <div class="mi" onclick="window.location.href='https://www.myfinnest.com/#si'"><div class="ic">📐</div><div class="lb">Simple Interest Calculator</div></div>
+  <div class="mi" onclick="window.location.href='https://www.myfinnest.com/#ci'"><div class="ic">📈</div><div class="lb">Compound Interest Calculator</div></div>
+  <div class="mi" onclick="window.location.href='https://www.myfinnest.com/#emi'"><div class="ic">🏦</div><div class="lb">EMI Calculator</div></div>
+  <div class="mi" onclick="window.location.href='https://www.myfinnest.com/#prepay'"><div class="ic">💳</div><div class="lb">Loan Prepayment Calculator</div></div>
+  <div class="mi" onclick="window.location.href='https://www.myfinnest.com/#bp'"><div class="ic">🌳</div><div class="lb">Child's Future &amp; Retirement</div></div>
+  <div class="mi" onclick="window.location.href='https://www.myfinnest.com/#retire'"><div class="ic">🌴</div><div class="lb">Retirement Planning Calculator</div></div>
+  <div class="mi" onclick="window.location.href='https://www.myfinnest.com/#fire'"><div class="ic">🔥</div><div class="lb">FIRE Calculator</div></div>
+  <div class="mi" onclick="window.location.href='https://www.myfinnest.com/#infl'"><div class="ic">📊</div><div class="lb">Inflation Calculator</div></div>
+  <div class="mi" onclick="window.location.href='https://www.myfinnest.com/#crore'"><div class="ic">🏆</div><div class="lb">First Crore Calculator</div></div>
+  <div class="mi" onclick="window.location.href='https://www.myfinnest.com/#swp'"><div class="ic">💸</div><div class="lb">SWP Calculator</div></div>
+  <div class="mi" onclick="window.location.href='https://www.myfinnest.com/#nps'"><div class="ic">🏛️</div><div class="lb">NPS Calculator</div></div>
+  <hr class="mdiv">
+  <div class="mi" onclick="window.open('https://www.myfinnest.com/terms_privacy/about.html','_blank')"><div class="ic">🌱</div><div class="lb">About Us</div></div>
+  <div class="mi" onclick="window.open('https://www.myfinnest.com/terms_privacy/disclaimer.html','_blank')"><div class="ic">⚠️</div><div class="lb">Disclaimer</div></div>
+  <div class="mi" onclick="window.open('https://www.myfinnest.com/terms_privacy/privacy.html','_blank')"><div class="ic">🔒</div><div class="lb">Privacy Policy</div></div>
+  <div class="mi" onclick="window.open('https://www.myfinnest.com/terms_privacy/terms.html','_blank')"><div class="ic">📜</div><div class="lb">Terms of Use</div></div>
+  <div style="padding:10px 16px;font-size:10px;color:var(--dm);font-family:var(--mono);line-height:1.5">⚠️ Educational use only.<br>Not financial advice.</div>
+</div>
+
+<!-- ── MAIN PAGE ── -->
+<div class="pg on">
+
+  <!-- HERO -->
+  <div class="blog-hero">
+    <div class="hero-label">📝 Personal Finance Blog</div>
+    <h1>Learn. Plan. <span>Grow.</span></h1>
+    <p class="hero-sub">Simple, jargon-free guides on SIP, EMI, FIRE, retirement and more — written for everyday Indians building real wealth.</p>
+    <div class="hero-stats">
+      <div class="blog-stat">
+        <span class="stat-icon">📚</span>
+        <div>
+          <div class="stat-val" id="totalCount">22</div>
+          <div class="stat-lab">Articles</div>
+        </div>
+      </div>
+      <div class="blog-stat">
+        <span class="stat-icon">🏷️</span>
+        <div>
+          <div class="stat-val"  id="categoryCount">0</div>
+          <div class="stat-lab">Categories</div>
+        </div>
+      </div>
+      <div class="blog-stat">
+        <span class="stat-icon">⏱️</span>
+        <div>
+          <div class="stat-val">6–9</div>
+          <div class="stat-lab">Min reads</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="blog-controls">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search articles…" autocomplete="off" aria-label="Search articles"/>
+    </div>
+    <div class="blog-filters" id="filterBar"></div>
+  </div>
+
+  <div class="results-bar" id="resultsBar">Loading articles…</div>
+
+  <!-- ARTICLE GRID -->
+  <div class="article-grid" id="articleGrid"></div>
+
+  <!-- FOOTER -->
+  <footer class="blog-footer">
+    <p>⚠️ Educational use only. Not financial advice. Consult a SEBI-registered advisor before investing.<br/>© <span id="yr"></span> My Finance Nest. All rights reserved.</p>
+    <div class="blog-footer-links">
+      <a href="https://www.myfinnest.com/">Home</a>
+      <a href="https://www.myfinnest.com/terms_privacy/about.html">About</a>
+      <a href="https://www.myfinnest.com/terms_privacy/privacy.html">Privacy</a>
+      <a href="https://www.myfinnest.com/terms_privacy/terms.html">Terms</a>
+      <a href="https://www.myfinnest.com/terms_privacy/disclaimer.html">Disclaimer</a>
+    </div>
+  </footer>
+
+</div><!-- /.pg -->
+
+<script>
+// ── ARTICLE DATA ──────────────────────────────────────────────────────────────
+// To add a new article: append a new object to this array.
+const ARTICLES = [
+  { file: 'what-is-sip.html',                  emoji: '📈', title: 'What is SIP and How Does It Work in India?',               cat: 'Mutual Funds',   min: 7,  desc: 'Learn how SIP, Rupee Cost Averaging and compounding work together to build long-term wealth.' },
+  { file: '50-30-20-rule.html',                 emoji: '📐', title: 'The 50-30-20 Budgeting Rule: Does It Work for Indians?',   cat: 'Budgeting',      min: 6,  desc: "Adapting the global budgeting framework for India's metros, EMIs, and higher savings needs." },
+  { file: 'inflation-india.html',               emoji: '📊', title: 'How Inflation Silently Erodes Your Savings in India',      cat: 'Basics',         min: 6,  desc: 'See exactly how 6% annual inflation destroys purchasing power — and how to beat it.' },
+  { file: 'compound-interest-explained.html',   emoji: '💹', title: 'Compound Interest Explained: The Secret to Building Wealth', cat: 'Basics',        min: 6,  desc: 'Understand why Einstein called compound interest the eighth wonder of the world.' },
+  // { file: 'how-emi-works.html',                 emoji: '🏦', title: 'How Does EMI Work? A Complete Guide for Indian Borrowers',  cat: 'Loans',          min: 7,  desc: 'Decode the EMI formula, amortisation schedule and smart strategies to cut total interest paid.' },
+  // { file: 'loan-prepayment-guide.html',         emoji: '💳', title: 'Loan Prepayment: Should You Prepay or Invest?',             cat: 'Loans',          min: 8,  desc: 'A data-driven comparison of loan prepayment vs investing in mutual funds for maximum benefit.' },
+  // { file: 'what-is-fire.html',                  emoji: '🔥', title: 'What is FIRE? Can You Retire Early in India?',              cat: 'FIRE',           min: 8,  desc: 'The 4% rule, FIRE corpus calculation, and realistic steps for early retirement in India.' },
+  // { file: 'retirement-planning-india.html',     emoji: '🌴', title: 'Retirement Planning: How Much Do You Really Need?',        cat: 'Retirement',     min: 9,  desc: 'Step-by-step corpus calculation and asset allocation for a comfortable Indian retirement.' },
+  // { file: 'child-education-planning.html',      emoji: '🌳', title: "Planning Your Child's Education Fund",                     cat: 'Family Finance', min: 8,  desc: 'Education inflation is 9% p.a. — here is how to stay ahead of it from day one.' },
+  // { file: 'nps-complete-guide.html',            emoji: '🏛️', title: 'NPS Complete Guide: Should You Invest?',                   cat: 'Retirement',     min: 8,  desc: 'All NPS tax benefits, returns, withdrawal rules and comparison with EPF and PPF.' },
+  // { file: 'swp-retirement-income.html',         emoji: '💸', title: 'SWP: Create a Monthly Income from Mutual Funds',           cat: 'Retirement',     min: 7,  desc: 'How SWPs beat annuities and FDs for tax-efficient retirement income in India.' },
+  // { file: 'first-crore-guide.html',             emoji: '🏆', title: 'How to Save Your First ₹1 Crore: A Roadmap',              cat: 'Wealth Building', min: 8, desc: 'A step-by-step plan to reach your first crore milestone at every income level.' },
+  // { file: 'emergency-fund-guide.html',          emoji: '🛡️', title: 'Emergency Fund: How Much and Where to Keep It?',          cat: 'Basics',         min: 6,  desc: 'Build the financial safety net that protects all your other investments.' },
+  // { file: 'mutual-funds-vs-fd.html',            emoji: '⚖️', title: 'Mutual Funds vs Fixed Deposits: Which is Better?',        cat: 'Investing',      min: 7,  desc: 'A numbers-first post-tax comparison of FD and equity mutual funds over 10 years.' },
+  // { file: 'home-loan-guide.html',               emoji: '🏠', title: 'Home Loan in India: Everything Before You Borrow',         cat: 'Loans',          min: 8,  desc: 'Buy vs rent, affordability, tax benefits, and smart strategies to save lakhs.' },
+  // { file: 'step-up-sip.html',                   emoji: '⬆️', title: 'Step-Up SIP: Grow Your Wealth With Every Raise',           cat: 'Mutual Funds',   min: 6,  desc: 'How a 10% annual SIP step-up can nearly double your final corpus over 20 years.' },
+  // { file: 'index-funds-india.html',             emoji: '📉', title: 'Index Funds in India: The Low-Cost Path to Returns',       cat: 'Investing',      min: 7,  desc: 'Why Warren Buffett recommends index funds — and how to build a simple 3-fund portfolio.' },
+  // { file: 'term-insurance-guide.html',          emoji: '🔒', title: 'Term Insurance in India: Why You Need It',                 cat: 'Insurance',      min: 7,  desc: 'How much cover you need, why pure term beats endowment, and how to choose the right policy.' },
+  // { file: 'ppf-complete-guide.html',            emoji: '🏦', title: 'PPF: Your Complete Guide to Public Provident Fund',        cat: 'Tax Saving',     min: 7,  desc: 'EEE tax status, deposit rules, partial withdrawals, and how to maximise PPF returns.' },
+  // { file: 'elss-guide.html',                    emoji: '💰', title: 'ELSS: Tax-Saving Fund with the Shortest Lock-In',          cat: 'Tax Saving',     min: 7,  desc: 'How ELSS beats other 80C options on returns, lock-in period and tax efficiency.' },
+  // { file: 'gold-investment-india.html',         emoji: '🥇', title: 'Investing in Gold: Physical, SGB, ETF Compared',           cat: 'Investing',      min: 7,  desc: 'Why Sovereign Gold Bonds beat every other form of gold investment in India.' },
+  // { file: 'tax-saving-investments-india.html',  emoji: '📋', title: 'Best Tax-Saving Investments Under Section 80C (2024–25)',  cat: 'Tax Saving',     min: 7,  desc: 'Compare all 80C options and build the optimal tax-saving strategy for your income level.' },
+];
+
+// ── UI BOOTSTRAP ──────────────────────────────────────────────────────────────
+const gridEl    = document.getElementById('articleGrid');
+const filterBar = document.getElementById('filterBar');
+const searchEl  = document.getElementById('searchInput');
+const resultsBar = document.getElementById('resultsBar');
+
+document.getElementById('yr').textContent = new Date().getFullYear();
+document.getElementById('totalCount').textContent = ARTICLES.length;
+
+// Build category filter buttons
+const cats = ['All', ...new Set(ARTICLES.map(a => a.cat))].sort((a, b) => a === 'All' ? -1 : b === 'All' ? 1 : a.localeCompare(b));
+cats.forEach(cat => {
+  const btn = document.createElement('button');
+  btn.className = 'filter-btn' + (cat === 'All' ? ' active' : '');
+  btn.dataset.cat = cat.toLowerCase();
+  btn.textContent = cat;
+  filterBar.appendChild(btn);
+});
+const categoriesCount = ARTICLES.length - 1; // remove "All"
+document.getElementById('categoryCount').textContent = categoriesCount;
+
+// Render article cards
+function renderCards(list) {
+  gridEl.innerHTML = '';
+  if (!list.length) {
+    gridEl.innerHTML = '<div class="no-results"><div class="big">🔍</div><strong>No articles found</strong><br/>Try a different search or category.</div>';
+    resultsBar.textContent = 'No articles match your search.';
+    return;
+  }
+  list.forEach((a, i) => {
+    const card = document.createElement('a');
+    card.className = 'article-card';
+    card.href = a.file;
+    card.dataset.cat = a.cat.toLowerCase();
+    card.innerHTML = `
+      <div class="card-head">
+        <div class="card-emoji">${a.emoji}</div>
+        <div class="card-meta">
+          <span class="cat-tag">${a.cat}</span>
+          <span class="read-time">⏱ ${a.min} min</span>
+        </div>
+      </div>
+      <h2>${a.title}</h2>
+      <p>${a.desc}</p>
+      <div class="card-footer">
+        <span class="read-link">Read article <span class="arrow">→</span></span>
+        <span class="card-num">#${String(i + 1).padStart(2, '0')}</span>
+      </div>`;
+    gridEl.appendChild(card);
+  });
+  resultsBar.textContent = `Showing ${list.length} of ${ARTICLES.length} article${ARTICLES.length !== 1 ? 's' : ''}`;
+}
+renderCards(ARTICLES);
+
+// ── FILTER + SEARCH ───────────────────────────────────────────────────────────
+let activeCat = 'all';
+let searchVal = '';
+
+function applyFilter() {
+  const filtered = ARTICLES.filter(a => {
+    const matchCat    = activeCat === 'all' || a.cat.toLowerCase() === activeCat;
+    const matchSearch = (a.title + ' ' + a.cat + ' ' + a.desc).toLowerCase().includes(searchVal);
+    return matchCat && matchSearch;
+  });
+  renderCards(filtered);
+}
+
+filterBar.addEventListener('click', e => {
+  const btn = e.target.closest('.filter-btn');
+  if (!btn) return;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeCat = btn.dataset.cat;
+  applyFilter();
+});
+
+searchEl.addEventListener('input', () => {
+  searchVal = searchEl.value.toLowerCase().trim();
+  applyFilter();
+});
+
+// ── THEME — matches home.html's toggleTheme() exactly ─────────────────────────
+function toggleTheme() {
+  const isNowLight = document.documentElement.classList.toggle('light');
+  localStorage.setItem('mfn-theme', isNowLight ? 'light' : 'dark');
+}
+// Restore saved preference or system preference on load
+(function initTheme() {
+  const saved = localStorage.getItem('mfn-theme');
+  const preferLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+  if (saved === 'light' || (!saved && preferLight)) {
+    document.documentElement.classList.add('light');
+  }
+})();
+
+// ── MOBILE MENU — uses home.css classes (.sm.on / .ov.on) ─────────────────────
+function openMenu() {
+  document.getElementById('sm').classList.add('on');
+  document.getElementById('ov').classList.add('on');
+}
+function closeMenu() {
+  document.getElementById('sm').classList.remove('on');
+  document.getElementById('ov').classList.remove('on');
+}
+</script>
+</body>
+</html>
