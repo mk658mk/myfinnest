@@ -1,0 +1,27 @@
+# =============================================
+#  .htaccess for Static HTML/CSS Website
+# =============================================
+
+# Enable the Rewrite Engine
+RewriteEngine On
+
+# ---------------------------------------------
+# 1. Redirect HTTP → HTTPS
+#    Forces all traffic to use a secure connection
+# ---------------------------------------------
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://www.myfinnest.com%{REQUEST_URI} [L,R=301]
+
+# ---------------------------------------------
+# 2. Redirect non-www → www
+#    e.g. myfinnest.com → www.myfinnest.com
+# ---------------------------------------------
+RewriteCond %{HTTP_HOST} ^myfinnest\.com$ [NC]
+RewriteRule ^ https://www.myfinnest.com%{REQUEST_URI} [L,R=301]
+
+# ---------------------------------------------
+# 3. Remove trailing slashes (optional but clean)
+#    e.g. /about/ → /about
+# ---------------------------------------------
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)/$ /$1 [L,R=301]

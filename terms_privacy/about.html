@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About Us — My Finance Nest</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23060B14'/><text y='72' x='50' text-anchor='middle' font-size='64' font-family='system-ui'>🪺</text></svg>">
+<style>
+:root{
+  --bg:#060B14;--sf:#0D1526;--sf2:#111D35;--tx:#E2E8F0;
+  --mu:#5A7090;--dm:#3A4E6A;--bd:rgba(255,255,255,0.08);
+  --ac:#F59E0B;--gn:#10B981;--rd:#F87171;
+  --mono:'Courier New',monospace;--nav-h:60px;
+}
+html.light{
+  --bg:#F8F9FC;--sf:#FFFFFF;--sf2:#F1F5FB;--tx:#1A2440;
+  --mu:#5A6E8A;--dm:#8FA3BF;--bd:rgba(0,0,0,0.10);
+  --ac:#D97706;--gn:#059669;--rd:#DC2626;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);line-height:1.7;font-size:15px;min-height:100vh}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:100;height:var(--nav-h);background:rgba(6,11,20,.97);backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 16px;gap:12px;}
+html.light nav{background:rgba(248,249,252,0.96);}
+
+/* Brand — no link, just styled text */
+.brand{font-family:Georgia,serif;font-size:1.15rem;color:var(--ac);letter-spacing:.5px;flex:1;display:flex;flex-direction:column;line-height:1.2;cursor:default;user-select:none;}
+.brand small{display:block;font-size:9px;color:var(--mu);font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;}
+html.light .brand{color:var(--ac);}
+html.light .brand small{color:var(--mu);}
+
+/* Nav right group */
+.nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+
+
+/* Theme toggle */
+.tt{background:none;border:1px solid var(--bd);border-radius:20px;padding:5px 10px;cursor:pointer;color:var(--mu);font-size:13px;display:flex;align-items:center;gap:5px;transition:border-color .2s;flex-shrink:0;}
+.tt:hover{border-color:var(--ac);}
+.ttd{display:inline;}.ttl{display:none;}
+html.light .ttd{display:none;}html.light .ttl{display:inline;}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#070C17 0%,#0D1A35 50%,#111F3A 100%);border-bottom:1px solid var(--bd);padding:58px 20px 48px;text-align:center;position:relative;overflow:hidden;}
+html.light .hero{background:linear-gradient(135deg,#E8EFF8 0%,#D6E4F7 50%,#EBF2FB 100%);}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(245,158,11,.07) 0%,transparent 70%);pointer-events:none;}
+.htag{font-size:10px;letter-spacing:3px;color:var(--ac);font-family:var(--mono);text-transform:uppercase;margin-bottom:14px;}
+.hero h1{font-size:clamp(1.8rem,5vw,2.7rem);font-weight:800;color:var(--tx);letter-spacing:-.5px;margin-bottom:12px;}
+.hero p{color:var(--mu);max-width:560px;margin:0 auto;font-size:1rem;}
+
+/* ── CONTENT ── */
+.wrap{max-width:860px;margin:0 auto;padding:0 20px;}
+.content{padding:38px 0 80px;}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:24px 28px;margin-bottom:18px;}
+.card h2{font-size:1rem;font-weight:700;color:var(--tx);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.card p{color:var(--mu);margin-bottom:10px;line-height:1.75;}
+.card p:last-child{margin-bottom:0;}
+.abar{border-left:3px solid var(--ac);padding-left:14px;}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:16px;}
+.vi{background:var(--sf2);border:1px solid var(--bd);border-radius:10px;padding:16px;text-align:center;}
+.vi .ic{font-size:1.5rem;margin-bottom:8px;}
+.vi h3{font-size:.85rem;font-weight:700;color:var(--ac);margin-bottom:5px;}
+.vi p{font-size:.82rem;color:var(--mu);margin:0;}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;margin-top:14px;}
+.tp{background:var(--sf2);border:1px solid var(--bd);border-radius:8px;padding:8px 12px;font-size:.82rem;color:var(--mu);font-family:var(--mono);}
+.notice{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:10px;padding:14px 16px;font-size:.85rem;color:var(--mu);margin-top:14px;line-height:1.65;}
+.notice strong{color:var(--ac);}
+
+/* ── FOOTER ── */
+footer{background:var(--sf);border-top:1px solid var(--bd);text-align:center;padding:28px 20px;font-size:.82rem;color:var(--dm);font-family:var(--mono);}
+footer a{color:var(--mu);text-decoration:none;margin:0 8px;}
+footer a:hover{color:var(--ac);}
+@media(max-width:600px){.card{padding:18px 16px;}.hero{padding:44px 16px 36px;}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="brand">
+    ₹ My Finance Nest
+    <small>SMART MONEY TOOLS</small>
+  </div>
+  <div class="nav-right">
+    <button class="tt" onclick="toggleTheme()"><span class="ttd">🌙</span><span class="ttl">☀️</span></button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="htag">Our Story</div>
+  <h1>About My Finance Nest</h1>
+  <p>Free, unbiased financial calculators built for everyday Indians planning their financial future.</p>
+</div>
+
+<div class="wrap content">
+
+  <div class="card">
+    <h2>🌱 Who We Are</h2>
+    <p class="abar">My Finance Nest is an independent personal finance platform created by the My Finance Nest Team — a small group of finance enthusiasts based in India who believe that good financial planning tools should be free, simple, and accessible to everyone.</p>
+    <p>We started this project because most financial calculators online were either too basic, cluttered with ads, or locked behind paywalls. We wanted to build something different — a clean, honest, and comprehensive toolkit for Indians at every stage of their financial journey.</p>
+  </div>
+
+  <div class="card">
+    <h2>🎯 Our Mission</h2>
+    <p>Our mission is simple: <strong style="color:var(--ac)">to democratize financial planning for India.</strong></p>
+    <p>Whether you're a fresh college graduate starting your first SIP, a mid-career professional planning for your child's education, or someone dreaming of early retirement through FIRE — our tools are designed to give you clarity, not confusion.</p>
+    <p>We do not sell financial products. We do not give personalized investment advice. We build calculators and educational resources that help you understand the numbers behind your decisions.</p>
+  </div>
+
+  <div class="card">
+    <h2>💡 Our Values</h2>
+    <div class="vgrid">
+      <div class="vi"><div class="ic">🔓</div><h3>Free Forever</h3><p>All calculators are and will always be free, no sign-up required.</p></div>
+      <div class="vi"><div class="ic">🎯</div><h3>Unbiased</h3><p>We don't push specific products. Our tools are built for education, not sales.</p></div>
+      <div class="vi"><div class="ic">🇮🇳</div><h3>India-First</h3><p>Built for Indian tax laws, financial instruments, and investment goals.</p></div>
+      <div class="vi"><div class="ic">🔒</div><h3>Privacy-Friendly</h3><p>Your financial data stays in your browser. We never store or transmit it.</p></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🛠️ Our Tools</h2>
+    <p>We currently offer 11 free financial calculators, with more in development:</p>
+    <div class="tgrid">
+      <div class="tp">📐 Simple Interest</div>
+      <div class="tp">📈 Compound Interest / SIP</div>
+      <div class="tp">🏦 EMI Calculator</div>
+      <div class="tp">💳 Loan Prepayment</div>
+      <div class="tp">🌳 Child's Future &amp; Retirement</div>
+      <div class="tp">🌴 Retirement Planning</div>
+      <div class="tp">🔥 FIRE Calculator</div>
+      <div class="tp">📊 Inflation Calculator</div>
+      <div class="tp">🏆 First Crore Calculator</div>
+      <div class="tp">💸 SWP Calculator</div>
+      <div class="tp">🏛️ NPS Calculator</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>💸 How We Stay Free</h2>
+    <p>Running a website has costs — hosting, maintenance, and development time. We keep our tools free through two sources:</p>
+    <p><strong style="color:var(--tx)">Affiliate partnerships:</strong> We occasionally link to financial platforms like Upstox. If you sign up through our links, we may earn a small referral commission at no additional cost to you. We only recommend platforms we believe are reputable.</p>
+    <p><strong style="color:var(--tx)">Display advertising:</strong> We may display contextual ads on some pages to help cover costs.</p>
+    <p>These partnerships never influence our calculator results or editorial content. Our tools are built to be accurate and helpful — full stop.</p>
+    <div class="notice">⚠️ <strong>Important:</strong> My Finance Nest is not a SEBI-registered investment advisor. All calculators are for educational and planning purposes only. Results are estimates based on your inputs. Please consult a qualified financial advisor before making investment decisions.</div>
+  </div>
+
+  <div class="card">
+    <h2>📬 Contact Us</h2>
+    <p>Have feedback, a bug report, or a suggestion for a new calculator? We'd love to hear from you.</p>
+    <p>Reach us at: <strong style="color:var(--ac);font-family:var(--mono)">contact@myfinnest.com</strong></p>
+    <p>We're a small team, but we read every message and respond as quickly as we can.</p>
+  </div>
+
+</div>
+
+
+
+<script>
+let _isDark=true;
+function toggleTheme(){_isDark=!_isDark;document.documentElement.classList.toggle('light',!_isDark);try{localStorage.setItem('mfn-theme',_isDark?'dark':'light');}catch(e){}}
+(function(){try{var t=localStorage.getItem('mfn-theme');if(t==='light'){_isDark=false;document.documentElement.classList.add('light');}}catch(e){}})();
+</script>
+</body>
+</html>
