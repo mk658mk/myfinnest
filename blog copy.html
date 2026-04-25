@@ -1,0 +1,316 @@
+<!-- © 2025 My Finance Nest. All rights reserved. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Personal finance blog by My Finance Nest — SIP, EMI, FIRE, retirement planning, tax saving and more for Indians."/>
+  <meta name="keywords" content="personal finance blog india, SIP guide, EMI explained, FIRE calculator, retirement planning india"/>
+  <meta property="og:title" content="Blog | My Finance Nest — Personal Finance Articles"/>
+  <meta property="og:description" content="Simple, jargon-free guides on SIP, EMI, FIRE, retirement and more — written for everyday Indians building real wealth."/>
+  <meta property="og:type" content="website"/>
+  <meta name="robots" content="index, follow"/>
+  <title>Blog | My Finance Nest — Personal Finance Articles</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23060B14'/><text y='72' x='50' text-anchor='middle' font-size='64' font-family='system-ui'>🪺</text></svg>">
+  <link rel="stylesheet" href="styles/home.css">
+  <link rel="stylesheet" href="styles/navbar.css">
+  <link rel="stylesheet" href="styles/footer.css">
+</head>
+<body>
+
+<!-- ═══ NAVBAR COMPONENT ═══ -->
+<div id="navbar-container"></div>
+
+<!-- ── MAIN PAGE ── -->
+<div class="pg on">
+
+  <!-- HERO -->
+  <div class="blog-hero">
+    <div class="hero-label">📝 Personal Finance Blog</div>
+    <h1>Learn. Plan. <span>Grow.</span></h1>
+    <p class="hero-sub">Simple, jargon-free guides on SIP, EMI, FIRE, retirement and more — written for everyday Indians building real wealth.</p>
+    <div class="hero-stats">
+      <div class="blog-stat">
+        <span class="stat-icon">📚</span>
+        <div>
+          <div class="stat-val" id="totalCount">—</div>
+          <div class="stat-lab">Articles</div>
+        </div>
+      </div>
+      <div class="blog-stat">
+        <span class="stat-icon">🏷️</span>
+        <div>
+          <div class="stat-val" id="categoryCount">—</div>
+          <div class="stat-lab">Categories</div>
+        </div>
+      </div>
+      <div class="blog-stat">
+        <span class="stat-icon">⏱️</span>
+        <div>
+          <div class="stat-val">6–9</div>
+          <div class="stat-lab">Min reads</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="blog-controls">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search articles…" autocomplete="off" aria-label="Search articles"/>
+    </div>
+    <div class="blog-filters" id="filterBar"></div>
+  </div>
+
+  <div class="results-bar" id="resultsBar">Loading articles…</div>
+
+  <!-- ARTICLE GRID -->
+  <div class="article-grid" id="articleGrid">
+    <!-- Skeleton placeholders while loading -->
+    <div class="article-card skeleton" aria-hidden="true" style="min-height:200px;opacity:.4;pointer-events:none"></div>
+    <div class="article-card skeleton" aria-hidden="true" style="min-height:200px;opacity:.4;pointer-events:none"></div>
+    <div class="article-card skeleton" aria-hidden="true" style="min-height:200px;opacity:.4;pointer-events:none"></div>
+  </div>
+
+</div><!-- /.pg -->
+
+<!-- ═══ FOOTER COMPONENT ═══ -->
+<div id="footer-container"></div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// AUTO-SCAN: reads blog/ directory listing, then fetches each article's meta
+// ─────────────────────────────────────────────────────────────────────────────
+
+const BLOG_DIR = 'blog/'; // folder containing your article HTML files
+
+const gridEl     = document.getElementById('articleGrid');
+const filterBar  = document.getElementById('filterBar');
+const searchEl   = document.getElementById('searchInput');
+const resultsBar = document.getElementById('resultsBar');
+
+// Parse a single meta tag value from raw HTML text
+function getMeta(html, name) {
+  const re = new RegExp(
+    '<meta[^>]+name=["\']' + name + '["\'][^>]+content=["\']([^"\']*)["\']' +
+    '|<meta[^>]+content=["\']([^"\']*)["\'][^>]+name=["\']' + name + '["\']',
+    'i'
+  );
+  const m = html.match(re);
+  return m ? (m[1] || m[2] || '').trim() : '';
+}
+
+// Parse <title> from raw HTML text
+function getTitle(html) {
+  const m = html.match(/<title[^>]*>(.*?)<\/title>/is);
+  return m ? m[1].replace(/<[^>]+>/g, '').trim() : '';
+}
+
+// Fetch one article file and extract its card metadata
+async function fetchArticleMeta(filename) {
+  try {
+    const res  = await fetch(BLOG_DIR + filename);
+    if (!res.ok) return null;
+    const html = await res.text();
+    return {
+      file  : BLOG_DIR + filename,
+      emoji : getMeta(html, 'emoji')       || '📄',
+      title : getTitle(html)               || getMeta(html, 'og:title') || filename,
+      cat   : getMeta(html, 'category')    || 'General',
+      min   : parseInt(getMeta(html, 'readtime'), 10) || 7,
+      desc  : getMeta(html, 'description') || '',
+    };
+  } catch {
+    return null;
+  }
+}
+
+// Step 1 — fetch the blog/ directory listing and pull out .html filenames
+async function scanBlogFolder() {
+  let files = [];
+  try {
+    const res  = await fetch(BLOG_DIR);
+    const html = await res.text();
+
+    // Apache directory listing: links like href="filename.html"
+    // Exclude parent dir link (..) and anything with a path separator
+    const re = /href="([^"\/]+\.html)"/gi;
+    let m;
+    while ((m = re.exec(html)) !== null) {
+      files.push(m[1]);
+    }
+  } catch (e) {
+    resultsBar.textContent = '⚠️ Could not read blog/ folder. Make sure directory listing is enabled on your server.';
+    gridEl.innerHTML = '';
+    return;
+  }
+
+  if (!files.length) {
+    gridEl.innerHTML  = '<div class="no-results"><div class="big">📂</div><strong>No articles yet</strong><br/>Upload HTML files to the <code>blog/</code> folder.</div>';
+    resultsBar.textContent = 'No articles found.';
+    document.getElementById('totalCount').textContent    = 0;
+    document.getElementById('categoryCount').textContent = 0;
+    return;
+  }
+
+  // Step 2 — fetch all article files in parallel
+  const results  = await Promise.all(files.map(fetchArticleMeta));
+  const ARTICLES = results.filter(Boolean); // drop any that failed
+
+  // Sort alphabetically by filename (stable, predictable order)
+  ARTICLES.sort((a, b) => a.file.localeCompare(b.file));
+
+  // Update hero counts
+  document.getElementById('totalCount').textContent = ARTICLES.length;
+  const uniqueCats = [...new Set(ARTICLES.map(a => a.cat))];
+  document.getElementById('categoryCount').textContent = uniqueCats.length;
+
+  // Build filter buttons
+  filterBar.innerHTML = '';
+  ['All', ...uniqueCats.sort((a, b) => a.localeCompare(b))].forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className  = 'filter-btn' + (cat === 'All' ? ' active' : '');
+    btn.dataset.cat = cat.toLowerCase();
+    btn.textContent = cat;
+    filterBar.appendChild(btn);
+  });
+
+  // ── Render cards ────────────────────────────────────────────────────────────
+  function renderCards(list) {
+    gridEl.innerHTML = '';
+    if (!list.length) {
+      gridEl.innerHTML = '<div class="no-results"><div class="big">🔍</div><strong>No articles found</strong><br/>Try a different search or category.</div>';
+      resultsBar.textContent = 'No articles match your search.';
+      return;
+    }
+    list.forEach((a, i) => {
+      const card = document.createElement('a');
+      card.className = 'article-card';
+      card.href      = a.file;
+      card.target    = '_blank';
+      card.rel       = 'noopener noreferrer';
+      card.dataset.cat = a.cat.toLowerCase();
+      card.innerHTML = `
+        <div class="card-head">
+          <div class="card-emoji">${a.emoji}</div>
+          <div class="card-meta">
+            <span class="cat-tag">${a.cat}</span>
+            <span class="read-time">⏱ ${a.min} min</span>
+          </div>
+        </div>
+        <h2>${a.title}</h2>
+        <p>${a.desc}</p>
+        <div class="card-footer">
+          <span class="read-link">Read article <span class="arrow">→</span></span>
+          <span class="card-num">#${String(i + 1).padStart(2, '0')}</span>
+        </div>`;
+      gridEl.appendChild(card);
+    });
+    resultsBar.textContent = `Showing ${list.length} of ${ARTICLES.length} article${ARTICLES.length !== 1 ? 's' : ''}`;
+  }
+
+  renderCards(ARTICLES);
+
+  // ── Filter + Search ─────────────────────────────────────────────────────────
+  let activeCat = 'all';
+  let searchVal = '';
+
+  function applyFilter() {
+    const filtered = ARTICLES.filter(a => {
+      const matchCat    = activeCat === 'all' || a.cat.toLowerCase() === activeCat;
+      const matchSearch = (a.title + ' ' + a.cat + ' ' + a.desc).toLowerCase().includes(searchVal);
+      return matchCat && matchSearch;
+    });
+    renderCards(filtered);
+  }
+
+  filterBar.addEventListener('click', e => {
+    const btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCat = btn.dataset.cat;
+    applyFilter();
+  });
+
+  searchEl.addEventListener('input', () => {
+    searchVal = searchEl.value.toLowerCase().trim();
+    applyFilter();
+  });
+}
+
+// Kick off the scan
+scanBlogFolder();
+
+// ── THEME — matches home.html's toggleTheme() exactly ─────────────────────────
+function toggleTheme() {
+  const isNowLight = document.documentElement.classList.toggle('light');
+  localStorage.setItem('mfn-theme', isNowLight ? 'light' : 'dark');
+}
+(function initTheme() {
+  const saved = localStorage.getItem('mfn-theme');
+  const preferLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+  if (saved === 'light' || (!saved && preferLight)) {
+    document.documentElement.classList.add('light');
+  }
+})();
+
+// ── MOBILE MENU ───────────────────────────────────────────────────────────────
+function openMenu() {
+  document.getElementById('sm').classList.add('on');
+  document.getElementById('ov').classList.add('on');
+}
+function closeMenu() {
+  document.getElementById('sm').classList.remove('on');
+  document.getElementById('ov').classList.remove('on');
+}
+
+// ── go() — navbar menu links ──────────────────────────────────────────────────
+(function () {
+  var FILE_MAP = {
+    'home':   'home.html',
+    'si':     'calculators/simple-interest.html',
+    'ci':     'calculators/compound-interest.html',
+    'emi':    'calculators/emi.html',
+    'prepay': 'calculators/loan-prepayment.html',
+    'bp':     'calculators/blueprint.html',
+    'retire': 'calculators/retirement.html',
+    'fire':   'calculators/fire.html',
+    'infl':   'calculators/inflation.html',
+    'crore':  'calculators/first-crore.html',
+    'swp':    'calculators/swp.html',
+    'nps':    'calculators/nps.html'
+  };
+  window.go = function (page) {
+    var f = FILE_MAP[page]; if (f) window.location.href = f;
+  };
+})();
+
+// ── COMPONENT LOADER ──────────────────────────────────────────────────────────
+(function () {
+  var components = [
+    { url: 'components/navbar.html', id: 'navbar-container' },
+    { url: 'components/footer.html', id: 'footer-container' }
+  ];
+  var loaded = 0;
+  function tryReinit() {
+    loaded++;
+    if (loaded === components.length) {
+      try {
+        document.querySelectorAll('.mi').forEach(function (el) {
+          if (el.textContent.trim().indexOf('Blog') !== -1) el.classList.add('act');
+        });
+      } catch (e) {}
+    }
+  }
+  components.forEach(function (c) {
+    fetch(c.url)
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+      .then(function (html) { var el = document.getElementById(c.id); if (el) el.innerHTML = html; tryReinit(); })
+      .catch(function () { tryReinit(); });
+  });
+})();
+</script>
+</body>
+</html>
