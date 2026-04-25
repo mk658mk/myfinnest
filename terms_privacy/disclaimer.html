@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Disclaimer — My Finance Nest</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23060B14'/><text y='72' x='50' text-anchor='middle' font-size='64' font-family='system-ui'>🪺</text></svg>">
+<style>
+:root{--bg:#060B14;--sf:#0D1526;--sf2:#111D35;--tx:#E2E8F0;--mu:#5A7090;--dm:#3A4E6A;--bd:rgba(255,255,255,0.08);--ac:#F59E0B;--gn:#10B981;--rd:#F87171;--nav-h:60px;--mono:'Courier New',monospace}
+html.light{--bg:#F8F9FC;--sf:#FFFFFF;--sf2:#F1F5FB;--tx:#1A2440;--mu:#5A6E8A;--dm:#8FA3BF;--bd:rgba(0,0,0,0.10);--ac:#D97706;--gn:#059669;--rd:#DC2626}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);line-height:1.75;font-size:15px;min-height:100vh}
+nav{position:sticky;top:0;z-index:100;height:var(--nav-h);background:rgba(6,11,20,.97);backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 16px;gap:12px;}
+html.light nav{background:rgba(248,249,252,0.96);}
+.brand{font-family:Georgia,serif;font-size:1.15rem;color:var(--ac);letter-spacing:.5px;flex:1;display:flex;flex-direction:column;line-height:1.2;cursor:default;user-select:none;}
+.brand small{display:block;font-size:9px;color:var(--mu);font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;}
+html.light .brand{color:var(--ac);}
+html.light .brand small{color:var(--mu);}
+.nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.tt{background:none;border:1px solid var(--bd);border-radius:20px;padding:5px 10px;cursor:pointer;color:var(--mu);font-size:13px;display:flex;align-items:center;gap:5px;transition:border-color .2s;flex-shrink:0;}
+.tt:hover{border-color:var(--ac);}
+.ttd{display:inline;}.ttl{display:none;}
+html.light .ttd{display:none;}html.light .ttl{display:inline;}
+.hero{background:linear-gradient(135deg,#070C17 0%,#0D1A35 50%,#111F3A 100%);border-bottom:1px solid var(--bd);padding:58px 20px 48px;text-align:center;position:relative;overflow:hidden}
+html.light .hero{background:linear-gradient(135deg,#E8EFF8 0%,#D6E4F7 50%,#EBF2FB 100%)}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(248,113,113,.07) 0%,transparent 70%);pointer-events:none}
+.htag{font-size:10px;letter-spacing:3px;color:var(--rd);font-family:var(--mono);text-transform:uppercase;margin-bottom:14px}
+.hero h1{font-size:clamp(1.8rem,5vw,2.7rem);font-weight:800;color:var(--tx);letter-spacing:-.5px;margin-bottom:12px}
+.hero p{color:var(--mu);font-size:1rem}
+.wrap{max-width:820px;margin:0 auto;padding:0 20px}
+.content{padding:38px 0 80px}
+.updated{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:10px 16px;font-size:.82rem;color:var(--dm);font-family:var(--mono);text-align:center;margin-bottom:22px}
+/* Summary card */
+.sumcard{background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.22);border-radius:14px;padding:22px 26px;margin-bottom:22px}
+.sumcard h2{font-size:.95rem;font-weight:700;color:var(--rd);font-family:var(--mono);letter-spacing:.5px;text-transform:uppercase;margin-bottom:14px}
+.sumcard ul{padding-left:20px;color:var(--mu)}
+.sumcard li{margin-bottom:7px;font-size:.9rem;line-height:1.6}
+.sumcard li strong{color:var(--tx)}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:24px 28px;margin-bottom:18px}
+.card h2{font-size:1rem;font-weight:700;color:var(--ac);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--bd);font-family:var(--mono)}
+.card p{color:var(--mu);margin-bottom:10px;line-height:1.75}
+.card p:last-child{margin-bottom:0}
+.card ul{color:var(--mu);padding-left:20px;margin-bottom:10px}
+.card li{margin-bottom:6px;line-height:1.65}
+.card a{color:var(--ac);text-decoration:none}
+.card a:hover{text-decoration:underline}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-top:14px}
+.ri{background:var(--sf2);border:1px solid var(--bd);border-radius:10px;padding:14px 16px}
+.ri h3{font-size:.85rem;font-weight:700;color:var(--tx);margin-bottom:6px}
+.ri p{font-size:.82rem;color:var(--mu);margin:0;line-height:1.6}
+.ibox{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.16);border-radius:10px;padding:13px 16px;font-size:.87rem;color:var(--mu);margin:14px 0;line-height:1.65}
+.ibox strong{color:var(--gn)}
+footer{background:var(--sf);border-top:1px solid var(--bd);text-align:center;padding:28px 20px;font-size:.82rem;color:var(--dm);font-family:var(--mono)}
+footer a{color:var(--mu);text-decoration:none;margin:0 8px}
+footer a:hover{color:var(--ac)}
+@media(max-width:600px){.card,.sumcard{padding:18px 16px}.hero{padding:44px 16px 36px}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="brand">
+     ₹ My Finance Nest
+    <small>SMART MONEY TOOLS</small>
+  </div>
+  <div class="nav-right">
+    <button class="tt" onclick="toggleTheme()"><span class="ttd">🌙</span><span class="ttl">☀️</span></button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="htag">Important Notice</div>
+  <h1>⚠️ Disclaimer</h1>
+  <p>Important disclosures about the nature of our content and tools</p>
+</div>
+
+<div class="wrap content">
+  <div class="updated">Last updated: December 2024</div>
+
+  <div class="sumcard">
+    <h2>⚡ Summary — Please Read This First</h2>
+    <ul>
+      <li>My Finance Nest is <strong>NOT</strong> a registered investment advisor, financial planner, or broker</li>
+      <li>Our calculators provide <strong>estimates only</strong> — not guaranteed financial outcomes</li>
+      <li>Nothing on this website is financial, investment, tax, or legal advice</li>
+      <li>Past performance of any instrument does <strong>not</strong> guarantee future results</li>
+      <li>Always consult a <strong>SEBI-registered advisor</strong> before making investment decisions</li>
+      <li>Some links on our site are affiliate links — we may earn a commission at no cost to you</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>1. Not Financial Advice</h2>
+    <p>The information, calculators, and content provided on My Finance Nest (www.myfinnest.com) are intended solely for <strong style="color:var(--tx)">general educational and informational purposes</strong>. Nothing on this website should be construed as:</p>
+    <ul>
+      <li>Financial advice or investment advice</li>
+      <li>A recommendation to buy or sell any financial product or security</li>
+      <li>Tax advice or legal advice</li>
+      <li>A guarantee of future financial performance or returns</li>
+    </ul>
+    <p>My Finance Nest is not registered with the Securities and Exchange Board of India (SEBI) as an investment advisor, portfolio manager, or stock broker. We are a financial education platform, not a financial services provider.</p>
+  </div>
+
+  <div class="card">
+    <h2>2. Calculator Results Are Estimates Only</h2>
+    <p>Our financial calculators use standard mathematical formulas and the inputs you provide to generate estimated results. You must understand the following limitations:</p>
+    <div class="rgrid">
+      <div class="ri"><h3>📉 Market Risk</h3><p>Returns on equity, mutual funds, and SIPs are subject to market risk. Actual returns may differ significantly from projected returns.</p></div>
+      <div class="ri"><h3>💹 Interest Rate Risk</h3><p>Interest rates on loans, FDs, and debt instruments change over time and cannot be perfectly predicted.</p></div>
+      <div class="ri"><h3>📊 Inflation Risk</h3><p>Inflation rates vary and future inflation cannot be known with certainty. Our calculators use assumptions that may not reflect real-world inflation.</p></div>
+      <div class="ri"><h3>🏛️ Regulatory Risk</h3><p>Tax laws, contribution limits (e.g., NPS, PPF), and regulatory rules change. Our calculators may not reflect the latest rules.</p></div>
+      <div class="ri"><h3>👤 Personal Circumstances</h3><p>Our calculators do not account for your individual tax situation, liabilities, insurance needs, or life events.</p></div>
+      <div class="ri"><h3>⏱️ Timing Risk</h3><p>The timing of investments, withdrawals, and market conditions significantly impacts real-world outcomes.</p></div>
+    </div>
+    <p style="margin-top:14px">Calculator results are starting points for planning conversations with a qualified financial advisor — not final answers.</p>
+  </div>
+
+  <div class="card">
+    <h2>3. No Guarantee of Accuracy</h2>
+    <p>While we make every reasonable effort to ensure our calculators use correct formulas and our content is accurate and up to date, My Finance Nest makes no warranties or representations, express or implied, about:</p>
+    <ul>
+      <li>The accuracy, completeness, or suitability of any information on this website</li>
+      <li>The correctness of calculator results for your specific circumstances</li>
+      <li>The timeliness of information, particularly relating to tax laws and financial regulations</li>
+    </ul>
+    <p>If you believe you have found an error in any of our calculators or content, please contact us at <strong style="color:var(--ac);font-family:var(--mono)">contact@myfinnest.com</strong> so we can investigate and correct it.</p>
+  </div>
+
+  <div class="card">
+    <h2>4. Investment Risk Disclosure</h2>
+    <p>Investments in financial markets, including mutual funds, stocks, ETFs, and other instruments, are subject to market risk. Important disclosures:</p>
+    <ul>
+      <li><strong style="color:var(--tx)">Mutual funds and SIPs:</strong> "Mutual fund investments are subject to market risks. Please read all scheme-related documents carefully before investing."</li>
+      <li><strong style="color:var(--tx)">Equity investments:</strong> The value of equity investments can go up or down and you may get back less than you invested.</li>
+      <li><strong style="color:var(--tx)">Past performance:</strong> Historical returns or performance data mentioned on this website do not guarantee future results.</li>
+      <li><strong style="color:var(--tx)">Compounding projections:</strong> Compounding projections assume consistent returns that may not be achievable in practice.</li>
+    </ul>
+    <div class="ibox">💡 <strong>FIRE and retirement projections</strong> shown in our calculators are based on long-term averages and optimistic assumptions. Real-world sequence-of-returns risk, healthcare costs, inflation spikes, and life events can significantly alter these projections.</div>
+  </div>
+
+  <div class="card">
+    <h2>5. Affiliate Disclosure</h2>
+    <p>My Finance Nest participates in affiliate marketing programmes. Some links on this website — including links to Upstox and other financial service providers — are affiliate links. This means:</p>
+    <ul>
+      <li>If you click an affiliate link and sign up or make a purchase, we may receive a referral commission</li>
+      <li>This commission is paid by the affiliate partner and costs you nothing extra</li>
+      <li>Affiliate relationships do not influence our calculator results or editorial independence</li>
+      <li>We only partner with platforms we believe offer legitimate services</li>
+    </ul>
+    <p>We are committed to transparency. The presence of an affiliate link should not be taken as an endorsement or recommendation. Always conduct your own due diligence before opening any financial account.</p>
+  </div>
+
+  <div class="card">
+    <h2>6. Third-Party Information</h2>
+    <p>Our website may reference or link to information from third parties, including mutual fund houses, financial platforms, government websites, and news sources. My Finance Nest is not responsible for the accuracy or completeness of third-party information and does not endorse any third-party content.</p>
+  </div>
+
+  <div class="card">
+    <h2>7. Seek Professional Advice</h2>
+    <p>We strongly encourage all users to seek professional advice before making financial decisions. A qualified professional can help you:</p>
+    <ul>
+      <li>Assess your risk tolerance and investment horizon</li>
+      <li>Create a personalised financial plan</li>
+      <li>Optimise your tax liability</li>
+      <li>Select appropriate financial products for your goals</li>
+      <li>Review your insurance and emergency fund needs</li>
+    </ul>
+    <p>You can find SEBI-registered investment advisors at the <a href="https://www.sebi.gov.in" target="_blank">SEBI website (www.sebi.gov.in) →</a></p>
+  </div>
+
+  <div class="card">
+    <h2>8. Contact</h2>
+    <p>If you have questions about this disclaimer or believe any content on our site is inaccurate, please reach out:</p>
+    <ul>
+      <li><strong style="color:var(--tx)">Email:</strong> <span style="color:var(--ac);font-family:var(--mono)">contact@myfinnest.com</span></li>
+      <li><strong style="color:var(--tx)">Website:</strong> www.myfinnest.com</li>
+    </ul>
+  </div>
+</div>
+
+
+
+<script>
+let _isDark=true;
+function toggleTheme(){_isDark=!_isDark;document.documentElement.classList.toggle('light',!_isDark);try{localStorage.setItem('mfn-theme',_isDark?'dark':'light');}catch(e){}}
+(function(){try{var t=localStorage.getItem('mfn-theme');if(t==='light'){_isDark=false;document.documentElement.classList.add('light');}}catch(e){}})();
+</script>
+</body>
+</html>

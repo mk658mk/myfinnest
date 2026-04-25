@@ -1,0 +1,2299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="My Finance Nest — 10 free financial calculators: Compound Interest, EMI, Loan Prepayment, FIRE, Retirement Planning, SWP, Inflation, First Crore and more. Plan your wealth, loans and financial independence in one place.">
+<meta name="keywords" content="finance calculator, EMI calculator, compound interest, SIP calculator, retirement planning, FIRE calculator, SWP calculator, inflation calculator, loan prepayment, first crore">
+<meta name="author" content="My Finance Nest">
+<meta property="og:title" content="My Finance Nest — Smart Money Tools">
+<meta property="og:description" content="10 free calculators for wealth planning, loans, retirement and financial independence.">
+<meta property="og:type" content="website">
+<title>My Finance Nest</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23060B14'/><text y='72' x='50' text-anchor='middle' font-size='64' font-family='system-ui'>🪺</text></svg>">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* ══════════════════════════════════════
+   TOKENS & RESET
+══════════════════════════════════════ */
+:root{
+  --bg:#060B14;--sf:rgba(255,255,255,0.04);--bd:rgba(255,255,255,0.09);
+  --tx:#E8EEFF;--mu:#7A90B0;--dm:#3A4A60;
+  --ac:#F59E0B;--gn:#10B981;--rd:#F87171;
+  --bl:#60A5FA;--pu:#A78BFA;--te:#14B8A6;
+  --mono:'Courier New',Courier,monospace;
+  --radius:12px;--nav-h:60px;
+  --fs-base:16px;--fs-sm:13px;--fs-xs:11px;
+}
+
+/* ══════════════════════════════════════
+   LIGHT MODE OVERRIDES
+══════════════════════════════════════ */
+html.light{
+  --bg:#F4F6FB;
+  --sf:rgba(0,0,0,0.04);
+  --bd:rgba(0,0,0,0.10);
+  --tx:#1A2440;
+  --mu:#5A6E8A;
+  --dm:#94A3B8;
+  --ac:#D97706;
+  --gn:#059669;
+  --rd:#DC2626;
+  --bl:#2563EB;
+  --pu:#7C3AED;
+  --te:#0D9488;
+}
+html.light body{background:var(--bg);color:var(--tx);}
+html.light nav{background:rgba(244,246,251,.97);border-bottom:1px solid var(--bd);}
+html.light .sm{background:#EEF1F8;border-right:1px solid var(--bd);}
+html.light .cur-modal{background:#EEF1F8;}
+html.light .cur-modal h2{color:#1A2440;}
+html.light .fsel{background:#EEF1F8;color:var(--tx);}
+html.light .fsel option{background:#EEF1F8;}
+html.light .fi{background:rgba(0,0,0,.05);color:var(--tx);}
+html.light .fi::placeholder{color:var(--dm);}
+html.light .fi:focus{border-color:var(--ac);}
+html.light .brand{color:var(--ac);}
+html.light .brand small{color:var(--mu);}
+html.light .hbg span{background:var(--tx);}
+html.light .hcard{background:#fff;border-color:rgba(0,0,0,.09);}
+html.light .hcard:hover{box-shadow:0 10px 28px rgba(0,0,0,.12);}
+html.light .card{background:#fff;border-color:rgba(0,0,0,.09);}
+html.light .rbox{background:linear-gradient(135deg,rgba(217,119,6,.09),rgba(0,0,0,.02));border-color:rgba(217,119,6,.3);}
+html.light .ritem{background:#f9fafb;border-color:rgba(0,0,0,.08);}
+html.light .rbig{color:var(--ac);}
+html.light th{background:rgba(0,0,0,.04);color:var(--mu);}
+html.light td{border-bottom-color:rgba(0,0,0,.05);}
+html.light tr:hover td{background:rgba(0,0,0,.03);}
+html.light .twrap{border-color:rgba(0,0,0,.1);}
+html.light .kpi{background:#fff;border-color:rgba(0,0,0,.09);}
+html.light .kv{color:var(--tx);}
+html.light .cbox{background:#fff;border-color:rgba(0,0,0,.09);}
+html.light .tbtn{background:#f1f5f9;border-color:rgba(0,0,0,.1);color:var(--mu);}
+html.light .tbtn.on{background:rgba(217,119,6,.15);border-color:var(--ac);color:var(--ac);}
+html.light .topt{color:var(--mu);}
+html.light .topt.on{background:var(--ac);color:#fff;}
+html.light .bri{background:rgba(0,0,0,.05);color:var(--tx);}
+html.light .disc{background:#f1f5f9;color:var(--mu);}
+html.light .hero{background:linear-gradient(160deg,rgba(217,119,6,.07),transparent);}
+html.light .hero h1{color:#1A2440;}
+html.light .hero p{color:var(--mu);}
+html.light .mi:hover,.mi.act{background:rgba(217,119,6,.1);}
+html.light .mi .ic{background:rgba(0,0,0,.05);}
+html.light .back{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.1);}
+html.light .cur-opt{background:#fff;border-color:rgba(0,0,0,.1);}
+html.light .cur-opt.sel{background:rgba(217,119,6,.12);border-color:var(--ac);}
+html.light .ad-slot{background:rgba(0,0,0,.025);border-color:rgba(0,0,0,.07);}
+html.light .pbar{background:rgba(0,0,0,.07);}
+html.light .phdr h1,.phdr h2{color:#1A2440;}
+html.light .result-label,.rlbl{color:var(--mu);}
+html.light ::-webkit-scrollbar-thumb{background:rgba(0,0,0,.2);}
+
+/* light mode toggle switch */
+html.light .theme-toggle{background:#E2E8F0;border-color:rgba(0,0,0,.12);}
+html.light .theme-toggle .tt-knob{transform:translateX(22px);background:var(--ac);}
+html.light .theme-toggle .tt-icon-dark{opacity:0;}
+html.light .theme-toggle .tt-icon-light{opacity:1;}
+
+/* ── THEME TOGGLE SWITCH (base styles) ── */
+.theme-toggle{
+  display:flex;align-items:center;gap:7px;
+  background:rgba(255,255,255,.07);
+  border:1px solid var(--bd);
+  border-radius:30px;
+  padding:5px 10px;
+  cursor:pointer;
+  user-select:none;
+  transition:background .25s, border-color .25s;
+  flex-shrink:0;
+}
+.theme-toggle:hover{border-color:var(--ac);}
+.tt-track{
+  width:40px;height:22px;
+  background:rgba(255,255,255,.1);
+  border-radius:11px;
+  position:relative;
+  transition:background .25s;
+  flex-shrink:0;
+}
+html.light .tt-track{background:rgba(217,119,6,.18);}
+.tt-knob{
+  position:absolute;top:3px;left:3px;
+  width:16px;height:16px;border-radius:50%;
+  background:#7A90B0;
+  transition:transform .25s cubic-bezier(.4,0,.2,1), background .25s;
+  box-shadow:0 1px 4px rgba(0,0,0,.3);
+}
+html.light .tt-knob{transform:translateX(18px);background:var(--ac);}
+.tt-icons{display:flex;gap:4px;align-items:center;font-size:14px;line-height:1;}
+.tt-icon-dark{opacity:1;transition:opacity .2s;}
+.tt-icon-light{opacity:.4;transition:opacity .2s;}
+html.light .tt-icon-dark{opacity:.4;}
+html.light .tt-icon-light{opacity:1;}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:var(--fs-base);}
+body{background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;line-height:1.55;}
+a{color:var(--ac);text-decoration:none;}
+button{font-family:inherit;}
+input,select{font-family:inherit;}
+
+/* ══════════════════════════════════════
+   CURRENCY MODAL
+══════════════════════════════════════ */
+.cur-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px;}
+.cur-modal{background:#0D1A2E;border:1px solid var(--bd);border-radius:16px;padding:28px;max-width:560px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,.6);}
+.cur-modal h2{font-family:Georgia,serif;font-size:1.4rem;font-weight:normal;color:#F1F5F9;margin-bottom:6px;}
+.cur-modal p{font-size:var(--fs-sm);color:var(--mu);margin-bottom:20px;}
+.cur-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+@media(max-width:480px){.cur-grid{grid-template-columns:repeat(3,1fr);}}
+.cur-opt{border:1.5px solid var(--bd);border-radius:10px;padding:12px 8px;cursor:pointer;text-align:center;background:var(--sf);transition:all .2s;}
+.cur-opt:hover{border-color:var(--ac);background:rgba(245,158,11,.08);}
+.cur-opt.sel{border-color:var(--ac);background:rgba(245,158,11,.14);}
+.cur-opt .csym{font-size:1.5rem;font-weight:bold;color:var(--ac);line-height:1;}
+.cur-opt .cname{font-size:10px;color:var(--mu);margin-top:4px;font-family:var(--mono);}
+.cur-opt .ccode{font-size:9px;color:var(--dm);font-family:var(--mono);}
+
+/* ══════════════════════════════════════
+   NAV
+══════════════════════════════════════ */
+nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(6,11,20,.97);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--bd);
+  padding:0 16px;height:var(--nav-h);
+  display:flex;align-items:center;gap:12px;
+}
+.hbg{
+  width:40px;height:40px;flex-shrink:0;
+  background:var(--sf);border:1px solid var(--bd);border-radius:9px;
+  cursor:pointer;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:5px;transition:all .2s;
+}
+.hbg span{display:block;width:18px;height:2px;background:var(--tx);border-radius:2px;transition:all .2s;}
+.hbg:hover{border-color:var(--ac);background:rgba(245,158,11,.1);}
+.brand{font-family:Georgia,serif;font-size:1.15rem;color:var(--ac);cursor:pointer;letter-spacing:.5px;flex:1;}
+.brand small{display:block;font-size:9px;color:var(--mu);font-family:var(--mono);letter-spacing:1.5px;line-height:1.2;}
+.nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.cur-badge{
+  display:flex;align-items:center;gap:5px;
+  background:var(--sf);border:1px solid var(--bd);border-radius:8px;
+  padding:6px 11px;cursor:pointer;font-size:var(--fs-sm);
+  font-family:var(--mono);color:var(--tx);transition:all .2s;
+}
+.cur-badge:hover{border-color:var(--ac);color:var(--ac);}
+.cur-badge .csym-badge{font-size:1rem;color:var(--ac);}
+
+/* ══════════════════════════════════════
+   SIDE MENU (LEFT)
+══════════════════════════════════════ */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:190;display:none;}
+.ov.on{display:block;}
+.sm{
+  position:fixed;top:0;left:-300px;width:280px;height:100vh;
+  background:#0C1625;border-right:1px solid var(--bd);
+  z-index:200;transition:left .3s ease;overflow-y:auto;padding:16px 0;
+}
+.sm.on{left:0;}
+.mhdr{display:flex;align-items:center;justify-content:space-between;padding:0 16px 14px;border-bottom:1px solid var(--bd);margin-bottom:6px;}
+.mhdr-brand{font-family:Georgia,serif;color:var(--ac);font-size:1rem;}
+.mclose{background:none;border:1px solid var(--bd);color:var(--mu);width:28px;height:28px;border-radius:7px;cursor:pointer;font-size:14px;}
+.mi{display:flex;align-items:center;gap:11px;padding:11px 16px;cursor:pointer;border-left:3px solid transparent;transition:all .15s;}
+.mi:hover,.mi.act{background:rgba(245,158,11,.08);border-left-color:var(--ac);color:var(--ac);}
+.mi .ic{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;background:var(--sf);flex-shrink:0;}
+.mi .lb{font-size:var(--fs-sm);}
+.mdiv{border:none;border-top:1px solid var(--bd);margin:6px 16px;}
+.menu-cur-section{padding:10px 16px;}
+.menu-cur-section p{font-size:10px;color:var(--mu);font-family:var(--mono);margin-bottom:8px;letter-spacing:1px;text-transform:uppercase;}
+
+/* ══════════════════════════════════════
+   PAGES
+══════════════════════════════════════ */
+.pg{display:none;min-height:calc(100vh - var(--nav-h));}
+.pg.on{display:block;}
+
+/* ══════════════════════════════════════
+   LAYOUT CONTAINERS
+══════════════════════════════════════ */
+.wrap{max-width:1120px;margin:0 auto;padding:24px 18px;}
+.wrap-wide{max-width:1300px;margin:0 auto;padding:24px 18px;}
+
+/* ══════════════════════════════════════
+   PAGE HEADER
+══════════════════════════════════════ */
+.phdr{margin-bottom:26px;}
+.phdr h1,.phdr h2{font-family:Georgia,serif;font-size:1.6rem;font-weight:normal;color:#F1F5F9;line-height:1.3;}
+.phdr h1 em,.phdr h2 em{color:var(--ac);font-style:italic;}
+.phdr p{font-size:var(--fs-sm);color:var(--mu);font-family:var(--mono);margin-top:5px;}
+.back{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:var(--fs-sm);color:var(--mu);font-family:var(--mono);
+  cursor:pointer;margin-bottom:16px;padding:7px 12px;
+  border:1px solid var(--bd);border-radius:8px;background:var(--sf);transition:all .2s;
+}
+.back:hover{color:var(--ac);border-color:var(--ac);}
+
+/* ══════════════════════════════════════
+   CARDS
+══════════════════════════════════════ */
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius);padding:20px;}
+.ctitle{font-size:11px;color:var(--mu);font-family:var(--mono);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:14px;}
+
+/* ══════════════════════════════════════
+   FORM ELEMENTS
+══════════════════════════════════════ */
+.fg{margin-bottom:16px;}
+.fl{display:block;font-size:12px;color:var(--mu);font-family:var(--mono);margin-bottom:6px;letter-spacing:.3px;}
+.fi,.fsel{
+  width:100%;background:rgba(255,255,255,.06);border:1px solid var(--bd);
+  border-radius:9px;padding:11px 14px;color:var(--tx);
+  font-size:var(--fs-sm);font-family:var(--mono);outline:none;transition:border-color .2s;
+}
+.fi:focus,.fsel:focus{border-color:var(--ac);}
+.fi::placeholder{color:var(--dm);}
+.fsel{cursor:pointer;background:#0E1B2E;}
+.fsel option{background:#0E1B2E;}
+.pfx{position:relative;display:flex;align-items:center;}
+.pfx .px{position:absolute;left:12px;color:var(--ac);font-weight:bold;font-size:1rem;pointer-events:none;z-index:1;}
+.pfx .fi{padding-left:28px;}
+.sfx{position:relative;display:flex;align-items:center;}
+.sfx .sx{position:absolute;right:12px;color:var(--mu);font-size:var(--fs-sm);pointer-events:none;z-index:1;}
+.sfx .fi{padding-right:38px;}
+.emsg{font-size:11px;color:var(--rd);font-family:var(--mono);margin-top:4px;display:none;}
+.emsg.on{display:block;}
+
+/* ══════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:none;border-radius:9px;padding:10px 20px;font-size:var(--fs-sm);font-family:var(--mono);cursor:pointer;font-weight:bold;transition:all .2s;}
+.bprim{background:var(--ac);color:#000;}
+.bprim:hover{background:#D97706;}
+.bout{background:transparent;border:1px solid var(--bd);color:var(--mu);}
+.bout:hover{border-color:var(--ac);color:var(--ac);}
+.bsm{padding:7px 13px;font-size:11px;}
+
+/* ══════════════════════════════════════
+   RESULT PANELS
+══════════════════════════════════════ */
+.rbox{background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(255,255,255,.02));border:1px solid rgba(245,158,11,.28);border-radius:var(--radius);padding:20px;}
+.rbig{font-size:2.2rem;font-weight:bold;color:var(--ac);font-family:var(--mono);line-height:1.1;}
+.rlbl{font-size:11px;color:var(--mu);font-family:var(--mono);margin-bottom:6px;}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:13px;}
+.ritem{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:14px;}
+.rv{font-size:1.2rem;font-weight:bold;font-family:var(--mono);color:var(--tx);margin-top:3px;}
+
+/* ══════════════════════════════════════
+   TABLES
+══════════════════════════════════════ */
+.twrap{overflow-x:auto;border-radius:10px;border:1px solid var(--bd);}
+table{width:100%;border-collapse:collapse;}
+th{background:rgba(255,255,255,.05);padding:10px 13px;font-size:11px;color:var(--mu);font-family:var(--mono);text-align:left;text-transform:uppercase;border-bottom:1px solid var(--bd);white-space:nowrap;}
+td{padding:9px 13px;font-size:var(--fs-sm);border-bottom:1px solid rgba(255,255,255,.04);font-family:var(--mono);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.03);}
+td.r{text-align:right;}td.g{color:var(--gn);}td.rr{color:var(--rd);}td.ac{color:var(--ac);font-weight:bold;}
+
+/* ══════════════════════════════════════
+   SLIDER
+══════════════════════════════════════ */
+.sw{margin-top:6px;}
+input[type=range]{width:100%;accent-color:var(--ac);cursor:pointer;height:4px;}
+.sl{display:flex;justify-content:space-between;font-size:10px;color:var(--dm);font-family:var(--mono);margin-top:4px;}
+
+/* ══════════════════════════════════════
+   GRIDS
+══════════════════════════════════════ */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;}
+
+/* ══════════════════════════════════════
+   HOME
+══════════════════════════════════════ */
+.hero{text-align:center;padding:52px 20px 36px;background:linear-gradient(160deg,rgba(245,158,11,.07),transparent);}
+.hero h1{font-family:Georgia,serif;font-size:2.2rem;font-weight:normal;color:#F1F5F9;margin-bottom:10px;}
+.hero p{color:var(--mu);font-size:1rem;max-width:540px;margin:0 auto 0;}
+.hgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;}
+.hcard{
+  background:var(--sf);border:1px solid var(--bd);border-radius:14px;
+  padding:20px 15px;cursor:pointer;transition:all .24s;text-align:center;
+  position:relative;overflow:hidden;
+}
+.hcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--cc,var(--ac));border-radius:14px 14px 0 0;}
+.hcard:hover{border-color:var(--cc,var(--ac));transform:translateY(-4px);box-shadow:0 14px 36px rgba(0,0,0,.45);}
+.hcard .ico{font-size:2rem;margin-bottom:10px;}
+.hcard .ht{font-size:var(--fs-sm);color:#F1F5F9;font-weight:600;margin-bottom:5px;line-height:1.3;}
+.hcard .hd{font-size:11px;color:var(--mu);line-height:1.45;}
+
+/* ══════════════════════════════════════
+   AD SLOTS  (non-disruptive)
+══════════════════════════════════════ */
+.ad-slot{
+  background:rgba(255,255,255,.02);
+  border:1px dashed rgba(255,255,255,.08);
+  border-radius:10px;padding:10px;
+  text-align:center;overflow:hidden;
+  position:relative;
+}
+.ad-slot::before{
+  content:'Advertisement';
+  display:block;font-size:9px;color:var(--dm);
+  font-family:var(--mono);letter-spacing:1px;
+  text-transform:uppercase;margin-bottom:6px;
+}
+.ad-slot-banner{min-height:90px;margin:20px 0;}
+.ad-slot-rect{min-height:250px;}
+.ad-slot-inline{min-height:100px;margin:18px 0;}
+/* AdSense code goes inside .ad-slot divs */
+
+/* ══════════════════════════════════════
+   TABS
+══════════════════════════════════════ */
+.tabs{display:flex;gap:7px;margin-bottom:18px;flex-wrap:wrap;}
+.tbtn{background:var(--sf);border:1px solid var(--bd);color:var(--mu);border-radius:8px;padding:8px 15px;cursor:pointer;font-size:var(--fs-sm);font-family:var(--mono);transition:all .2s;}
+.tbtn.on{background:rgba(245,158,11,.18);border-color:var(--ac);color:var(--ac);}
+
+/* ══════════════════════════════════════
+   KPI STRIP
+══════════════════════════════════════ */
+.kstrip{display:grid;grid-template-columns:repeat(6,1fr);gap:9px;margin-bottom:18px;}
+.kpi{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:12px 13px;}
+.kv{font-size:1rem;font-weight:bold;color:#F1F5F9;font-family:var(--mono);}
+.kl{font-size:10px;color:var(--mu);margin-bottom:5px;line-height:1.3;}
+.ks{font-size:9px;color:var(--dm);margin-top:3px;font-family:var(--mono);}
+
+/* ══════════════════════════════════════
+   CHART BOXES
+══════════════════════════════════════ */
+.cbox{background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius);padding:15px;position:relative;}
+
+/* ══════════════════════════════════════
+   MISC
+══════════════════════════════════════ */
+.pbar{background:rgba(255,255,255,.06);border-radius:6px;height:12px;overflow:hidden;margin-top:6px;}
+.pfill{height:100%;border-radius:6px;transition:width .7s;}
+.tgrp{display:flex;background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:9px;overflow:hidden;}
+.topt{flex:1;padding:9px;text-align:center;cursor:pointer;font-size:var(--fs-sm);font-family:var(--mono);color:var(--mu);background:none;border:none;}
+.topt.on{background:var(--ac);color:#000;font-weight:bold;}
+.bri{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--bd);border-radius:6px;padding:5px 8px;color:var(--tx);font-size:12px;font-family:var(--mono);outline:none;text-align:right;}
+.bri:focus{border-color:var(--ac);}
+.disc{font-size:11px;color:var(--dm);text-align:center;font-family:var(--mono);margin-top:16px;padding:9px;background:var(--sf);border-radius:7px;line-height:1.5;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-thumb{background:var(--dm);border-radius:3px;}
+
+/* ══════════════════════════════════════
+   RESPONSIVE BREAKPOINTS
+══════════════════════════════════════ */
+@media(max-width:1024px){
+  .hgrid{grid-template-columns:repeat(3,1fr);}
+  .kstrip{grid-template-columns:repeat(3,1fr);}
+  #fcgrid{grid-template-columns:repeat(2,1fr)!important;}
+  #bp-ccards{grid-template-columns:repeat(3,1fr)!important;}
+}
+@media(max-width:768px){
+  :root{--fs-base:15px;--fs-sm:13px;}
+  .g2,.g3,.g4{grid-template-columns:1fr!important;}
+  .hgrid{grid-template-columns:repeat(2,1fr);}
+  .kstrip{grid-template-columns:repeat(2,1fr);}
+  .rgrid{grid-template-columns:repeat(2,1fr);}
+  #fcgrid{grid-template-columns:1fr!important;}
+  #bp-ccards{grid-template-columns:repeat(2,1fr)!important;}
+  .cur-grid{grid-template-columns:repeat(3,1fr);}
+  .wrap,.wrap-wide{padding:16px 13px;}
+  .phdr h1{font-size:1.3rem;}
+  .hero h1{font-size:1.6rem;}
+  .hero{padding:36px 16px 28px;}
+  #bpsec>div{grid-template-columns:1fr 1fr!important;}
+}
+@media(max-width:480px){
+  .hgrid{grid-template-columns:repeat(2,1fr);}
+  .kstrip{grid-template-columns:1fr 1fr;}
+  .rgrid{grid-template-columns:1fr;}
+  .cur-grid{grid-template-columns:repeat(3,1fr);}
+  .rbig{font-size:1.7rem;}
+  .nav-right .cur-badge span.ccode-badge{display:none;}
+  #bpsec>div{grid-template-columns:1fr!important;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     CURRENCY MODAL (shown on first visit)
+══════════════════════════════════════ -->
+<div class="cur-modal-bg" id="cur-modal">
+  <div class="cur-modal">
+    <h2>💱 Choose Your Currency</h2>
+    <p>Tap your currency to get started — all calculators will update instantly. You can change it anytime from the nav bar.</p>
+    <div class="cur-grid" id="cur-grid"><!-- rendered by JS --></div>
+    <p style="font-size:10px;color:var(--dm);font-family:var(--mono);text-align:center;margin-top:8px">Click any currency to select ↑</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     NAV  (hamburger LEFT)
+══════════════════════════════════════ -->
+<nav>
+  <div class="hbg" onclick="openMenu()" aria-label="Menu" role="button" tabindex="0" onkeydown="if(event.key==='Enter')openMenu()">
+    <span></span><span></span><span></span>
+  </div>
+  <div class="brand" onclick="go('home')">
+    <span id="nav-sym">₹</span> My Finance Nest
+    <small id="nav-sub">SMART MONEY TOOLS</small>
+  </div>
+  <div class="nav-right">
+    <div class="cur-badge" onclick="document.getElementById('cur-modal').style.display='flex'" title="Change currency">
+      <span class="csym-badge" id="cur-sym-badge">₹</span>
+      <span class="ccode-badge" id="cur-code-badge">INR</span>
+      <span style="font-size:10px;color:var(--mu);margin-left:2px">▾</span>
+    </div>
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark/light mode" title="Toggle Dark / Light mode">
+      <div class="tt-icons">
+        <span class="tt-icon-dark">🌙</span>
+        <span class="tt-icon-light">☀️</span>
+      </div>
+      <div class="tt-track"><div class="tt-knob"></div></div>
+    </button>
+  </div>
+</nav>
+
+<!-- OVERLAY + SIDE MENU -->
+<div class="ov" id="ov" onclick="closeMenu()"></div>
+<div class="sm" id="sm">
+  <div class="mhdr">
+    <span class="mhdr-brand"><span id="menu-sym">₹</span> My Finance Nest</span>
+    <button class="mclose" onclick="closeMenu()">✕</button>
+  </div>
+  <div class="menu-cur-section">
+    <p>Currency: <strong id="menu-cur-name" style="color:var(--ac)">INR ₹</strong></p>
+  </div>
+  <div class="mi" onclick="go('home')"><div class="ic">🏠</div><div class="lb">Home</div></div>
+  <hr class="mdiv">
+  <div class="mi" onclick="go('si')"><div class="ic">📐</div><div class="lb">Simple Interest Calculator</div></div>
+  <div class="mi" onclick="go('ci')"><div class="ic">📈</div><div class="lb">Compound Interest Calculator</div></div>
+  <div class="mi" onclick="go('emi')"><div class="ic">🏦</div><div class="lb">EMI Calculator</div></div>
+  <div class="mi" onclick="go('prepay')"><div class="ic">💳</div><div class="lb">Loan Prepayment Calculator</div></div>
+  <div class="mi" onclick="go('bp')"><div class="ic">🌳</div><div class="lb">Child's Future &amp; Retirement</div></div>
+  <div class="mi" onclick="go('retire')"><div class="ic">🌴</div><div class="lb">Retirement Planning Calculator</div></div>
+  <div class="mi" onclick="go('fire')"><div class="ic">🔥</div><div class="lb">FIRE Calculator</div></div>
+  <div class="mi" onclick="go('infl')"><div class="ic">📊</div><div class="lb">Inflation Calculator</div></div>
+  <div class="mi" id="menu-crore-item" onclick="go('crore')"><div class="ic">🏆</div><div class="lb" id="menu-crore-lbl">First Crore Calculator</div></div>
+  <div class="mi" onclick="go('swp')"><div class="ic">💸</div><div class="lb">SWP Calculator</div></div>
+  <div class="mi" id="menu-nps-item" onclick="go('nps')" style="display:none"><div class="ic">🏛️</div><div class="lb">NPS Calculator</div></div>
+  <hr class="mdiv">
+  <div id="upstox-menu" style="display:none;padding:10px 16px">
+    <a href="https://upstox.onelink.me/0H1s/FY9686" target="_blank" rel="noopener sponsored" style="text-decoration:none;display:block">
+      <div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.22);border-radius:11px;padding:12px 13px;transition:border-color .2s" onmouseover="this.style.borderColor='#F59E0B'" onmouseout="this.style.borderColor='rgba(245,158,11,.22)'">
+        <div style="font-size:12px;font-weight:700;color:var(--ac);margin-bottom:4px">📈 Open a Demat Account — Upstox</div>
+        <div style="font-size:10px;color:var(--mu);line-height:1.5;margin-bottom:6px">₹0 delivery brokerage. Start investing in stocks &amp; mutual funds today.</div>
+        <div style="font-size:9px;color:var(--dm);line-height:1.5;font-style:italic;margin-bottom:7px">🙏 Signing up via our link costs you nothing extra — it helps us keep this website free and build more tools for you.</div>
+        <div style="background:var(--ac);color:#000;font-weight:bold;font-size:10px;padding:6px 12px;border-radius:7px;text-align:center;font-family:var(--mono)">Open Free Account →</div>
+      </div>
+    </a>
+  </div>
+  <div style="padding:10px 16px;font-size:10px;color:var(--dm);font-family:var(--mono);line-height:1.5">⚠️ Educational use only.<br>Not financial advice.</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     HOME
+══════════════════════════════════════ -->
+<div class="pg on" id="pg-home">
+  <div class="hero">
+    <div style="font-size:11px;letter-spacing:2.5px;color:var(--mu);font-family:var(--mono);margin-bottom:12px;text-transform:uppercase">Your Personal Finance Toolkit</div>
+    <h1><span id="home-sym">₹</span> My Finance Nest</h1>
+    <p>10 powerful calculators to plan your wealth, retirement, loans &amp; financial independence — all in one place.</p>
+  </div>
+
+  <!-- UPSTOX REFERRAL (shown for INR only) -->
+  <div class="wrap" id="upstox-banner" style="display:none;padding-bottom:0">
+    <a href="https://upstox.onelink.me/0H1s/FY9686" target="_blank" rel="noopener sponsored" style="text-decoration:none;display:block">
+      <div style="background:linear-gradient(135deg,rgba(245,158,11,.11),rgba(16,185,129,.07));border:1px solid rgba(245,158,11,.28);border-radius:16px;padding:18px 22px;display:flex;align-items:flex-start;gap:18px;flex-wrap:wrap;transition:all .22s;cursor:pointer" onmouseover="this.style.borderColor='#F59E0B';this.style.boxShadow='0 8px 28px rgba(245,158,11,.15)'" onmouseout="this.style.borderColor='rgba(245,158,11,.28)';this.style.boxShadow='none'">
+
+        <!-- Icon -->
+        <div style="font-size:2.4rem;flex-shrink:0;line-height:1;margin-top:2px">📈</div>
+
+        <!-- Text block -->
+        <div style="flex:1;min-width:220px">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px">
+            <span style="font-size:14px;font-weight:700;color:#F59E0B">Open a FREE Demat &amp; Trading Account — Upstox</span>
+            <span style="background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);border-radius:20px;font-size:9px;color:#10B981;padding:2px 8px;font-family:var(--mono);white-space:nowrap">₹0 Delivery Brokerage</span>
+          </div>
+
+          <div style="font-size:13px;color:var(--mu);line-height:1.6;margin-bottom:8px">
+            India's leading discount broker. Invest in <strong style="color:var(--tx)">Stocks, Mutual Funds, F&amp;O, IPOs</strong> and more — all in one platform.
+          </div>
+
+          <!-- Humble referral note -->
+          <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:9px 12px;font-size:11px;color:var(--mu);line-height:1.6">
+            🙏 <em>A humble note from our team:</em> This is a referral link. Signing up through it is <strong style="color:var(--tx)">completely free for you</strong> — Upstox covers our small commission. Every signup helps us <strong style="color:var(--ac)">keep all calculators free, ad-minimal, and growing</strong>. Your support means the world to us and motivates us to build more tools for you. Thank you! ❤️
+          </div>
+        </div>
+
+        <!-- CTA button -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;align-self:center">
+          <div style="background:var(--ac);color:#000;font-weight:bold;font-size:13px;padding:11px 22px;border-radius:10px;white-space:nowrap;font-family:var(--mono);text-align:center">Open Free Account →</div>
+          <div style="font-size:9px;color:var(--dm);font-family:var(--mono);text-align:center">Takes 5 minutes · 100% online</div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <!-- AD SLOT: Leaderboard below hero -->
+  <div class="wrap">
+    <div class="ad-slot ad-slot-banner" id="ad-home-top">
+      <!-- Paste Google AdSense code here -->
+    </div>
+  </div>
+
+  <div class="wrap" style="padding-top:0">
+    <div class="hgrid">
+      <div class="hcard" style="--cc:#60A5FA" onclick="go('si')"><div class="ico">📐</div><div class="ht">Simple Interest</div><div class="hd">Calculate interest on principal over time</div></div>
+      <div class="hcard" style="--cc:#10B981" onclick="go('ci')"><div class="ico">📈</div><div class="ht">Compound Interest</div><div class="hd">Monthly SIP with variance &amp; bull/bear scenarios</div></div>
+      <div class="hcard" style="--cc:#EC4899" onclick="go('emi')"><div class="ico">🏦</div><div class="ht">EMI Calculator</div><div class="hd">Loan EMI with full repayment schedule</div></div>
+      <div class="hcard" style="--cc:#F59E0B" onclick="go('prepay')"><div class="ico">💳</div><div class="ht">Loan Prepayment</div><div class="hd">Save years &amp; money with extra EMIs</div></div>
+      <div class="hcard" style="--cc:#14B8A6" onclick="go('bp')"><div class="ico">🌳</div><div class="ht">Child's Future &amp; Retirement</div><div class="hd">75-year wealth blueprint with 6 mutual funds</div></div>
+      <div class="hcard" style="--cc:#A78BFA" onclick="go('retire')"><div class="ico">🌴</div><div class="ht">Retirement Planning</div><div class="hd">Know exactly how much corpus you need</div></div>
+      <div class="hcard" style="--cc:#F87171" onclick="go('fire')"><div class="ico">🔥</div><div class="ht">FIRE Calculator</div><div class="hd">Financial Independence, Retire Early</div></div>
+      <div class="hcard" style="--cc:#FB923C" onclick="go('infl')"><div class="ico">📊</div><div class="ht">Inflation Calculator</div><div class="hd">See how inflation erodes purchasing power</div></div>
+      <div class="hcard" style="--cc:#FBBF24" onclick="go('crore')"><div class="ico">🏆</div><div class="ht" id="home-crore-title">First Crore</div><div class="hd" id="home-crore-desc">When will you hit your first goal?</div></div>
+      <div class="hcard" style="--cc:#34D399" onclick="go('swp')"><div class="ico">💸</div><div class="ht">SWP Calculator</div><div class="hd">Plan systematic withdrawals from your corpus</div></div>
+      <div class="hcard" id="home-nps-card" style="--cc:#C084FC;display:none" onclick="go('nps')"><div class="ico">🏛️</div><div class="ht">NPS Calculator</div><div class="hd">Plan your National Pension System corpus &amp; monthly pension</div></div>
+    </div>
+
+    <!-- AD SLOT: Rectangle between rows -->
+    <div class="ad-slot ad-slot-inline" id="ad-home-mid" style="margin-top:24px">
+      <!-- Paste Google AdSense code here -->
+    </div>
+
+    <div class="disc">⚠️ All calculators are for educational and planning purposes only. Not financial advice. Consult a registered advisor before investing.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     1. SIMPLE INTEREST
+══════════════════════════════════════ -->
+<div class="pg" id="pg-si">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Home</div>
+    <div class="phdr"><h2>📐 Simple <em>Interest Calculator</em></h2><p>SI = Principal × Rate × Time ÷ 100</p></div>
+    <div class="g2" style="align-items:start">
+      <div class="card">
+        <div class="ctitle">Input Parameters</div>
+        <div class="fg"><label class="fl">Principal Amount (<span class="c-sym">₹</span>)</label><div class="pfx"><span class="px c-sym">₹</span><input class="fi" id="si-p" type="number" placeholder="e.g. 1,00,000" min="1" oninput="calcSI()"></div></div>
+        <div class="fg"><label class="fl">Annual Rate of Interest (%)</label><div class="sfx"><span class="sx">%</span><input class="fi" id="si-r" type="number" placeholder="e.g. 8.5" step="0.1" min="0.01" oninput="calcSI()"></div></div>
+        <div class="fg"><label class="fl">Time Period: <strong id="si-yr-lbl" style="color:var(--ac)">5</strong> years</label>
+          <div class="sw"><input type="range" min="1" max="50" value="5" oninput="document.getElementById('si-yr-lbl').textContent=this.value;document.getElementById('si-t').value=this.value;calcSI()"><div class="sl"><span>1 yr</span><span>50 yrs</span></div></div>
+          <div class="sfx" style="margin-top:8px"><span class="sx">yrs</span><input class="fi" id="si-t" type="number" value="5" min="1" max="50" oninput="this.value=Math.min(50,Math.max(1,this.value||1));document.getElementById('si-yr-lbl').textContent=this.value;calcSI()"></div>
+        </div>
+      </div>
+      <div>
+        <div id="si-out" style="display:none">
+          <div class="rbox"><div class="rlbl">Simple Interest Earned</div><div class="rbig" id="si-int">—</div></div>
+          <div class="rgrid" style="margin-top:13px">
+            <div class="ritem"><div class="rlbl">Total Amount</div><div class="rv" id="si-tot" style="color:var(--ac)">—</div></div>
+            <div class="ritem"><div class="rlbl">Principal</div><div class="rv" id="si-pr">—</div></div>
+            <div class="ritem"><div class="rlbl">Interest Earned</div><div class="rv" id="si-ie" style="color:var(--gn)">—</div></div>
+          </div>
+          <div class="card" style="margin-top:15px">
+            <div class="ctitle">Year-by-Year Breakdown</div>
+            <div class="twrap" style="max-height:340px;overflow-y:auto"><table id="si-tbl"><thead><tr><th>Year</th><th>Interest (Yr)</th><th>Cumulative Interest</th><th>Total Amount</th></tr></thead><tbody></tbody></table></div>
+          </div>
+        </div>
+        <!-- AD SLOT -->
+        <div class="ad-slot ad-slot-rect" id="ad-si" style="margin-top:16px"><!-- AdSense code here --></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     2. COMPOUND INTEREST
+══════════════════════════════════════ -->
+<div class="pg" id="pg-ci">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Home</div>
+    <div class="phdr"><h2>📈 Compound <em>Interest Calculator</em></h2><p>Watch your money grow with the power of compounding + monthly contributions</p></div>
+    <div class="g2" style="align-items:start">
+      <div class="card">
+        <div class="ctitle">Input Parameters</div>
+        <div class="fg"><label class="fl">Initial Investment (<span class="c-sym">₹</span>)</label><div class="pfx"><span class="px c-sym">₹</span><input class="fi" id="ci-init" type="number" placeholder="e.g. 1,00,000" oninput="calcCI()"></div><div class="emsg" id="ci-e1">Please enter a valid amount (min 100)</div></div>
+        <div class="fg"><label class="fl">Monthly Contribution / SIP (<span class="c-sym">₹</span>) <span style="color:var(--dm)">(0 = lump sum)</span></label><div class="pfx"><span class="px c-sym">₹</span><input class="fi" id="ci-mo" type="number" placeholder="e.g. 5,000" value="0" min="0" oninput="calcCI()"></div></div>
+        <div class="fg"><label class="fl">Expected Annual Return (%)</label><div class="sfx"><span class="sx">%</span><input class="fi" id="ci-rate" type="number" placeholder="e.g. 12" step="0.1" oninput="calcCI()"></div><div class="emsg" id="ci-e2">Enter a valid rate (0.1–50%)</div></div>
+        <div class="fg"><label class="fl">Return Variance / Risk (±%) <span style="color:var(--dm)">(optional)</span></label><div class="sfx"><span class="sx">%</span><input class="fi" id="ci-var" type="number" placeholder="e.g. 3" value="0" min="0" step="0.1" oninput="calcCI()"></div></div>
+        <div class="fg"><label class="fl">Investment Period: <strong id="ci-yr-lbl" style="color:var(--ac)">10</strong> years</label>
+          <div class="sw"><input type="range" min="1" max="75" value="10" oninput="document.getElementById('ci-yr-lbl').textContent=this.value;document.getElementById('ci-yrs').value=this.value;calcCI()"><div class="sl"><span>1</span><span>75 yrs</span></div></div>
+          <div class="sfx" style="margin-top:8px"><span class="sx">yrs</span><input class="fi" id="ci-yrs" type="number" value="10" min="1" max="75" oninput="this.value=Math.min(75,Math.max(1,this.value||1));document.getElementById('ci-yr-lbl').textContent=this.value;calcCI()"></div>
+          <div class="emsg" id="ci-e3">Years must be between 1 and 75</div>
+        </div>
+      </div>
+      <div>
+        <div id="ci-out" style="display:none">
+          <div class="rbox"><div class="rlbl">Total Corpus</div><div class="rbig" id="ci-corpus">—</div></div>
+          <div class="rgrid" style="margin-top:13px">
+            <div class="ritem"><div class="rlbl">Total Invested</div><div class="rv" id="ci-inv">—</div></div>
+            <div class="ritem"><div class="rlbl">Interest Earned</div><div class="rv" id="ci-earn" style="color:var(--gn)">—</div></div>
+            <div class="ritem"><div class="rlbl">Return Multiplier</div><div class="rv" id="ci-mult" style="color:var(--ac)">—</div></div>
+            <div class="ritem"><div class="rlbl">Bull Case (+var)</div><div class="rv" id="ci-bull" style="color:var(--gn)">—</div></div>
+            <div class="ritem"><div class="rlbl">Bear Case (-var)</div><div class="rv" id="ci-bear" style="color:var(--rd)">—</div></div>
+          </div>
+          <div class="cbox" style="margin-top:15px"><canvas id="ci-chart" height="220"></canvas></div>
+        </div>
+        <div class="ad-slot ad-slot-rect" id="ad-ci" style="margin-top:16px"><!-- AdSense code here --></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     3. EMI
+══════════════════════════════════════ -->
+<div class="pg" id="pg-emi">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Home</div>
+    <div class="phdr"><h2>🏦 EMI <em>Calculator</em></h2><p>Calculate monthly EMI with complete yearly repayment schedule</p></div>
+    <div class="g2" style="align-items:start">
+      <div class="card">
+        <div class="ctitle">Loan Details</div>
+        <div class="fg"><label class="fl">Principal Amount (<span class="c-sym">₹</span>)</label><div class="pfx"><span class="px c-sym">₹</span><input class="fi" id="emi-p" type="number" placeholder="e.g. 50,00,000" min="1" oninput="calcEMI()"></div></div>
+        <div class="fg"><label class="fl">Annual Interest Rate (%)</label><div class="sfx"><span class="sx">%</span><input class="fi" id="emi-r" type="number" placeholder="e.g. 8.5" step="0.1" min="0.1" oninput="calcEMI()"></div></div>
+        <div class="fg"><label class="fl">Loan Tenure: <strong id="emi-yr-lbl" style="color:var(--ac)">20</strong> years</label>
+          <div class="sw"><input type="range" min="1" max="30" value="20" oninput="document.getElementById('emi-yr-lbl').textContent=this.value;document.getElementById('emi-t').value=this.value;calcEMI()"><div class="sl"><span>1 yr</span><span>30 yrs</span></div></div>
+          <div class="sfx" style="margin-top:8px"><span class="sx">yrs</span><input class="fi" id="emi-t" type="number" value="20" min="1" max="30" oninput="this.value=Math.min(30,Math.max(1,this.value||1));document.getElementById('emi-yr-lbl').textContent=this.value;calcEMI()"></div>
+        </div>
+        <div id="emi-sum" style="display:none">
+          <div style="background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(255,255,255,.02));border:1px solid rgba(245,158,11,.28);border-radius:11px;padding:16px;margin-top:16px">
+            <div style="font-size:11px;color:var(--mu);font-family:var(--mono);margin-bottom:7px">MONTHLY EMI</div>
+            <div style="font-size:2rem;font-weight:bold;color:var(--ac);font-family:var(--mono)" id="emi-val">—</div>
+          </div>
+          <div class="rgrid" style="margin-top:13px">
+            <div class="ritem"><div class="rlbl">Total Amount Paid</div><div class="rv" id="emi-total" style="color:var(--ac)">—</div></div>
+            <div class="ritem"><div class="rlbl">Total Interest</div><div class="rv" id="emi-tint" style="color:var(--rd)">—</div></div>
+            <div class="ritem"><div class="rlbl">Principal</div><div class="rv" id="emi-prr">—</div></div>
+          </div>
+          <div class="cbox" style="margin-top:15px"><canvas id="emi-chart" height="200"></canvas></div>
+        </div>
+      </div>
+      <div>
+        <div class="card" id="emi-tcard" style="display:none">
+          <div class="ctitle">Yearly Repayment Schedule</div>
+          <div class="twrap" style="max-height:520px;overflow-y:auto">
+            <table id="emi-tbl"><thead><tr><th>Year</th><th>Principal Paid</th><th>Interest Paid</th><th>Total Paid</th><th>Balance</th></tr></thead><tbody></tbody></table>
+          </div>
+        </div>
+        <div class="ad-slot ad-slot-rect" id="ad-emi" style="margin-top:16px"><!-- AdSense code here --></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     4. PREPAYMENT
+══════════════════════════════════════ -->
+<div class="pg" id="pg-prepay">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Home</div>
+    <div class="phdr"><h2>💳 Loan Prepayment <em>Calculator</em></h2><p>See how extra EMIs every year saves you money and years of debt</p></div>
+    <div class="g2" style="align-items:start">
+      <div class="card">
+        <div class="ctitle">Loan Details</div>
+        <div class="fg"><label class="fl">Principal Amount (<span class="c-sym">₹</span>)</label><div class="pfx"><span class="px c-sym">₹</span><input class="fi" id="pp-p" type="number" placeholder="e.g. 50,00,000" min="1" oninput="calcPrepay()"></div></div>
+        <div class="fg"><label class="fl">Annual Interest Rate (%)</label><div class="sfx"><span class="sx">%</span><input class="fi" id="pp-r" type="number" placeholder="e.g. 8.5" step="0.1" min="0.1" oninput="calcPrepay()"></div></div>
+        <div class="fg"><label class="fl">Loan Tenure: <strong id="pp-yr-lbl" style="color:var(--ac)">20</strong> years</label>
+          <div class="sw"><input type="range" min="1" max="30" value="20" oninput="document.getElementById('pp-yr-lbl').textContent=this.value;document.getElementById('pp-t').value=this.value;calcPrepay()"><div class="sl"><span>1 yr</span><span>30 yrs</span></div></div>
+          <div class="sfx" style="margin-top:8px"><span class="sx">yrs</span><input class="fi" id="pp-t" type="number" value="20" min="1" max="30" oninput="this.value=Math.min(30,Math.max(1,this.value||1));document.getElementById('pp-yr-lbl').textContent=this.value;calcPrepay()"></div>
+        </div>
+        <div id="pp-base" style="display:none;margin-top:13px;padding:13px;background:var(--sf);border:1px solid var(--bd);border-radius:10px">
+          <div class="ctitle">BASE LOAN (No Prepayment)</div>
+          <div class="g2">
+            <div><div class="rlbl">Monthly EMI</div><div style="font-size:1.1rem;font-family:var(--mono);font-weight:bold;color:var(--ac)" id="pp-emi">—</div></div>
+            <div><div class="rlbl">Total Interest</div><div style="font-size:1.1rem;font-family:var(--mono);font-weight:bold;color:var(--rd)" id="pp-bint">—</div></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card" id="pp-rcard" style="display:none">
+          <div class="ctitle">Extra EMIs Per Year — Savings Analysis</div>
+          <div class="twrap">
+            <table><thead><tr><th>Extra EMIs/Yr</th><th>Months Saved</th><th>New Tenure</th><th>Interest Saved</th></tr></thead><tbody id="pp-tbody"></tbody></table>
+          </div>
+          <div class="cbox" style="margin-top:15px"><canvas id="pp-chart" height="220"></canvas></div>
+        </div>
+        <div class="ad-slot ad-slot-rect" id="ad-prepay" style="margin-top:16px"><!-- AdSense code here --></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     5. BLUEPRINT
+══════════════════════════════════════ -->
+<div class="pg" id="pg-bp">
+  <div class="wrap-wide">
+    <div class="back" onclick="go('home')">← Home</div>
+    <div class="phdr"><h2>🌳 Child's Future &amp; <em>Retirement Blueprint</em></h2><p>75-year wealth projection — customizable funds, withdrawals &amp; year horizon</p></div>
+    <div class="card" style="margin-bottom:13px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:13px">
+        <div class="ctitle" style="margin-bottom:0">Mutual Fund Configuration — Edit Fund Name &amp; CAGR</div>
+        <div style="display:flex;gap:8px"><button class="btn bout bsm" onclick="resetFunds()">↩ Reset Defaults</button><button class="btn bprim bsm" onclick="recalcBP()">⚡ Recalculate</button></div>
+      </div>
+      <div id="fcgrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px"></div>
+    </div>
+    <div class="g3" style="margin-bottom:13px">
+      <div class="card">
+        <div class="ctitle">Initial Investment</div>
+        <div class="pfx"><span class="px c-sym">₹</span><input class="fi" id="bp-init" type="number" value="1000000" min="1000" oninput="recalcBP()"></div>
+        <div class="sw" style="margin-top:9px"><input type="range" min="100000" max="50000000" step="100000" value="1000000" oninput="document.getElementById('bp-init').value=this.value;recalcBP()"><div class="sl"><span>1L</span><span>5Cr</span></div></div>
+      </div>
+      <div class="card">
+        <div class="ctitle">Year Horizon: <strong id="bp-yr-lbl" style="color:var(--ac)">75</strong> yrs</div>
+        <div class="sw"><input type="range" min="1" max="75" value="75" id="bp-yrs-r" oninput="document.getElementById('bp-yr-lbl').textContent=this.value;document.getElementById('bp-yrs').value=this.value;recalcBP()"><div class="sl"><span>1</span><span>75</span></div></div>
+        <div class="sfx" style="margin-top:8px"><span class="sx">yrs</span><input class="fi" id="bp-yrs" type="number" value="75" min="1" max="75" oninput="this.value=Math.min(75,Math.max(1,this.value||1));document.getElementById('bp-yrs-r').value=this.value;document.getElementById('bp-yr-lbl').textContent=this.value;recalcBP()"></div>
+      </div>
+      <div class="card">
+        <div class="ctitle">Active Fund for Table / KPI</div>
+        <select class="fsel" id="bp-afund" onchange="recalcBP()"><option value="0">Fund 1</option><option value="1">Fund 2</option><option value="2">Fund 3</option><option value="3">Fund 4</option><option value="4">Fund 5</option><option value="5">Fund 6</option></select>
+        <div style="margin-top:10px;font-size:var(--fs-sm);color:var(--mu);font-family:var(--mono)">Total Withdrawn: <strong id="bp-tout" style="color:var(--rd)">0</strong></div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:13px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:13px">
+        <div class="ctitle" style="margin-bottom:0">Section Bulk Fill — Populate Multiple Years At Once</div>
+        <div style="display:flex;gap:8px"><button class="btn bout bsm" onclick="resetBPW()">↩ Reset to Defaults</button><button class="btn bsm" style="background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.3);color:var(--rd)" onclick="clearBPW()">🗑 Clear All</button></div>
+      </div>
+      <div id="bpsec" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px"></div>
+    </div>
+    <!-- AD SLOT: above KPIs, non-intrusive -->
+    <div class="ad-slot ad-slot-banner" id="ad-bp-top"><!-- AdSense code here --></div>
+    <div class="kstrip" id="bp-kpi"></div>
+    <div class="tabs">
+      <button class="tbtn on" onclick="bpTab('chart',this)">📈 Chart</button>
+      <button class="tbtn" onclick="bpTab('table',this)">📋 Year Table</button>
+      <button class="tbtn" onclick="bpTab('compare',this)">⚖️ Compare Funds</button>
+    </div>
+    <div id="bpt-chart">
+      <div class="cbox" style="margin-bottom:13px"><canvas id="bp-chart" height="340"></canvas></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap" id="bp-legend"></div>
+    </div>
+    <div id="bpt-table" style="display:none">
+      <div style="max-height:500px;overflow-y:auto;overflow-x:auto;border-radius:10px;border:1px solid var(--bd)">
+        <table id="bp-tbl">
+          <thead><tr><th>Yr</th><th>Phase</th><th>Opening</th><th>Withdrawal ✏️</th><th>Type</th><th>Timing</th><th>Closing</th><th>Growth</th></tr></thead>
+          <tbody id="bp-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div id="bpt-compare" style="display:none">
+      <div id="bp-ccards" style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:15px"></div>
+      <div class="card"><div class="ctitle">Final Corpus at Year Horizon — All Funds</div><div id="bp-cbars"></div></div>
+    </div>
+    <div class="disc">⚠️ Projections use historical CAGR. Past performance is not indicative of future returns. Not financial advice.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     6. RETIREMENT
+══════════════════════════════════════ -->
+<div class="pg" id="pg-retire">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Home</div>
+    <div class="phdr"><h2>🌴 Retirement <em>Planning Calculator</em></h2><p>Find out how much corpus you need and exactly how to get there</p></div>
+    <div class="g2" style="align-items:start">
+      <div class="card">
+        <div class="ctitle">Your Details</div>
+        <div class="fg"><label class="fl">Current Age</label><div class="sfx"><span class="sx">yrs</span><input class="fi" id="ret-ca" type="number" placeholder="30" min="18" max="80" oninput="calcRetire()"></div></div>
+        <div class="fg"><label class="fl">Retirement Age</label><div class="sfx"><span class="sx">yrs</span><input class="fi" id="ret-ra" type="number" placeholder="60" min="30" max="80" oninput="calcRetire()"></div></div>
+        <div class="fg"><label class="fl">Life Expectancy</label><div class="sfx"><span class="sx">yrs</span><input class="fi" id="ret-le" type="number" placeholder="85" value="85" min="50" max="100" oninput="calcRetire()"></div></div>
+        <div class="fg"><label class="fl">Current Monthly Expenses (<span class="c-sym">₹</span>)</label><div class="pfx"><span class="px c-sym">₹</span><input class="fi" id="ret-exp" type="number" placeholder="50,000" min="1" oninput="calcRetire()"></div></div>
+        <div class="fg"><label class="fl">Inflation Rate (%)</label><div class="sfx"><span class="sx">%</span><input class="fi" id="ret-inf" type="number" value="6" step="0.1" min="1" oninput="calcRetire()"></div></div>
+        <div class="fg"><label class="fl">Expected Investment Return (%)</label><div class="sfx"><span class="sx">%</span><input class="fi" id="ret-ret" type="number" value="12" step="0.1" min="1" oninput="calcRetire()"></div></div>
+        <div class="fg"><label class="fl">Post-Retirement Return (%)</label><div class="sfx"><span class="sx">%</span><input class="fi" id="ret-pr" type="number" value="7" step="0.1" min="1" oninput="calcRetire()"></div></div>
+        <div class="fg"><label class="fl">Existing Savings (<span class="c-sym">₹</span>)</label><div class="pfx"><span class="px c-sym">₹</span><input class="fi" id="ret-sv" type="number" placeholder="0" value="0" min="0" oninput="calcRetire()"></div></div>
+      </div>
+      <div>
+        <div id="ret-out" style="display:none">
+          <div class="rbox"><div class="rlbl">Required Retirement Corpus</div><div class="rbig" id="ret-corpus">—</div></div>
+          <div class="rgrid" style="margin-top:13px">
+            <div class="ritem"><div class="rlbl">Monthly Expense at Retirement</div><div class="rv" id="ret-fexp" style="color:var(--ac)">—</div></div>
+            <div class="ritem"><div class="rlbl">Monthly SIP Needed</div><div class="rv" id="ret-sip" style="color:var(--gn)">—</div></div>
+            <div class="ritem"><div class="rlbl">Lump Sum Shortfall</div><div class="rv" id="ret-short" style="color:var(--rd)">—</div></div>
+            <div class="ritem"><div class="rlbl">Years to Retirement</div><div class="rv" id="ret-yrs">—</div></div>
+            <div class="ritem"><div class="rlbl">Retirement Duration</div><div class="rv" id="ret-dur">—</div></div>
+            <div class="ritem"><div class="rlbl">Savings at Retirement</div><div class="rv" id="ret-sg" style="color:var(--te)">—</div></div>
+          </div>
+          <div class="cbox" style="margin-top:15px"><canvas id="ret-chart" height="220"></canvas></div>
+        </div>
+        <div class="ad-slot ad-slot-rect" id="ad-retire" style="margin-top:16px"><!-- AdSense code here --></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     7. FIRE
+══════════════════════════════════════ -->
+<div class="pg" id="pg-fire">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Home</div>
+    <div class="phdr"><h2>🔥 FIRE <em>Calculator</em></h2><p>Financial Independence, Retire Early — your FI number &amp; timeline</p></div>
+    <div class="g2" style="align-items:start">
+      <div class="card">
+        <div class="ctitle">Your Financial Picture</div>
+        <div class="fg"><label class="fl">Current Age</label><div class="sfx"><span class="sx">yrs</span><input class="fi" id="fire-ca" type="number" placeholder="28" min="18" oninput="calcFIRE()"></div></div>
+        <div class="fg"><label class="fl">Current Net Worth (<span class="c-sym">₹</span>)</label><div class="pfx"><span class="px c-sym">₹</span><input class="fi" id="fire-nw" type="number" placeholder="20,00,000" value="0" min="0" oninput="calcFIRE()"></div></div>
+        <div class="fg"><label class="fl">Monthly Savings / Investment (<span class="c-sym">₹</span>)</label><div class="pfx"><span class="px c-sym">₹</span><input class="fi" id="fire-sv" type="number" placeholder="50,000" min="1" oninput="calcFIRE()"></div></div>
+        <div class="fg"><label class="fl">Current Monthly Expenses (<span class="c-sym">₹</span>)</label><div class="pfx"><span class="px c-sym">₹</span><input class="fi" id="fire-exp" type="number" placeholder="60,000" min="1" oninput="calcFIRE()"></div></div>
+        <div class="fg"><label class="fl">Expected Annual Return (%)</label><div class="sfx"><span class="sx">%</span><input class="fi" id="fire-ret" type="number" value="12" step="0.1" min="1" oninput="calcFIRE()"></div></div>
+        <div class="fg"><label class="fl">Inflation Rate (%)</label><div class="sfx"><span class="sx">%</span><input class="fi" id="fire-inf" type="number" value="6" step="0.1" min="0" oninput="calcFIRE()"></div></div>
+        <div class="fg"><label class="fl">Safe Withdrawal Rate (%) <span style="color:var(--mu)">— 4% standard</span></label><div class="sfx"><span class="sx">%</span><input class="fi" id="fire-swr" type="number" value="4" step="0.1" min="0.5" oninput="calcFIRE()"></div></div>
+      </div>
+      <div>
+        <div id="fire-out" style="display:none">
+          <div class="rbox"><div class="rlbl">🎯 Your FIRE Number</div><div class="rbig" id="fire-num">—</div><div style="margin-top:7px;font-size:var(--fs-sm);color:var(--mu)">Corpus at which you can retire and never work again</div></div>
+          <div class="rgrid" style="margin-top:13px">
+            <div class="ritem"><div class="rlbl">FIRE Age</div><div class="rv" id="fire-age" style="color:var(--gn)">—</div></div>
+            <div class="ritem"><div class="rlbl">Years to FIRE</div><div class="rv" id="fire-yrs" style="color:var(--ac)">—</div></div>
+            <div class="ritem"><div class="rlbl">Monthly Income at FIRE</div><div class="rv" id="fire-inc" style="color:var(--te)">—</div></div>
+            <div class="ritem"><div class="rlbl">Savings Rate</div><div class="rv" id="fire-sr">—</div></div>
+            <div class="ritem"><div class="rlbl">Progress Today</div><div class="rv" id="fire-prog" style="color:var(--pu)">—</div></div>
+          </div>
+          <div class="card" style="margin-top:15px">
+            <div class="ctitle">Progress to FIRE</div>
+            <div class="pbar" style="height:14px"><div class="pfill" id="fire-pbar" style="background:linear-gradient(90deg,var(--gn),var(--ac));width:0%"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--mu);font-family:var(--mono);margin-top:5px"><span>0</span><span id="fire-plbl">FIRE Number</span></div>
+          </div>
+          <div class="cbox" style="margin-top:15px"><canvas id="fire-chart" height="220"></canvas></div>
+        </div>
+        <div class="ad-slot ad-slot-rect" id="ad-fire" style="margin-top:16px"><!-- AdSense code here --></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     8. INFLATION
+══════════════════════════════════════ -->
+<div class="pg" id="pg-infl">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Home</div>
+    <div class="phdr"><h2>📊 Inflation <em>Calculator</em></h2><p>Understand how inflation silently erodes your money's purchasing power</p></div>
+    <div class="g2" style="align-items:start">
+      <div class="card">
+        <div class="ctitle">Inputs</div>
+        <div class="fg"><label class="fl">Current Amount / Value (<span class="c-sym">₹</span>)</label><div class="pfx"><span class="px c-sym">₹</span><input class="fi" id="inf-amt" type="number" placeholder="1,00,000" min="1" oninput="calcInfl()"></div></div>
+        <div class="fg"><label class="fl">Annual Inflation Rate (%)</label><div class="sfx"><span class="sx">%</span><input class="fi" id="inf-rate" type="number" value="6" step="0.1" min="0.1" oninput="calcInfl()"></div></div>
+        <div class="fg"><label class="fl">Number of Years: <strong id="inf-yr-lbl" style="color:var(--ac)">20</strong></label>
+          <div class="sw"><input type="range" min="1" max="50" value="20" oninput="document.getElementById('inf-yr-lbl').textContent=this.value;document.getElementById('inf-yrs').value=this.value;calcInfl()"><div class="sl"><span>1</span><span>50 yrs</span></div></div>
+          <div class="sfx" style="margin-top:8px"><span class="sx">yrs</span><input class="fi" id="inf-yrs" type="number" value="20" min="1" max="50" oninput="this.value=Math.min(50,Math.max(1,this.value||1));document.getElementById('inf-yr-lbl').textContent=this.value;calcInfl()"></div>
+        </div>
+        <div class="fg"><label class="fl">Expected Investment Return (%) <span style="color:var(--mu)">(to beat inflation)</span></label><div class="sfx"><span class="sx">%</span><input class="fi" id="inf-inv" type="number" value="12" step="0.1" min="0.1" oninput="calcInfl()"></div></div>
+      </div>
+      <div>
+        <div id="inf-out" style="display:none">
+          <div class="rbox"><div class="rlbl">Future Cost of Today's <span class="c-sym">₹</span><span id="inf-today">—</span></div><div class="rbig" id="inf-fut">—</div></div>
+          <div class="rgrid" style="margin-top:13px">
+            <div class="ritem"><div class="rlbl">Purchasing Power Lost</div><div class="rv" id="inf-lost" style="color:var(--rd)">—</div></div>
+            <div class="ritem"><div class="rlbl">Real Value (inflated)</div><div class="rv" id="inf-real">—</div></div>
+            <div class="ritem"><div class="rlbl">Invested @ return rate</div><div class="rv" id="inf-need" style="color:var(--gn)">—</div></div>
+            <div class="ritem"><div class="rlbl">Real Return (net)</div><div class="rv" id="inf-rr" style="color:var(--ac)">—</div></div>
+          </div>
+          <div class="cbox" style="margin-top:15px"><canvas id="inf-chart" height="220"></canvas></div>
+        </div>
+        <div class="ad-slot ad-slot-rect" id="ad-infl" style="margin-top:16px"><!-- AdSense code here --></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     9. FIRST CRORE / MILLION
+══════════════════════════════════════ -->
+<div class="pg" id="pg-crore">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Home</div>
+    <div class="phdr"><h2 id="crore-page-h1">🏆 When Will I Reach <em id="crore-page-em">My First Crore?</em></h2><p id="crore-page-p">Calculate your journey across different investment strategies</p></div>
+    <div class="g2" style="align-items:start">
+      <div class="card">
+        <div class="ctitle">Investment Details</div>
+        <div style="margin-bottom:15px"><div class="tgrp"><button class="topt on" id="cr-sip-btn" onclick="crMode('sip')">📅 Monthly SIP</button><button class="topt" id="cr-lp-btn" onclick="crMode('lump')">💰 Lump Sum</button></div></div>
+        <div class="fg" id="cr-sip-g"><label class="fl">Monthly SIP Amount (<span class="c-sym">₹</span>)</label><div class="pfx"><span class="px c-sym">₹</span><input class="fi" id="cr-sip" type="number" placeholder="10,000" min="1" oninput="calcCrore()"></div></div>
+        <div class="fg" id="cr-lp-g" style="display:none"><label class="fl">Lump Sum Amount (<span class="c-sym">₹</span>)</label><div class="pfx"><span class="px c-sym">₹</span><input class="fi" id="cr-lump" type="number" placeholder="5,00,000" min="1" oninput="calcCrore()"></div></div>
+        <div class="fg"><label class="fl">Already Have (Existing Corpus) (<span class="c-sym">₹</span>)</label><div class="pfx"><span class="px c-sym">₹</span><input class="fi" id="cr-exist" type="number" placeholder="0" value="0" min="0" oninput="calcCrore()"></div></div>
+        <div class="fg"><label class="fl">Expected Annual Return (%)</label><div class="sfx"><span class="sx">%</span><input class="fi" id="cr-rate" type="number" placeholder="12" step="0.1" min="0.1" oninput="calcCrore()"></div></div>
+      </div>
+      <div>
+        <div id="cr-out" style="display:none">
+          <div class="rbox"><div class="rlbl" id="cr-rbox-lbl">Time to Reach First Crore</div><div class="rbig" id="cr-time">—</div></div>
+          <div class="rgrid" style="margin-top:13px">
+            <div class="ritem"><div class="rlbl">Total Invested</div><div class="rv" id="cr-inv">—</div></div>
+            <div class="ritem"><div class="rlbl">Market Gains</div><div class="rv" id="cr-gains" style="color:var(--gn)">—</div></div>
+            <div class="ritem"><div class="rlbl">Return on Investment</div><div class="rv" id="cr-roi" style="color:var(--ac)">—</div></div>
+          </div>
+          <div class="card" style="margin-top:15px">
+            <div class="ctitle" id="cr-tbl-title">Time to First Crore at Different Return Rates</div>
+            <div class="twrap"><table><thead><tr><th>Return Rate</th><th>Time Needed</th><th>Total Invested</th><th>Gains</th></tr></thead><tbody id="cr-rtbl"></tbody></table></div>
+          </div>
+          <div class="cbox" style="margin-top:15px"><canvas id="cr-chart" height="200"></canvas></div>
+        </div>
+        <div class="ad-slot ad-slot-rect" id="ad-crore" style="margin-top:16px"><!-- AdSense code here --></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     10. SWP
+══════════════════════════════════════ -->
+<div class="pg" id="pg-swp">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Home</div>
+    <div class="phdr"><h2>💸 Systematic Withdrawal Plan <em>(SWP) Calculator</em></h2><p>Plan how long your corpus will last with regular withdrawals</p></div>
+    <div class="g2" style="align-items:start">
+      <div class="card">
+        <div class="ctitle">SWP Details</div>
+        <div class="fg"><label class="fl">Initial Corpus (<span class="c-sym">₹</span>)</label><div class="pfx"><span class="px c-sym">₹</span><input class="fi" id="swp-c" type="number" placeholder="1,00,00,000" min="1" oninput="calcSWP()"></div></div>
+        <div class="fg"><label class="fl">Monthly Withdrawal (<span class="c-sym">₹</span>)</label><div class="pfx"><span class="px c-sym">₹</span><input class="fi" id="swp-w" type="number" placeholder="50,000" min="1" oninput="calcSWP()"></div></div>
+        <div class="fg"><label class="fl">Expected Annual Return (%)</label><div class="sfx"><span class="sx">%</span><input class="fi" id="swp-r" type="number" placeholder="8" step="0.1" min="0.1" oninput="calcSWP()"></div></div>
+        <div class="fg"><label class="fl">Annual Withdrawal Increase (%) <span style="color:var(--mu)">(0 = fixed)</span></label><div class="sfx"><span class="sx">%</span><input class="fi" id="swp-inc" type="number" value="0" step="0.1" min="0" oninput="calcSWP()"></div></div>
+        <div class="fg"><label class="fl">Inflation Rate (%)</label><div class="sfx"><span class="sx">%</span><input class="fi" id="swp-inf" type="number" value="6" step="0.1" min="0" oninput="calcSWP()"></div></div>
+      </div>
+      <div>
+        <div id="swp-out" style="display:none">
+          <div class="rbox"><div class="rlbl">Corpus Sustains For</div><div class="rbig" id="swp-dur">—</div></div>
+          <div class="rgrid" style="margin-top:13px">
+            <div class="ritem"><div class="rlbl">Total Withdrawn</div><div class="rv" id="swp-tout" style="color:var(--rd)">—</div></div>
+            <div class="ritem"><div class="rlbl">Remaining Corpus</div><div class="rv" id="swp-rem" style="color:var(--gn)">—</div></div>
+            <div class="ritem"><div class="rlbl">Returns Generated</div><div class="rv" id="swp-ret" style="color:var(--te)">—</div></div>
+          </div>
+          <div class="cbox" style="margin-top:15px"><canvas id="swp-chart" height="200"></canvas></div>
+          <div class="card" style="margin-top:15px">
+            <div class="ctitle">Yearly SWP Summary</div>
+            <div class="twrap" style="max-height:340px;overflow-y:auto"><table><thead><tr><th>Year</th><th>Monthly Withdrawal</th><th>Total Withdrawn</th><th>Return Earned</th><th>Closing Balance</th></tr></thead><tbody id="swp-tbody"></tbody></table></div>
+          </div>
+        </div>
+        <div class="ad-slot ad-slot-rect" id="ad-swp" style="margin-top:16px"><!-- AdSense code here --></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     11. NPS CALCULATOR (INR only)
+══════════════════════════════════════ -->
+<div class="pg" id="pg-nps">
+  <div class="wrap" style="max-width:1100px">
+    <div class="back" onclick="go('home')">← Home</div>
+    <div class="phdr">
+      <h2>🏛️ National Pension System <em>(NPS) Calculator</em></h2>
+      <p>Plan your NPS Tier-I corpus, monthly pension and lump sum withdrawal at retirement</p>
+    </div>
+
+    <div class="g2" style="align-items:start;gap:20px">
+      <!-- LEFT: INPUTS -->
+      <div style="display:flex;flex-direction:column;gap:14px">
+
+        <!-- Personal Details -->
+        <div class="card">
+          <div class="ctitle">Personal Details</div>
+          <div class="fg">
+            <label class="fl">Date of Birth</label>
+            <input class="fi" id="nps-dob" type="date" oninput="npsOnDOBChange()" style="cursor:pointer">
+          </div>
+          <div id="nps-age-display" style="display:none;margin-top:-8px;margin-bottom:14px;padding:8px 12px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:8px;font-size:13px;color:var(--ac);font-family:var(--mono)">
+            Current Age: <strong id="nps-cur-age">—</strong>
+          </div>
+
+          <div class="fg">
+            <label class="fl">Investment Scheme</label>
+            <select class="fsel" id="nps-scheme" onchange="npsOnSchemeChange()">
+              <option value="lc75">Life Cycle 75 – High (15E / 55 Y)</option>
+              <option value="lc50">Life Cycle 50 – Moderate (10E / 55 Y)</option>
+              <option value="lc25">Life Cycle 25 – Low (5E / 55 Y)</option>
+              <option value="lcagg">Life Cycle – Aggressive (35E / 55 Y)</option>
+              <option value="active">Active Choice</option>
+            </select>
+          </div>
+
+          <!-- Allocation display / input -->
+          <div style="background:rgba(255,255,255,.03);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:4px">
+            <div style="font-size:11px;color:var(--mu);font-family:var(--mono);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Asset Allocation (must total 100%)</div>
+            <div class="g3" style="gap:10px">
+              <div>
+                <label class="fl">Equity (E%)</label>
+                <div class="sfx"><span class="sx">%</span>
+                  <input class="fi" id="nps-e" type="number" min="0" max="100" placeholder="75" oninput="npsValidateAlloc()" style="padding-right:32px">
+                </div>
+              </div>
+              <div>
+                <label class="fl">Corporate Debt (C%)</label>
+                <div class="sfx"><span class="sx">%</span>
+                  <input class="fi" id="nps-c" type="number" min="0" max="100" placeholder="10" oninput="npsValidateAlloc()" style="padding-right:32px">
+                </div>
+              </div>
+              <div>
+                <label class="fl">Govt. Bonds (G%)</label>
+                <div class="sfx"><span class="sx">%</span>
+                  <input class="fi" id="nps-g" type="number" min="0" max="100" placeholder="15" oninput="npsValidateAlloc()" style="padding-right:32px">
+                </div>
+              </div>
+            </div>
+            <div id="nps-alloc-bar" style="margin-top:10px;height:8px;border-radius:6px;overflow:hidden;display:flex;gap:2px">
+              <div id="nps-bar-e" style="height:100%;background:#60A5FA;border-radius:4px;transition:width .3s;width:75%"></div>
+              <div id="nps-bar-c" style="height:100%;background:#F59E0B;border-radius:4px;transition:width .3s;width:10%"></div>
+              <div id="nps-bar-g" style="height:100%;background:#10B981;border-radius:4px;transition:width .3s;width:15%"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--mu);font-family:var(--mono);margin-top:4px">
+              <span><span style="color:#60A5FA">█</span> Equity <span id="nps-bar-e-lbl">75%</span></span>
+              <span><span style="color:#F59E0B">█</span> Corp Debt <span id="nps-bar-c-lbl">10%</span></span>
+              <span><span style="color:#10B981">█</span> Govt Bonds <span id="nps-bar-g-lbl">15%</span></span>
+              <span id="nps-alloc-total" style="color:var(--gn);font-weight:bold">Total: 100%</span>
+            </div>
+            <div class="emsg" id="nps-alloc-err">Combined allocation must equal exactly 100%</div>
+          </div>
+        </div>
+
+        <!-- Corpus & Contributions -->
+        <div class="card">
+          <div class="ctitle">Corpus & Contributions</div>
+          <div class="fg">
+            <label class="fl">Existing NPS Tier-I Corpus (₹) <span style="color:var(--dm)">(optional)</span></label>
+            <div class="pfx"><span class="px">₹</span>
+              <input class="fi" id="nps-corpus" type="number" min="0" placeholder="0 — leave blank if none" oninput="npsCheckCorpus()">
+            </div>
+          </div>
+          <div class="fg">
+            <label class="fl">Monthly Contribution (₹) <span style="color:var(--dm)">(optional)</span></label>
+            <div class="pfx"><span class="px">₹</span>
+              <input class="fi" id="nps-monthly" type="number" min="0" placeholder="0 — leave blank if none" oninput="npsCheckCorpus()">
+            </div>
+          </div>
+          <div class="emsg on" id="nps-corpus-err" style="margin-top:-8px">Please enter at least an existing corpus or monthly contribution amount.</div>
+        </div>
+
+        <!-- Contribution Settings -->
+        <div class="card">
+          <div class="ctitle">Contribution Settings</div>
+
+          <div class="fg">
+            <label class="fl">Contribute till age: <strong id="nps-till-lbl" style="color:var(--ac)">60</strong></label>
+            <div class="sw"><input type="range" min="18" max="75" value="60" id="nps-till-r" oninput="nps_till_change(this.value)"><div class="sl"><span>18</span><span>75</span></div></div>
+          </div>
+
+          <!-- Warning if < 60 -->
+          <div id="nps-till-warn" style="display:none;padding:11px 14px;background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.35);border-radius:9px;font-size:12px;color:#FB923C;line-height:1.6;margin-bottom:14px">
+            ⚠️ <strong>NPS mandates contributions till age 60.</strong> Since you have selected age <strong id="nps-till-selected">—</strong>, it is mandatory to contribute at least ₹1,000 every year to keep the account active and running.
+          </div>
+          <div id="nps-yearly-group" style="display:none;margin-bottom:14px">
+            <label class="fl">Yearly Minimum Contributions (₹) <span style="color:var(--dm)">(cannot go below ₹1,000)</span></label>
+            <div class="pfx"><span class="px">₹</span>
+              <input class="fi" id="nps-yearly" type="number" min="1000" value="1000" oninput="this.value=Math.max(1000,parseFloat(this.value)||1000)">
+            </div>
+          </div>
+
+          <div class="fg">
+            <label class="fl">Expected Return on Investment: <strong id="nps-ret-lbl" style="color:var(--ac)">10%</strong></label>
+            <div class="sw"><input type="range" min="5" max="15" value="10" step="0.5" id="nps-ret-r" oninput="document.getElementById('nps-ret-lbl').textContent=this.value+'%'"><div class="sl"><span>5%</span><span>15%</span></div></div>
+          </div>
+
+          <div class="fg">
+            <label class="fl">Annual increase in contribution: <strong id="nps-inc-lbl" style="color:var(--ac)">0%</strong></label>
+            <div class="sw"><input type="range" min="0" max="30" value="0" id="nps-inc-r" oninput="document.getElementById('nps-inc-lbl').textContent=this.value+'%'"><div class="sl"><span>0%</span><span>30%</span></div></div>
+          </div>
+        </div>
+
+        <!-- Retirement Settings -->
+        <div class="card">
+          <div class="ctitle">Retirement & Annuity Settings</div>
+
+          <div class="fg">
+            <label class="fl">Age to exit from NPS: <strong id="nps-exit-lbl" style="color:var(--ac)">60</strong></label>
+            <div class="sw"><input type="range" min="60" max="75" value="60" id="nps-exit-r" oninput="npsExitChange(this.value)"><div class="sl"><span>60</span><span>75</span></div></div>
+          </div>
+
+          <div class="fg">
+            <label class="fl">Purchase Annuity for: <strong id="nps-ann-lbl" style="color:var(--ac)">40%</strong> &nbsp;<span style="font-size:10px;color:var(--dm)">(Portion used for monthly pension — min 40%)</span></label>
+            <div class="sw"><input type="range" min="40" max="100" value="40" id="nps-ann-r" oninput="document.getElementById('nps-ann-lbl').textContent=this.value+'%'"><div class="sl"><span>40%</span><span>100%</span></div></div>
+          </div>
+
+          <div class="fg">
+            <label class="fl">Expected Annuity Rate: <strong id="nps-annrate-lbl" style="color:var(--ac)">6%</strong></label>
+            <div class="sw"><input type="range" min="2" max="10" value="6" step="0.5" id="nps-annrate-r" oninput="document.getElementById('nps-annrate-lbl').textContent=this.value+'%'"><div class="sl"><span>2%</span><span>10%</span></div></div>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div style="display:flex;gap:10px">
+          <button class="btn bprim" style="flex:1;font-size:14px;padding:13px" onclick="calcNPS()">⚡ Calculate NPS</button>
+          <button class="btn bout" style="padding:13px 20px" onclick="resetNPS()">↺ Reset</button>
+        </div>
+        <div class="emsg" id="nps-main-err" style="font-size:12px">Please fill in all required fields correctly.</div>
+      </div>
+
+      <!-- RIGHT: RESULTS -->
+      <div id="nps-results" style="display:none">
+
+        <!-- Summary KPI strip -->
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px">
+          <div class="rbox" style="grid-column:1/-1">
+            <div class="rlbl">Total NPS Corpus at Exit Age</div>
+            <div class="rbig" id="nps-fv-big">—</div>
+            <div style="font-size:12px;color:var(--mu);margin-top:4px" id="nps-fv-sub">—</div>
+          </div>
+          <div class="ritem"><div class="rlbl">Total Invested</div><div class="rv" id="nps-r-invested">—</div></div>
+          <div class="ritem"><div class="rlbl">Total Gains</div><div class="rv" id="nps-r-gains" style="color:var(--gn)">—</div></div>
+          <div class="ritem"><div class="rlbl">Lump Sum (Tax-free)</div><div class="rv" id="nps-r-lumpsum" style="color:var(--ac)">—</div></div>
+          <div class="ritem"><div class="rlbl">Annuity Corpus</div><div class="rv" id="nps-r-annuity" style="color:var(--pu)">—</div></div>
+          <div class="ritem" style="grid-column:1/-1;background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.25)">
+            <div class="rlbl">Estimated Monthly Pension</div>
+            <div class="rv" id="nps-r-pension" style="color:var(--gn);font-size:1.5rem">—</div>
+          </div>
+        </div>
+
+        <!-- 3-Ring Donut Chart -->
+        <div class="card" style="margin-bottom:16px">
+          <div class="ctitle">Portfolio Visualisation — 3 Ring View</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;font-size:11px;font-family:var(--mono)">
+            <span><span style="color:#60A5FA">━</span> Total Invested</span>
+            <span><span style="color:#F59E0B">━</span> Total Gains</span>
+            <span><span style="color:#A78BFA">━</span> Annuity Amount</span>
+            <span><span style="color:#10B981">━</span> Lump Sum</span>
+          </div>
+          <div style="position:relative;height:320px;display:flex;align-items:center;justify-content:center">
+            <canvas id="nps-donut" style="position:absolute;top:0;left:0;width:100%;height:100%"></canvas>
+            <!-- Center label -->
+            <div id="nps-donut-center" style="position:relative;z-index:2;text-align:center;pointer-events:none">
+              <div style="font-size:10px;color:var(--mu);font-family:var(--mono)">TOTAL CORPUS</div>
+              <div id="nps-donut-val" style="font-size:1.1rem;font-weight:bold;color:var(--ac);font-family:var(--mono)">—</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;text-align:center;font-size:10px;color:var(--mu);font-family:var(--mono)">
+            <div><div style="font-size:9px;letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px">Outer Ring</div><div>Invested vs Gains</div></div>
+            <div><div style="font-size:9px;letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px">Middle Ring</div><div>Lump Sum vs Annuity</div></div>
+            <div><div style="font-size:9px;letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px">Inner Ring</div><div>Total Corpus</div></div>
+          </div>
+        </div>
+
+        <!-- Detailed Results Table -->
+        <div class="card" style="margin-bottom:16px">
+          <div class="ctitle">Detailed Breakdown</div>
+          <div class="twrap">
+            <table id="nps-summary-tbl">
+              <thead><tr><th>Component</th><th>Amount</th><th>% of Corpus</th></tr></thead>
+              <tbody id="nps-sum-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Year-by-Year Table -->
+        <div class="card">
+          <div class="ctitle">Year-by-Year Projection</div>
+          <div class="twrap" style="max-height:400px;overflow-y:auto">
+            <table>
+              <thead><tr><th>Year</th><th>Age</th><th>E%/C%/G%</th><th>Contrib (Mo.)</th><th>Year Contribution</th><th>Year Returns</th><th>Closing Corpus</th></tr></thead>
+              <tbody id="nps-yr-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="disc">⚠️ NPS projections are indicative only. Actual returns depend on market conditions. NPS has a mandatory minimum annuity purchase of 40% of corpus at exit. Consult a registered advisor before investing.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════ -->
+<script>
+'use strict';
+
+/* ─────────────────────────────────────
+   CURRENCY CONFIG
+───────────────────────────────────── */
+const CURRENCIES = [
+  {code:'INR', sym:'₹',  name:'Indian Rupee',    flag:'🇮🇳', target:'crore', tval:1e7,  tlbl:'1 Crore',  tshort:'Crore'},
+  {code:'USD', sym:'$',  name:'US Dollar',        flag:'🇺🇸', target:'million',tval:1e6, tlbl:'1 Million',tshort:'Million'},
+  {code:'EUR', sym:'€',  name:'Euro',             flag:'🇪🇺', target:'million',tval:1e6, tlbl:'1 Million',tshort:'Million'},
+  {code:'GBP', sym:'£',  name:'British Pound',    flag:'🇬🇧', target:'million',tval:1e6, tlbl:'1 Million',tshort:'Million'},
+  {code:'CNY', sym:'¥',  name:'Chinese Yuan',     flag:'🇨🇳', target:'million',tval:1e6, tlbl:'1 Million',tshort:'Million'},
+  {code:'JPY', sym:'¥',  name:'Japanese Yen',     flag:'🇯🇵', target:'million',tval:1e6, tlbl:'1 Million',tshort:'Million'},
+  {code:'AUD', sym:'A$', name:'Australian Dollar',flag:'🇦🇺', target:'million',tval:1e6, tlbl:'1 Million',tshort:'Million'},
+  {code:'CAD', sym:'C$', name:'Canadian Dollar',  flag:'🇨🇦', target:'million',tval:1e6, tlbl:'1 Million',tshort:'Million'},
+  {code:'CHF', sym:'Fr', name:'Swiss Franc',      flag:'🇨🇭', target:'million',tval:1e6, tlbl:'1 Million',tshort:'Million'},
+  {code:'HKD', sym:'HK$',name:'Hong Kong Dollar', flag:'🇭🇰', target:'million',tval:1e6, tlbl:'1 Million',tshort:'Million'},
+  {code:'SGD', sym:'S$', name:'Singapore Dollar', flag:'🇸🇬', target:'million',tval:1e6, tlbl:'1 Million',tshort:'Million'},
+];
+
+let CUR = CURRENCIES[0]; // default INR
+
+function buildCurrencyGrid(){
+  const g = document.getElementById('cur-grid');
+  g.innerHTML = CURRENCIES.map((c,i)=>`
+    <div class="cur-opt ${i===0?'sel':''}" id="copt-${c.code}" onclick="selectCurrency('${c.code}')">
+      <div style="font-size:1.4rem">${c.flag}</div>
+      <div class="csym">${c.sym}</div>
+      <div class="cname">${c.name}</div>
+      <div class="ccode">${c.code}</div>
+    </div>`).join('');
+}
+
+function selectCurrency(code){
+  document.querySelectorAll('.cur-opt').forEach(el=>el.classList.remove('sel'));
+  const el = document.getElementById('copt-'+code);
+  if(el) el.classList.add('sel');
+  CUR = CURRENCIES.find(c=>c.code===code)||CURRENCIES[0];
+  // Auto-confirm immediately — no Continue button needed
+  document.getElementById('cur-modal').style.display='none';
+  applyCurrency();
+}
+
+function applyCurrency(){
+  const s = CUR.sym;
+  // Update all .c-sym spans
+  document.querySelectorAll('.c-sym').forEach(el=>el.textContent=s);
+  // Update nav/menu
+  document.getElementById('nav-sym').textContent=s;
+  document.getElementById('cur-sym-badge').textContent=s;
+  document.getElementById('cur-code-badge').textContent=CUR.code;
+  document.getElementById('menu-sym').textContent=s;
+  document.getElementById('menu-cur-name').textContent=CUR.code+' '+s;
+  document.getElementById('home-sym').textContent=s;
+  document.getElementById('nav-sub').textContent='SMART MONEY TOOLS';
+  // Update First Crore labels
+  const isCrore = CUR.code==='INR';
+  const lbl = isCrore?'First Crore Calculator':'First Million Calculator';
+  document.getElementById('menu-crore-lbl').textContent=lbl;
+  document.getElementById('home-crore-title').textContent=isCrore?'First Crore':'First Million';
+  document.getElementById('home-crore-desc').textContent=isCrore?'When will you hit your first ₹1 Crore?':`When will you hit your first ${s}1 Million?`;
+  document.getElementById('crore-page-em').textContent=isCrore?'My First Crore?':'My First Million?';
+  document.getElementById('cr-rbox-lbl').textContent=isCrore?'Time to Reach First Crore':'Time to Reach First Million';
+  document.getElementById('cr-tbl-title').textContent=isCrore?'Time to First Crore at Different Return Rates':'Time to First Million at Different Return Rates';
+  // Upstox banner — show only for INR
+  const upBanner = document.getElementById('upstox-banner');
+  const upMenu   = document.getElementById('upstox-menu');
+  if(upBanner) upBanner.style.display = CUR.code==='INR' ? 'block' : 'none';
+  if(upMenu)   upMenu.style.display   = CUR.code==='INR' ? 'block' : 'none';
+  // NPS — show only for INR
+  ['menu-nps-item','home-nps-card'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display=CUR.code==='INR'?'':'none'; });
+  // Update Blueprint fund defaults for this currency
+  updateBPFunds();
+  // Re-run any open calculators
+  calcCrore();
+}
+
+/* ─────────────────────────────────────
+   UTILITIES
+───────────────────────────────────── */
+const INR = (v, d=2) => {
+  if(v===null||v===undefined||isNaN(v)||!isFinite(v)) return '—';
+  const a=Math.abs(v), s=v<0?'-':'', sym=CUR.sym;
+  if(CUR.code==='INR'){
+    if(a>=1e7) return s+sym+(a/1e7).toFixed(d)+' Cr';
+    if(a>=1e5) return s+sym+(a/1e5).toFixed(d)+' L';
+    if(a>=1e3) return s+sym+(a/1e3).toFixed(1)+'K';
+    return s+sym+Math.round(a).toLocaleString('en-IN');
+  } else {
+    if(a>=1e9) return s+sym+(a/1e9).toFixed(d)+'B';
+    if(a>=1e6) return s+sym+(a/1e6).toFixed(d)+'M';
+    if(a>=1e3) return s+sym+(a/1e3).toFixed(1)+'K';
+    return s+sym+Math.round(a).toLocaleString();
+  }
+};
+
+const gv = id => parseFloat(document.getElementById(id)?.value)||0;
+const sh = (id,v) => { const e=document.getElementById(id); if(e) e.innerHTML=v; };
+const sd = (id,d) => { const e=document.getElementById(id); if(e) e.style.display=d; };
+const showEl = id => sd(id,'block');
+const hideEl = id => sd(id,'none');
+const fmtM = m => { const y=Math.floor(m/12),mo=Math.round(m%12); return y>0?(y+'y'+(mo>0?' '+mo+'m':'')):(mo+'m'); };
+
+let CH={};
+const dc = id => { if(CH[id]){try{CH[id].destroy();}catch(e){} delete CH[id];} };
+
+const COPTS = () => ({
+  responsive:true, maintainAspectRatio:false,
+  plugins:{
+    legend:{display:false},
+    tooltip:{mode:'index',intersect:false,backgroundColor:()=>_isDark?'#0A0F1E':'#ffffff',titleColor:()=>_isDark?'#94A3B8':'#5A6E8A',bodyColor:()=>_isDark?'#E2E8F0':'#1A2440',borderColor:()=>_isDark?'rgba(255,255,255,0.12)':'rgba(0,0,0,0.12)',borderWidth:1,padding:10,titleFont:{size:12},bodyFont:{size:13},callbacks:{label:c=>' '+c.dataset.label+': '+INR(c.parsed.y)}}
+  },
+  scales:{
+    x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#5A7090',font:{size:11},maxTicksLimit:10}},
+    y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#5A7090',font:{size:11},callback:v=>INR(v,0)}}
+  },
+  interaction:{mode:'index',intersect:false},
+  elements:{line:{borderWidth:2}},
+});
+
+/* ─────────────────────────────────────
+   NAVIGATION
+───────────────────────────────────── */
+const PAGES=['home','si','ci','emi','prepay','bp','retire','fire','infl','crore','swp','nps'];
+function go(p){
+  PAGES.forEach(id=>{ const e=document.getElementById('pg-'+id); if(e) e.classList.remove('on'); });
+  const e=document.getElementById('pg-'+p); if(e) e.classList.add('on');
+  closeMenu(); window.scrollTo(0,0);
+  if(p==='bp') setTimeout(initBP,80);
+}
+function openMenu(){ document.getElementById('sm').classList.add('on'); document.getElementById('ov').classList.add('on'); }
+function closeMenu(){ document.getElementById('sm').classList.remove('on'); document.getElementById('ov').classList.remove('on'); }
+
+/* ─────────────────────────────────────
+   1. SIMPLE INTEREST
+───────────────────────────────────── */
+function calcSI(){
+  const P=gv('si-p'),R=gv('si-r'),T=gv('si-t');
+  if(!P||!R||!T||P<=0||R<=0||T<=0){hideEl('si-out');return;}
+  const SI=(P*R*T)/100, tot=P+SI;
+  showEl('si-out');
+  sh('si-int',INR(SI)); sh('si-tot',INR(tot)); sh('si-pr',INR(P)); sh('si-ie',INR(SI));
+  const tb=document.querySelector('#si-tbl tbody'); tb.innerHTML='';
+  for(let y=1;y<=T;y++){
+    const yi=(P*R)/100, cum=yi*y;
+    tb.innerHTML+=`<tr><td>${y}</td><td class="r g">${INR(yi)}</td><td class="r">${INR(cum)}</td><td class="r ac">${INR(P+cum)}</td></tr>`;
+  }
+}
+
+/* ─────────────────────────────────────
+   2. COMPOUND INTEREST
+───────────────────────────────────── */
+function calcCI(){
+  const init=gv('ci-init'),mo=gv('ci-mo'),rate=gv('ci-rate'),vari=gv('ci-var'),yrs=gv('ci-yrs');
+  let ok=true;
+  ['ci-e1','ci-e2','ci-e3'].forEach(id=>document.getElementById(id).classList.remove('on'));
+  if(!init||init<1){document.getElementById('ci-e1').classList.add('on');ok=false;}
+  if(!rate||rate<0.1||rate>50){document.getElementById('ci-e2').classList.add('on');ok=false;}
+  if(!yrs||yrs<1||yrs>75){document.getElementById('ci-e3').classList.add('on');ok=false;}
+  if(!ok){hideEl('ci-out');return;}
+  const corpus=ciCalc(init,mo,rate,yrs);
+  const bullC=vari>0?ciCalc(init,mo,rate+vari,yrs):null;
+  const bearC=vari>0?ciCalc(init,mo,Math.max(0.1,rate-vari),yrs):null;
+  const invested=init+mo*12*yrs, earned=corpus-invested;
+  showEl('ci-out');
+  sh('ci-corpus',INR(corpus)); sh('ci-inv',INR(invested)); sh('ci-earn',INR(earned));
+  sh('ci-mult',(invested>0?(corpus/invested).toFixed(2):'—')+'x');
+  sh('ci-bull',bullC!==null?INR(bullC):'N/A'); sh('ci-bear',bearC!==null?INR(bearC):'N/A');
+  dc('ci');
+  const labs=[],base=[],bull=[],bear=[];
+  for(let y=0;y<=yrs;y++){
+    labs.push('Yr'+y); base.push(Math.round(ciCalc(init,mo,rate,y)));
+    if(vari>0){bull.push(Math.round(ciCalc(init,mo,rate+vari,y)));bear.push(Math.round(ciCalc(init,mo,Math.max(0.1,rate-vari),y)));}
+  }
+  const ds=[{label:'Base ('+rate+'%)',data:base,borderColor:'#F59E0B',backgroundColor:'rgba(245,158,11,.1)',fill:true,tension:.4,pointRadius:0}];
+  if(vari>0){
+    ds.push({label:'Bull (+'+vari+'%)',data:bull,borderColor:'#10B981',backgroundColor:'rgba(16,185,129,.06)',fill:true,tension:.4,pointRadius:0,borderDash:[5,3]});
+    ds.push({label:'Bear (-'+vari+'%)',data:bear,borderColor:'#F87171',backgroundColor:'rgba(248,113,113,.06)',fill:true,tension:.4,pointRadius:0,borderDash:[5,3]});
+  }
+  const opts=COPTS(); opts.plugins.legend={display:true,labels:{color:'#8AAAC8',font:{size:12},usePointStyle:true,boxWidth:9}};
+  CH['ci']=new Chart(document.getElementById('ci-chart'),{type:'line',data:{labels:labs,datasets:ds},options:opts});
+}
+function ciCalc(init,mo,rate,yrs){const rm=rate/1200;let b=init;for(let m=0;m<yrs*12;m++)b=b*(1+rm)+mo;return b;}
+
+/* ─────────────────────────────────────
+   3. EMI
+───────────────────────────────────── */
+function calcEMI(){
+  const P=gv('emi-p'),rA=gv('emi-r'),T=gv('emi-t');
+  if(!P||!rA||!T||P<=0||rA<=0||T<=0){hideEl('emi-sum');hideEl('emi-tcard');return;}
+  const r=rA/1200,n=T*12,pwr=Math.pow(1+r,n);
+  const emi=P*r*pwr/(pwr-1);
+  if(!isFinite(emi))return;
+  const tot=emi*n,tint=tot-P;
+  showEl('emi-sum'); showEl('emi-tcard');
+  sh('emi-val',INR(emi)); sh('emi-total',INR(tot)); sh('emi-tint',INR(tint)); sh('emi-prr',INR(P));
+  dc('emi');
+  CH['emi']=new Chart(document.getElementById('emi-chart'),{type:'doughnut',data:{labels:['Principal','Interest'],datasets:[{data:[Math.round(P),Math.round(tint)],backgroundColor:['#10B981','#F87171'],borderWidth:0}]},options:{plugins:{legend:{labels:{color:'#8AAAC8',font:{size:13}}}},cutout:'65%',responsive:true,maintainAspectRatio:false}});
+  const tb=document.querySelector('#emi-tbl tbody'); tb.innerHTML='';
+  let bal=P;
+  for(let y=1;y<=T;y++){
+    let yp=0,yi=0;
+    for(let m=0;m<12&&bal>0.01;m++){const ip=bal*r,pp=Math.min(emi-ip,bal);yi+=ip;yp+=pp;bal=Math.max(0,bal-pp);}
+    tb.innerHTML+=`<tr><td>${y}</td><td class="r g">${INR(yp)}</td><td class="r rr">${INR(yi)}</td><td class="r">${INR(yp+yi)}</td><td class="r ac">${INR(Math.max(0,bal))}</td></tr>`;
+  }
+}
+
+/* ─────────────────────────────────────
+   4. PREPAYMENT
+───────────────────────────────────── */
+function calcPrepay(){
+  const P=gv('pp-p'),rA=gv('pp-r'),T=gv('pp-t');
+  if(!P||!rA||!T||P<=0||rA<=0||T<=0){hideEl('pp-base');hideEl('pp-rcard');return;}
+  const r=rA/1200,n=T*12,pwr=Math.pow(1+r,n);
+  const emi=P*r*pwr/(pwr-1);
+  if(!isFinite(emi))return;
+  const bint=emi*n-P;
+  showEl('pp-base'); showEl('pp-rcard');
+  sh('pp-emi',INR(emi)); sh('pp-bint',INR(bint));
+  const tb=document.getElementById('pp-tbody'); tb.innerHTML='';
+  const labs=[],sav=[];
+  for(let ex=1;ex<=10;ex++){
+    const res=ppSim(P,r,emi,ex);
+    const ms=Math.max(0,n-res.m),saved=Math.max(0,bint-res.int);
+    tb.innerHTML+=`<tr><td><strong style="color:var(--ac)">${ex}</strong></td><td class="g">${ms} months</td><td>${fmtM(res.m)}</td><td class="g">${INR(saved)}</td></tr>`;
+    labs.push(ex+' extra'); sav.push(Math.round(saved));
+  }
+  dc('pp');
+  CH['pp']=new Chart(document.getElementById('pp-chart'),{type:'bar',data:{labels:labs,datasets:[{label:'Interest Saved',data:sav,backgroundColor:'rgba(16,185,129,.55)',borderColor:'#10B981',borderWidth:1,borderRadius:6}]},options:COPTS()});
+}
+function ppSim(P,r,emi,ex){let bal=P,m=0,int=0;while(bal>0.01&&m<480){const ip=bal*r,pp=Math.min(Math.max(0,emi-ip),bal);int+=ip;bal=Math.max(0,bal-pp);m++;if(m%12===0&&bal>0)bal=Math.max(0,bal-emi*ex);}return{m,int};}
+
+/* ─────────────────────────────────────
+   5. BLUEPRINT
+───────────────────────────────────── */
+/* ─────────────────────────────────────
+   FUND DATABASE (top 6 per currency/country)
+───────────────────────────────────── */
+const FUND_DB = {
+  INR:[
+    {name:'Original Plan',           cagr:13},
+    {name:'Parag Parikh Flexi Cap',  cagr:21.8},
+    {name:'HDFC Flexi Cap Fund',     cagr:24},
+    {name:'Motilal Oswal Midcap',    cagr:32.08},
+    {name:'HDFC Mid Cap Opp.',       cagr:27.6},
+    {name:'Nippon India Small Cap',  cagr:28.2},
+  ],
+  USD:[
+    {name:'Vanguard S&P 500 (VOO)',          cagr:14.2},
+    {name:'Fidelity Contrafund (FCNTX)',     cagr:15.1},
+    {name:'Invesco QQQ Trust (Tech)',        cagr:17.3},
+    {name:'T. Rowe Price Growth Stock',      cagr:15.8},
+    {name:'American Funds Growth Fund',      cagr:13.9},
+    {name:'Schwab US Large-Cap Growth ETF',  cagr:16.1},
+  ],
+  EUR:[
+    {name:'iShares Core MSCI Europe ETF',   cagr:9.2},
+    {name:'Amundi MSCI Europe ETF',         cagr:9.5},
+    {name:'Xtrackers Euro Stoxx 50 ETF',    cagr:10.1},
+    {name:'HSBC MSCI Europe ETF',           cagr:8.9},
+    {name:'Vanguard FTSE Europe ETF',       cagr:9.4},
+    {name:'BlackRock European Equity',      cagr:10.8},
+  ],
+  GBP:[
+    {name:'Fundsmith Equity Fund',          cagr:14.2},
+    {name:'Vanguard FTSE UK All Share',     cagr:8.1},
+    {name:'iShares Core FTSE 100 ETF',      cagr:7.8},
+    {name:'Baillie Gifford UK Growth',      cagr:12.5},
+    {name:'Lindsell Train UK Equity',       cagr:11.3},
+    {name:'Legal & General UK Index',       cagr:8.4},
+  ],
+  CNY:[
+    {name:'China AMC CSI 300 ETF',         cagr:9.8},
+    {name:'E Fund CSI 300 Index',          cagr:9.5},
+    {name:'Harvest CSI 300 ETF',           cagr:9.2},
+    {name:'China Universal CSI 500',       cagr:11.2},
+    {name:'GF CSI 300 Index Fund',         cagr:9.6},
+    {name:'Bosera CSI All Share ETF',      cagr:8.7},
+  ],
+  JPY:[
+    {name:'Nikko AM TOPIX ETF',             cagr:10.1},
+    {name:'iShares MSCI Japan ETF',         cagr:9.6},
+    {name:'Nomura TOPIX Index Fund',        cagr:9.9},
+    {name:'SBI Japan Small Cap Fund',       cagr:12.3},
+    {name:'Fidelity Japan Growth Fund',     cagr:11.4},
+    {name:'Daiwa S&P/JPX 150 Fund',        cagr:11.8},
+  ],
+  AUD:[
+    {name:'Vanguard Australian Shares ETF', cagr:10.2},
+    {name:'iShares Core S&P/ASX 200 ETF',  cagr:9.6},
+    {name:'BetaShares Australia 200 ETF',   cagr:9.9},
+    {name:'Fidelity Australian Equities',   cagr:11.3},
+    {name:'Perpetual Australian Share',     cagr:10.7},
+    {name:'Ausbil Active Equity Fund',      cagr:12.1},
+  ],
+  CAD:[
+    {name:'iShares S&P/TSX 60 ETF',        cagr:9.2},
+    {name:'Vanguard FTSE Canada ETF',       cagr:9.6},
+    {name:'BMO S&P/TSX Composite ETF',      cagr:9.4},
+    {name:'Mawer Canadian Equity Fund',     cagr:11.2},
+    {name:'RBC Canadian Equity Fund',       cagr:10.1},
+    {name:'TD Canadian Index Fund e-Series',cagr:9.5},
+  ],
+  CHF:[
+    {name:'iShares Swiss Market ETF',       cagr:9.1},
+    {name:'UBS SMI ETF',                    cagr:8.7},
+    {name:'Pictet Swiss Equities Fund',     cagr:10.2},
+    {name:'Julius Baer Swiss Equity',       cagr:9.6},
+    {name:'Swisscanto Equity Fund CH',      cagr:9.0},
+    {name:'ZKB Swiss Equity Fund',          cagr:9.4},
+  ],
+  HKD:[
+    {name:'Tracker Fund of HK (2800)',      cagr:8.4},
+    {name:'iShares MSCI Hong Kong ETF',     cagr:8.1},
+    {name:'CSOP Hang Seng Tech ETF',        cagr:11.5},
+    {name:'Hang Seng Index ETF',            cagr:7.8},
+    {name:'Fidelity HK Growth Fund',        cagr:9.3},
+    {name:'BOCHK HK Equity Fund',           cagr:8.5},
+  ],
+  SGD:[
+    {name:'Nikko AM STI ETF',              cagr:8.1},
+    {name:'SPDR Straits Times Index ETF',  cagr:8.4},
+    {name:'Lion-OCBC Securities STI ETF',  cagr:8.6},
+    {name:'Endowus Core Equities Portfolio',cagr:10.3},
+    {name:'Aberdeen Standard Asia Focus',  cagr:11.2},
+    {name:'Infinity Global Stock Fund',    cagr:12.1},
+  ],
+};
+
+function updateBPFunds(){
+  const db = FUND_DB[CUR.code] || FUND_DB['INR'];
+  bpF = db.map(f=>({...f}));
+  // Re-render fund config if Blueprint is visible
+  if(document.getElementById('fcgrid')?.innerHTML !== '') renderFC();
+  if(bpReady) recalcBP();
+  // Update active fund selector options text
+  const sel=document.getElementById('bp-afund');
+  if(sel){for(let i=0;i<6;i++) if(sel.options[i]) sel.options[i].text=(bpF[i]?.name||'Fund '+(i+1));}
+}
+
+const FC=['#94A3B8','#14B8A6','#EC4899','#6366F1','#10B981','#F59E0B'];
+const DF=[{name:'Original Plan',cagr:13},{name:'Parag Parikh Flexi Cap',cagr:21.8},{name:'HDFC Flexi Cap',cagr:24},{name:'Motilal Oswal Midcap',cagr:32.08},{name:'HDFC Mid Cap Opp.',cagr:27.6},{name:'Nippon India Small Cap',cagr:28.2}];
+const BST={School:{e:'🎒',c:'#60A5FA',t:'start'},UG:{e:'🎓',c:'#A78BFA',t:'start'},PG:{e:'📚',c:'#F472B6',t:'start'},Marriage:{e:'💍',c:'#F59E0B',t:'end'},Retirement:{e:'🌴',c:'#34D399',t:'start'},Custom:{e:'✏️',c:'#FB923C',t:'start'}};
+const YL={4:'Pre-KG',5:'LKG',6:'UKG',7:'Cls 1',8:'Cls 2',9:'Cls 3',10:'Cls 4',11:'Cls 5',12:'Cls 6',13:'Cls 7',14:'Cls 8',15:'Cls 9',16:'Cls 10',17:'Cls 11',18:'Cls 12',19:'UG 1',20:'UG 2',21:'UG 3',22:'UG 4',23:'PG 1',24:'PG 2',28:'Marriage'};
+function yrLbl(y){if(y>=61&&y<=75)return 'Ret.'+(y-60);return YL[y]||'Yr '+y;}
+let bpF=(FUND_DB['INR']||DF).map(f=>({...f})),bpW={},bpInit=1000000,bpYrs=75,bpReady=false,bpCurTab='chart';
+
+function defBPW(){const w={};for(let y=1;y<=75;y++){if(y>=4&&y<=18)w[y]={amount:100000,type:'School',timing:'start'};else if(y>=19&&y<=22)w[y]={amount:500000,type:'UG',timing:'start'};else if(y>=23&&y<=24)w[y]={amount:1000000,type:'PG',timing:'start'};else if(y===28)w[y]={amount:5000000,type:'Marriage',timing:'end'};else if(y>=61&&y<=75)w[y]={amount:2400000,type:'Retirement',timing:'start'};else w[y]={amount:0,type:null,timing:'start'};}return w;}
+function resetFunds(){bpF=[...DF.map(f=>({...f}))];renderFC();recalcBP();}
+function resetBPW(){bpW=defBPW();recalcBP();if(bpCurTab==='table')renderBPT();}
+function clearBPW(){for(let y=1;y<=75;y++)bpW[y]={amount:0,type:null,timing:'start'};recalcBP();if(bpCurTab==='table')renderBPT();}
+function initBP(){if(!bpReady){bpW=defBPW();bpReady=true;}renderFC();renderBPS();recalcBP();}
+
+function renderFC(){
+  const g=document.getElementById('fcgrid');if(!g)return;g.innerHTML='';
+  bpF.forEach((f,i)=>{
+    const c=FC[i],d=document.createElement('div');
+    d.style.cssText=`background:var(--sf);border:1px solid ${c}33;border-left:3px solid ${c};border-radius:10px;padding:12px;display:flex;align-items:center;gap:9px;`;
+    d.innerHTML=`<span style="width:10px;height:10px;border-radius:50%;background:${c};flex-shrink:0;display:inline-block"></span>
+    <div style="flex:1;min-width:0">
+      <input data-fi="${i}" data-fp="name" style="width:100%;background:transparent;border:none;border-bottom:1px solid var(--bd);color:var(--tx);font-size:13px;font-family:var(--mono);outline:none;padding:2px 0;margin-bottom:6px" value="${f.name}" placeholder="Fund Name">
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" data-fi="${i}" data-fp="cagr" step="0.01" style="width:70px;background:rgba(255,255,255,.07);border:1px solid ${c}55;border-radius:6px;color:${c};font-size:14px;font-family:var(--mono);outline:none;padding:4px 7px;text-align:right" value="${f.cagr}">
+        <span style="font-size:11px;color:${c};font-family:var(--mono)">% CAGR</span>
+      </div>
+    </div>`;
+    d.querySelectorAll('input').forEach(inp=>inp.addEventListener('input',function(){const fi=parseInt(this.dataset.fi),fp=this.dataset.fp;if(fp==='name')bpF[fi].name=this.value;else bpF[fi].cagr=parseFloat(this.value)||0;recalcBP();}));
+    g.appendChild(d);
+  });
+}
+
+function renderBPS(){
+  const g=document.getElementById('bpsec');if(!g)return;g.innerHTML='';
+  const secs=[{k:'school',l:'🎒 School',ty:'School',hint:'₹1L/yr per school year'},{k:'ug',l:'🎓 UG',ty:'UG',hint:'₹5L/yr for undergrad'},{k:'pg',l:'📚 PG',ty:'PG',hint:'₹10L/yr for postgrad'},{k:'marriage',l:'💍 Marriage',ty:'Marriage',hint:'One-time marriage corpus'},{k:'retire',l:'🌴 Retirement',ty:'Retirement',hint:'₹2L/mo retirement SWP'},{k:'custom',l:'✏️ Custom',ty:'Custom',hint:'Any custom withdrawal'}];
+  secs.forEach(s=>{
+    const tm=BST[s.ty],wrap=document.createElement('div');
+    wrap.style.cssText=`background:${tm.c}0D;border:1px solid ${tm.c}33;border-radius:10px;padding:12px;`;
+    wrap.innerHTML=`<div style="font-size:13px;color:${tm.c};font-family:var(--mono);font-weight:bold;margin-bottom:9px">${s.l}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:end">
+        <div><div style="font-size:9px;color:var(--mu);margin-bottom:3px">FROM YEAR</div><input type="number" id="bps-f-${s.k}" class="fi" min="1" max="75" placeholder="e.g. 4" style="padding:7px 9px;font-size:12px"></div>
+        <div><div style="font-size:9px;color:var(--mu);margin-bottom:3px">TO YEAR</div><input type="number" id="bps-t-${s.k}" class="fi" min="1" max="75" placeholder="e.g. 18" style="padding:7px 9px;font-size:12px"></div>
+        <div><div style="font-size:9px;color:var(--mu);margin-bottom:3px">AMT/YEAR</div><input type="number" id="bps-a-${s.k}" class="fi" placeholder="100000" style="padding:7px 9px;font-size:12px"></div>
+        <button class="btn bsm" style="background:${tm.c};color:#000;border:none;white-space:nowrap;font-size:12px" onclick="applyBPS('${s.k}','${s.ty}','${tm.t}')">Apply</button>
+      </div>
+      <div style="font-size:10px;color:var(--mu);margin-top:5px;font-family:var(--mono)">💡 ${s.hint}</div>`;
+    g.appendChild(wrap);
+  });
+}
+
+function applyBPS(k,ty,timing){
+  const fr=parseInt(document.getElementById('bps-f-'+k)?.value)||0;
+  const to=parseInt(document.getElementById('bps-t-'+k)?.value)||0;
+  const amt=parseFloat(document.getElementById('bps-a-'+k)?.value)||0;
+  if(!fr||!to||fr>to){alert('Enter valid From and To years (From ≤ To).');return;}
+  for(let y=fr;y<=Math.min(to,75);y++)bpW[y]={amount:amt,type:amt>0?ty:null,timing};
+  recalcBP();if(bpCurTab==='table')renderBPT();
+}
+
+function bpCorpus(cagr,init,w,maxY){
+  const r=cagr/100,rows=[];let bal=init;
+  for(let y=1;y<=maxY;y++){
+    const wd=w[y]||{amount:0,type:null,timing:'start'},op=bal,wa=Math.max(0,wd.amount||0);
+    let cl=wa>0?(wd.timing==='end'?Math.max(0,op*(1+r)-wa):Math.max(0,(op-wa)*(1+r))):op*(1+r);
+    rows.push({y,lbl:yrLbl(y),op:Math.round(op),wa:Math.round(wa),type:wd.type,timing:wd.timing,cl:Math.round(cl)});
+    bal=Math.max(0,cl);
+  }return rows;
+}
+
+function recalcBP(){
+  bpInit=gv('bp-init')||1000000;
+  bpYrs=Math.min(75,Math.max(1,parseInt(document.getElementById('bp-yrs')?.value)||75));
+  const sel=document.getElementById('bp-afund');
+  if(sel){for(let i=0;i<6;i++)if(sel.options[i])sel.options[i].text=(bpF[i]?.name||'Fund '+(i+1));}
+  const all=bpF.map(f=>bpCorpus(f.cagr,bpInit,bpW,bpYrs));
+  let tot=0;for(let y=1;y<=bpYrs;y++)tot+=(bpW[y]?.amount||0);
+  sh('bp-tout',INR(tot));
+  renderBPKPI(all);renderBPChart(all);
+  if(bpCurTab==='table')renderBPT();
+  if(bpCurTab==='compare')renderBPCmp(all);
+}
+
+function renderBPKPI(all){
+  const fi=parseInt(document.getElementById('bp-afund')?.value)||0;
+  const rows=all[fi];if(!rows||!rows.length)return;
+  const strip=document.getElementById('bp-kpi');if(!strip)return;
+  const safe=i=>rows[Math.min(i,rows.length-1)];
+  const kpis=[{l:'🎒 School (Yr 4)',v:safe(3).op,s:'1L/yr×15'},{l:'🎓 UG (Yr 19)',v:safe(18).op,s:'5L/yr×4'},{l:'📚 PG (Yr 23)',v:safe(22).op,s:'10L×2'},{l:'💍 Marriage (Yr 28)',v:safe(27).cl,s:'50L out'},{l:'🌴 Retire (Yr 61)',v:safe(60).op,s:'2L/mo'},{l:'🏆 Final @ Yr '+bpYrs,v:rows[rows.length-1].cl,s:'Legacy corpus'}];
+  strip.innerHTML=kpis.map(k=>`<div class="kpi" style="border-top:3px solid ${FC[fi]}"><div class="kl">${k.l}</div><div class="kv">${INR(k.v)}</div><div class="ks">${k.s}</div></div>`).join('');
+}
+
+function renderBPChart(all){
+  const labs=[];for(let y=1;y<=bpYrs;y++)labs.push('Y'+y);
+  const ds=bpF.map((f,i)=>({label:f.name||'Fund '+(i+1),data:(all[i]||[]).map(r=>r.cl),borderColor:FC[i],backgroundColor:FC[i]+'18',fill:true,tension:.4,pointRadius:0,borderWidth:2}));
+  dc('bp');
+  const ctx=document.getElementById('bp-chart');if(!ctx)return;
+  const opts=COPTS();opts.plugins.legend={display:true,labels:{color:'#8AAAC8',font:{size:12},usePointStyle:true,boxWidth:9}};
+  CH['bp']=new Chart(ctx,{type:'line',data:{labels:labs,datasets:ds},options:opts});
+  const leg=document.getElementById('bp-legend');
+  if(leg)leg.innerHTML=bpF.map((f,i)=>`<span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-family:var(--mono);color:${FC[i]}"><span style="width:9px;height:9px;border-radius:50%;background:${FC[i]};display:inline-block"></span>${f.name||'Fund '+(i+1)} (${f.cagr}%)</span>`).join('');
+}
+
+function renderBPT(){
+  const fi=parseInt(document.getElementById('bp-afund')?.value)||0;
+  const rows=bpCorpus(bpF[fi]?.cagr||13,bpInit,bpW,bpYrs);
+  const tb=document.getElementById('bp-tbody');if(!tb)return;tb.innerHTML='';
+  rows.forEach(row=>{
+    const w=bpW[row.y]||{amount:0,type:null,timing:'start'},tm=w.type?BST[w.type]:null,gr=row.cl-row.op+(row.wa||0);
+    const typeOpts=Object.keys(BST).map(t=>`<option value="${t}"${w.type===t?' selected':''}>${BST[t].e} ${t}</option>`).join('');
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${row.y}</td><td style="color:${tm?tm.c:'var(--mu)'}">${row.lbl}</td><td class="r">${INR(row.op)}</td>
+      <td><input type="number" class="bri" data-yr="${row.y}" value="${w.amount||''}" placeholder="0" style="width:115px"></td>
+      <td><select class="bri" data-yr="${row.y}" data-f="type" style="width:110px"><option value="">—</option>${typeOpts}</select></td>
+      <td><select class="bri" data-yr="${row.y}" data-f="timing" style="width:82px"><option value="start"${w.timing!=='end'?' selected':''}>↑ Start</option><option value="end"${w.timing==='end'?' selected':''}>↓ End</option></select></td>
+      <td class="r ac">${INR(row.cl)}</td><td class="r g">+${INR(gr)}</td>`;
+    tb.appendChild(tr);
+    tr.querySelector('input[data-yr]').addEventListener('change',function(){const y=parseInt(this.dataset.yr);if(!bpW[y])bpW[y]={amount:0,type:null,timing:'start'};bpW[y].amount=parseFloat(this.value)||0;recalcBP();});
+    tr.querySelectorAll('select[data-yr]').forEach(sel=>sel.addEventListener('change',function(){const y=parseInt(this.dataset.yr),f=this.dataset.f;if(!bpW[y])bpW[y]={amount:0,type:null,timing:'start'};bpW[y][f]=this.value||null;if(f==='type'&&!this.value)bpW[y].type=null;recalcBP();}));
+  });
+}
+
+function renderBPCmp(all){
+  if(!all)all=bpF.map(f=>bpCorpus(f.cagr,bpInit,bpW,bpYrs));
+  const maxV=Math.max(...all.map(d=>d.length?d[d.length-1].cl:0),1);
+  const cc=document.getElementById('bp-ccards'),cb=document.getElementById('bp-cbars');if(!cc||!cb)return;
+  cc.innerHTML=bpF.map((f,i)=>{const d=all[i]||[],fin=d.length?d[d.length-1].cl:0;return `<div style="background:var(--sf);border:1px solid ${FC[i]}44;border-radius:11px;padding:14px;cursor:pointer" onclick="document.getElementById('bp-afund').value=${i};recalcBP()"><div style="display:flex;align-items:center;gap:6px;margin-bottom:9px"><span style="width:9px;height:9px;border-radius:50%;background:${FC[i]};display:inline-block"></span><div><div style="font-size:12px;color:var(--tx)">${f.name}</div><div style="font-size:10px;color:var(--mu);font-family:var(--mono)">${f.cagr}% CAGR</div></div></div><div style="font-size:10px;color:var(--mu)">School</div><div style="font-size:12px;font-family:var(--mono);margin-bottom:5px">${INR((d[3]||{op:0}).op)}</div><div style="font-size:10px;color:var(--mu)">Final @ Yr${bpYrs}</div><div style="font-size:14px;font-family:var(--mono);font-weight:bold;color:${FC[i]}">${INR(fin)}</div></div>`;}).join('');
+  cb.innerHTML=bpF.map((f,i)=>{const d=all[i]||[],fin=d.length?d[d.length-1].cl:0,pct=(fin/maxV*100).toFixed(1);return `<div style="margin-bottom:13px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px;color:${FC[i]}">● ${f.name} (${f.cagr}%)</span><span style="font-size:13px;font-family:var(--mono);font-weight:bold;color:${FC[i]}">${INR(fin)}</span></div><div class="pbar"><div class="pfill" style="width:${pct}%;background:${FC[i]};box-shadow:0 0 7px ${FC[i]}55"></div></div></div>`;}).join('');
+}
+
+function bpTab(tab,btn){
+  bpCurTab=tab;
+  ['chart','table','compare'].forEach(t=>sd('bpt-'+t,t===tab?'block':'none'));
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  const all=bpF.map(f=>bpCorpus(f.cagr,bpInit,bpW,bpYrs));
+  if(tab==='table')renderBPT();else if(tab==='compare')renderBPCmp(all);else renderBPChart(all);
+}
+
+/* ─────────────────────────────────────
+   6. RETIREMENT
+───────────────────────────────────── */
+function calcRetire(){
+  const ca=gv('ret-ca'),ra=gv('ret-ra'),le=gv('ret-le')||85,exp=gv('ret-exp'),inf=gv('ret-inf')||6,ret=gv('ret-ret')||12,pr=gv('ret-pr')||7,sv=gv('ret-sv')||0;
+  if(!ca||!ra||!exp||ra<=ca){hideEl('ret-out');return;}
+  const ytr=ra-ca,dur=le-ra;if(dur<=0){hideEl('ret-out');return;}
+  const fe=exp*Math.pow(1+inf/100,ytr),afe=fe*12,rr=pr/100,ri=inf/100,realR=(rr-ri)/(1+ri);
+  const corpus=Math.abs(realR)<0.0001?afe*dur:afe*(1-Math.pow(1+realR,-dur))/realR;
+  const sg=sv*Math.pow(1+ret/100,ytr),short=Math.max(0,corpus-sg),sip=sipNeeded(short,ret,ytr);
+  showEl('ret-out');
+  sh('ret-corpus',INR(corpus));sh('ret-fexp',INR(fe));sh('ret-sip',INR(sip));sh('ret-short',INR(short));sh('ret-yrs',ytr+' years');sh('ret-dur',dur+' years');sh('ret-sg',INR(sg));
+  dc('ret');
+  const labs=[],cd=[],ed=[];
+  for(let y=0;y<=ytr;y++){labs.push('Age '+(ca+y));cd.push(Math.round(sv*Math.pow(1+ret/100,y)+sip*12*((Math.pow(1+ret/100,y)-1)/(ret/100||0.001))));ed.push(Math.round(exp*Math.pow(1+inf/100,y)));}
+  const opts=COPTS();opts.plugins.legend={display:true,labels:{color:'#8AAAC8',font:{size:12}}};
+  CH['ret']=new Chart(document.getElementById('ret-chart'),{type:'line',data:{labels:labs,datasets:[{label:'Projected Corpus',data:cd,borderColor:'#10B981',backgroundColor:'rgba(16,185,129,.1)',fill:true,tension:.4,pointRadius:0},{label:'Monthly Expense',data:ed,borderColor:'#F87171',borderDash:[5,3],fill:false,tension:.4,pointRadius:0}]},options:opts});
+}
+function sipNeeded(t,rate,years){if(t<=0||years<=0)return 0;const r=rate/1200,d=Math.pow(1+r,years*12)-1;return d>0?t*r/d:t/(years*12);}
+
+/* ─────────────────────────────────────
+   7. FIRE
+───────────────────────────────────── */
+function calcFIRE(){
+  const ca=gv('fire-ca'),nw=gv('fire-nw')||0,sv=gv('fire-sv'),exp=gv('fire-exp'),ret=gv('fire-ret')||12,swr=gv('fire-swr')||4;
+  if(!ca||!exp||!ret||!swr){hideEl('fire-out');return;}
+  const fireN=(exp*12*100)/swr;
+  let bal=nw,months=0;const rm=ret/1200;
+  if(bal<fireN){while(bal<fireN&&months<1200){bal=bal*(1+rm)+(sv||0);months++;}}
+  const fireAge=ca+months/12,inc=(fireN*swr/100)/12,sr=sv&&(sv+exp)>0?(sv/(sv+exp)*100):0,prog=Math.min(100,nw/fireN*100);
+  showEl('fire-out');
+  sh('fire-num',INR(fireN));sh('fire-age',fireAge.toFixed(1)+' yrs');sh('fire-yrs',(months/12).toFixed(1)+' years');sh('fire-inc',INR(inc)+'/mo');sh('fire-sr',sr.toFixed(1)+'%');sh('fire-prog',prog.toFixed(1)+'%');
+  document.getElementById('fire-pbar').style.width=prog.toFixed(1)+'%';sh('fire-plbl',INR(fireN));
+  dc('fire');
+  const labs=[],cd=[],td=[];let b=nw;const step=Math.max(1,Math.floor((months||12)/40));
+  for(let m=0;m<=months+step;m+=step){labs.push('Yr '+Math.round(m/12));cd.push(Math.round(b));td.push(Math.round(fireN));for(let i=0;i<step;i++)b=b*(1+rm)+(sv||0);}
+  const opts=COPTS();opts.plugins.legend={display:true,labels:{color:'#8AAAC8',font:{size:12}}};
+  CH['fire']=new Chart(document.getElementById('fire-chart'),{type:'line',data:{labels:labs,datasets:[{label:'Your Corpus',data:cd,borderColor:'#F59E0B',backgroundColor:'rgba(245,158,11,.1)',fill:true,tension:.4,pointRadius:0},{label:'FIRE Number',data:td,borderColor:'#10B981',borderDash:[6,3],fill:false,tension:.4,pointRadius:0}]},options:opts});
+}
+
+/* ─────────────────────────────────────
+   8. INFLATION
+───────────────────────────────────── */
+function calcInfl(){
+  const amt=gv('inf-amt'),rate=gv('inf-rate')||6,yrs=gv('inf-yrs')||20,inv=gv('inf-inv')||12;
+  if(!amt||amt<=0){hideEl('inf-out');return;}
+  const fut=amt*Math.pow(1+rate/100,yrs),realV=amt/Math.pow(1+rate/100,yrs),realR=((1+inv/100)/(1+rate/100)-1)*100,invGrown=amt*Math.pow(1+inv/100,yrs);
+  showEl('inf-out');
+  sh('inf-today',INR(amt));sh('inf-fut',INR(fut));sh('inf-lost',((1-amt/fut)*100).toFixed(1)+'% purchasing power');sh('inf-real',INR(realV));sh('inf-need',INR(invGrown));sh('inf-rr',realR.toFixed(2)+'%');
+  dc('infl');
+  const labs=[],md=[],id2=[];
+  for(let y=0;y<=yrs;y++){labs.push('Yr '+y);md.push(Math.round(amt/Math.pow(1+rate/100,y)));id2.push(Math.round(amt*Math.pow(1+inv/100,y)));}
+  const opts=COPTS();opts.plugins.legend={display:true,labels:{color:'#8AAAC8',font:{size:12}}};
+  CH['infl']=new Chart(document.getElementById('inf-chart'),{type:'line',data:{labels:labs,datasets:[{label:'Real Value (after inflation)',data:md,borderColor:'#F87171',backgroundColor:'rgba(248,113,113,.1)',fill:true,tension:.4,pointRadius:0},{label:'Invested @ '+inv+'%',data:id2,borderColor:'#10B981',backgroundColor:'rgba(16,185,129,.08)',fill:true,tension:.4,pointRadius:0}]},options:opts});
+}
+
+/* ─────────────────────────────────────
+   9. FIRST CRORE / MILLION
+───────────────────────────────────── */
+let crMode_='sip';
+function crMode(m){
+  crMode_=m;
+  sd('cr-sip-g',m==='sip'?'block':'none');sd('cr-lp-g',m==='lump'?'block':'none');
+  document.getElementById('cr-sip-btn').classList.toggle('on',m==='sip');
+  document.getElementById('cr-lp-btn').classList.toggle('on',m==='lump');
+  calcCrore();
+}
+function calcCrore(){
+  const rate=gv('cr-rate'),exist=gv('cr-exist')||0;
+  if(!rate||rate<=0){hideEl('cr-out');return;}
+  const T=CUR.tval, rm=rate/1200;
+  let months=0,invested=0;
+  if(crMode_==='sip'){
+    const sip=gv('cr-sip');if(!sip||sip<=0){hideEl('cr-out');return;}
+    let b=exist;if(b>=T){months=0;invested=exist;}
+    else{while(b<T&&months<1200){b=b*(1+rm)+sip;months++;}invested=exist+sip*months;}
+  } else {
+    const lump=gv('cr-lump');if(!lump||lump<=0){hideEl('cr-out');return;}
+    const tot=exist+lump;
+    if(tot>=T){months=0;invested=tot;}
+    else{months=Math.ceil(Math.log(T/tot)/Math.log(1+rate/100)*12);invested=tot;}
+  }
+  const gains=Math.max(0,T-invested);showEl('cr-out');
+  sh('cr-time',months===0?'Already there!':fmtM(months));sh('cr-inv',INR(invested));sh('cr-gains',INR(gains));sh('cr-roi',invested>0?((gains/invested)*100).toFixed(1)+'%':'—');
+  const tb=document.getElementById('cr-rtbl');tb.innerHTML='';
+  [6,8,10,12,15,18,20,24].forEach(r=>{
+    const rm2=r/1200;let m2=0,inv2=0;
+    if(crMode_==='sip'){const sip=gv('cr-sip');let b=exist;if(b>=T){m2=0;inv2=exist;}else{while(b<T&&m2<1200){b=b*(1+rm2)+sip;m2++;}inv2=exist+sip*m2;}}
+    else{const lump=gv('cr-lump'),tot=exist+lump;if(tot>=T){m2=0;inv2=tot;}else{m2=Math.ceil(Math.log(T/tot)/Math.log(1+r/100)*12);inv2=tot;}}
+    const cls=r===rate?'ac':'';
+    tb.innerHTML+=`<tr><td class="${cls}">${r}%</td><td class="${cls}">${m2===0?'Now':fmtM(m2)}</td><td class="${cls} r">${INR(inv2)}</td><td class="g r">${INR(Math.max(0,T-inv2))}</td></tr>`;
+  });
+  dc('crore');
+  const labs=[],cd=[];const sip2=crMode_==='sip'?gv('cr-sip'):0,lump2=crMode_==='lump'?gv('cr-lump'):0;
+  let b=exist+lump2;const step=Math.max(1,Math.floor((months||12)/30));
+  for(let m=0;m<=Math.min(months||12,600);m+=step){labs.push(fmtM(m||1));cd.push(Math.round(b));for(let i=0;i<step;i++)b=b*(1+rm)+sip2;}
+  CH['crore']=new Chart(document.getElementById('cr-chart'),{type:'line',data:{labels:labs,datasets:[{label:'Corpus Growth',data:cd,borderColor:'#F59E0B',backgroundColor:'rgba(245,158,11,.1)',fill:true,tension:.4,pointRadius:0}]},options:COPTS()});
+}
+
+/* ─────────────────────────────────────
+   10. SWP
+───────────────────────────────────── */
+function calcSWP(){
+  const corpus=gv('swp-c'),mw=gv('swp-w'),ret=gv('swp-r'),inc=gv('swp-inc')||0;
+  if(!corpus||!mw||!ret||corpus<=0||mw<=0||ret<=0){hideEl('swp-out');return;}
+  const rm=ret/1200;let bal=corpus,totOut=0,totRet=0,month=0,curMW=mw;const yd=[];
+  while(bal>0.01&&month<1200){
+    let yOut=0,yRet=0;
+    for(let m=0;m<12&&bal>0.01;m++){const earn=bal*rm;bal+=earn;yRet+=earn;const w=Math.min(curMW,bal);bal-=w;yOut+=w;totOut+=w;}
+    month+=12;totRet+=yRet;
+    yd.push({yr:month/12,mw:Math.round(curMW),tout:Math.round(totOut),ret:Math.round(yRet),cl:Math.round(Math.max(0,bal))});
+    if(bal<=0.01)break;
+    if(inc>0)curMW*=(1+inc/100);
+  }
+  showEl('swp-out');
+  sh('swp-dur',month>=1200?'Perpetual (100+ yrs)':fmtM(month));sh('swp-tout',INR(totOut));sh('swp-rem',INR(Math.max(0,bal)));sh('swp-ret',INR(totRet));
+  const tb=document.getElementById('swp-tbody');tb.innerHTML='';
+  yd.slice(0,100).forEach(d=>{tb.innerHTML+=`<tr><td>${d.yr}</td><td class="r">${INR(d.mw)}</td><td class="r rr">${INR(d.tout)}</td><td class="r g">${INR(d.ret)}</td><td class="r ac">${INR(d.cl)}</td></tr>`;});
+  dc('swp');
+  const opts=COPTS();opts.plugins.legend={display:true,labels:{color:'#8AAAC8',font:{size:12}}};
+  CH['swp']=new Chart(document.getElementById('swp-chart'),{type:'line',data:{labels:yd.map(d=>'Yr '+d.yr),datasets:[{label:'Remaining Corpus',data:yd.map(d=>d.cl),borderColor:'#10B981',backgroundColor:'rgba(16,185,129,.1)',fill:true,tension:.4,pointRadius:0},{label:'Total Withdrawn',data:yd.map(d=>d.tout),borderColor:'#F87171',borderDash:[5,3],fill:false,tension:.4,pointRadius:0}]},options:opts});
+}
+
+/* ─────────────────────────────────────
+   INIT
+───────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', ()=>{
+  buildCurrencyGrid();
+  // Show currency modal on first visit — user click auto-applies
+  document.getElementById('cur-modal').style.display='flex';
+  // Default to INR visually pre-highlighted
+  document.getElementById('copt-INR')?.classList.add('sel');
+});
+
+/* ─────────────────────────────────────
+   11. NPS CALCULATOR
+   Scheme allocation — fixed age slabs (no interpolation):
+   LC75  (High):   18-35→75/10/15 | 36-40→55/20/25 | 41-45→35/30/35 | 46-54→15/40/45 | 55+→15/10/75
+   LC50  (Mod):    18-35→50/30/20 | 36-40→35/35/30 | 41-45→20/40/40 | 46-54→10/40/50 | 55+→10/10/80
+   LC25  (Low):    18-35→25/45/30 | 36-40→15/45/40 | 41-45→10/40/50 | 46-54→5/35/60  | 55+→5/10/85
+   LCAGG (Agg35E): 18-35→75/10/15 | 36-40→65/15/20 | 41-45→55/20/25 | 46-54→45/25/30 | 55+→35/30/35
+   NOTE: LCAGG allocations inferred from PFRDA pattern and (35E/55Y) label —
+         update LC_TABLE.lcagg once official data is confirmed.
+───────────────────────────────────── */
+
+const LC_TABLE={lc75:{18:[75,10,15],19:[75,10,15],20:[75,10,15],21:[75,10,15],22:[75,10,15],23:[75,10,15],24:[75,10,15],25:[75,10,15],26:[75,10,15],27:[75,10,15],28:[75,10,15],29:[75,10,15],30:[75,10,15],31:[75,10,15],32:[75,10,15],33:[75,10,15],34:[75,10,15],35:[75,10,15],36:[71,11,18],37:[67,12,21],38:[63,13,24],39:[59,14,27],40:[55,15,30],41:[51,16,33],42:[47,17,36],43:[43,18,39],44:[39,19,42],45:[35,20,45],46:[32,20,48],47:[29,20,51],48:[26,20,54],49:[23,20,57],50:[20,20,60],51:[19,18,63],52:[18,16,66],53:[17,14,69],54:[16,12,72],55:[15,10,75],56:[15,10,75],57:[15,10,75],58:[15,10,75],59:[15,10,75],60:[15,10,75],61:[15,10,75],62:[15,10,75],63:[15,10,75],64:[15,10,75],65:[15,10,75],66:[15,10,75],67:[15,10,75],68:[15,10,75],69:[15,10,75],70:[15,10,75],71:[15,10,75],72:[15,10,75],73:[15,10,75],74:[15,10,75],75:[15,10,75]},lc50:{18:[50,30,20],19:[50,30,20],20:[50,30,20],21:[50,30,20],22:[50,30,20],23:[50,30,20],24:[50,30,20],25:[50,30,20],26:[50,30,20],27:[50,30,20],28:[50,30,20],29:[50,30,20],30:[50,30,20],31:[50,30,20],32:[50,30,20],33:[50,30,20],34:[50,30,20],35:[50,30,20],36:[48,29,23],37:[46,28,26],38:[44,27,29],39:[42,26,32],40:[40,25,35],41:[38,24,38],42:[36,23,41],43:[34,22,44],44:[32,21,47],45:[30,20,50],46:[28,19,53],47:[26,18,56],48:[24,17,59],49:[22,16,62],50:[20,15,65],51:[18,14,68],52:[16,13,71],53:[14,12,74],54:[12,11,77],55:[10,10,80],56:[10,10,80],57:[10,10,80],58:[10,10,80],59:[10,10,80],60:[10,10,80],61:[10,10,80],62:[10,10,80],63:[10,10,80],64:[10,10,80],65:[10,10,80],66:[10,10,80],67:[10,10,80],68:[10,10,80],69:[10,10,80],70:[10,10,80],71:[10,10,80],72:[10,10,80],73:[10,10,80],74:[10,10,80],75:[10,10,80]},lc25:{18:[25,45,30],19:[25,45,30],20:[25,45,30],21:[25,45,30],22:[25,45,30],23:[25,45,30],24:[25,45,30],25:[25,45,30],26:[25,45,30],27:[25,45,30],28:[25,45,30],29:[25,45,30],30:[25,45,30],31:[25,45,30],32:[25,45,30],33:[25,45,30],34:[25,45,30],35:[25,45,30],36:[24,43,33],37:[23,41,36],38:[22,39,39],39:[21,37,42],40:[20,35,45],41:[19,33,48],42:[18,31,51],43:[17,29,54],44:[16,27,57],45:[15,25,60],46:[14,23,63],47:[13,21,66],48:[12,19,69],49:[11,17,72],50:[10,15,75],51:[9,13,78],52:[8,11,81],53:[7,9,84],54:[6,7,87],55:[5,5,90],56:[5,5,90],57:[5,5,90],58:[5,5,90],59:[5,5,90],60:[5,5,90],61:[5,5,90],62:[5,5,90],63:[5,5,90],64:[5,5,90],65:[5,5,90],66:[5,5,90],67:[5,5,90],68:[5,5,90],69:[5,5,90],70:[5,5,90],71:[5,5,90],72:[5,5,90],73:[5,5,90],74:[5,5,90],75:[5,5,90]},lcagg:{18:[50,30,20],19:[50,30,20],20:[50,30,20],21:[50,30,20],22:[50,30,20],23:[50,30,20],24:[50,30,20],25:[50,30,20],26:[50,30,20],27:[50,30,20],28:[50,30,20],29:[50,30,20],30:[50,30,20],31:[50,30,20],32:[50,30,20],33:[50,30,20],34:[50,30,20],35:[50,30,20],36:[50,30,20],37:[50,30,20],38:[50,30,20],39:[50,30,20],40:[50,30,20],41:[50,30,20],42:[50,30,20],43:[50,30,20],44:[50,30,20],45:[50,30,20],46:[48,28,24],47:[46,26,28],48:[44,24,32],49:[42,22,36],50:[40,20,40],51:[39,18,43],52:[38,16,46],53:[37,14,49],54:[36,12,52],55:[35,10,55],56:[35,10,55],57:[35,10,55],58:[35,10,55],59:[35,10,55],60:[35,10,55],61:[35,10,55],62:[35,10,55],63:[35,10,55],64:[35,10,55],65:[35,10,55],66:[35,10,55],67:[35,10,55],68:[35,10,55],69:[35,10,55],70:[35,10,55],71:[35,10,55],72:[35,10,55],73:[35,10,55],74:[35,10,55],75:[35,10,55]}};
+
+function getLCAlloc(scheme, age) {
+  if (scheme === 'active') return null;
+  const tbl = LC_TABLE[scheme] || LC_TABLE['lc75'];
+  const row  = tbl[Math.min(Math.max(age, 18), 75)] || tbl[55];
+  return { e: row[0], c: row[1], g: row[2] };
+}
+
+/* ── Date helpers ─────────────────────────────────────────────────────────── */
+function npsCurrentAge() {
+  const dob = document.getElementById('nps-dob')?.value;
+  if (!dob) return null;
+  const today = new Date(), d = new Date(dob);
+  let age = today.getFullYear() - d.getFullYear();
+  if (today.getMonth() < d.getMonth() || (today.getMonth() === d.getMonth() && today.getDate() < d.getDate())) age--;
+  return (age >= 18 && age <= 74) ? age : null;
+}
+
+function npsGetDOB() {
+  const v = document.getElementById('nps-dob')?.value;
+  return v ? new Date(v) : null;
+}
+
+/* Returns a Date: year=baseYear, month=birthMonth(0-indexed), day=todayDay */
+function npsBirthMonthDate(baseYear, todayDay, birthMonth) {
+  // Clamp day to valid range for that month
+  const lastDay = new Date(baseYear, birthMonth + 1, 0).getDate();
+  return new Date(baseYear, birthMonth, Math.min(todayDay, lastDay));
+}
+
+/* Add n months to a date, keeping same day-of-month (clamped) */
+function addMonths(date, n) {
+  const d   = new Date(date);
+  const day = date.getDate();
+  d.setMonth(d.getMonth() + n);
+  // If month overflowed, clamp to last day
+  if (d.getDate() !== day) d.setDate(0);
+  return d;
+}
+
+/* Month difference: how many whole months from d1 to d2 */
+function monthsBetween(d1, d2) {
+  return (d2.getFullYear() - d1.getFullYear()) * 12 + (d2.getMonth() - d1.getMonth());
+}
+
+/* ── UI helpers ─────────────────────────────────────────────────────────── */
+function npsOnDOBChange() {
+  const age  = npsCurrentAge();
+  const disp = document.getElementById('nps-age-display');
+  if (age !== null) {
+    disp.style.display = 'block';
+    document.getElementById('nps-cur-age').textContent = age + ' years';
+    npsOnSchemeChange();
+  } else {
+    disp.style.display = 'none';
+  }
+}
+
+function npsOnSchemeChange() {
+  const scheme   = document.getElementById('nps-scheme')?.value;
+  const isActive = scheme === 'active';
+  const age      = npsCurrentAge() || 30;
+  const alloc    = getLCAlloc(scheme, age);
+
+  ['nps-e','nps-c','nps-g'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.readOnly = !isActive;
+    el.style.opacity    = isActive ? '1' : '0.55';
+    el.style.cursor     = isActive ? 'text' : 'not-allowed';
+    el.style.background = isActive ? 'rgba(255,255,255,.06)' : 'rgba(255,255,255,.02)';
+  });
+
+  if (!isActive && alloc) {
+    document.getElementById('nps-e').value = alloc.e;
+    document.getElementById('nps-c').value = alloc.c;
+    document.getElementById('nps-g').value = alloc.g;
+    npsUpdateBar(alloc.e, alloc.c, alloc.g);
+    document.getElementById('nps-alloc-err').style.display = 'none';
+  } else if (isActive) {
+    npsValidateAlloc();
+  }
+}
+
+function npsValidateAlloc() {
+  const e = parseFloat(document.getElementById('nps-e')?.value) || 0;
+  const c = parseFloat(document.getElementById('nps-c')?.value) || 0;
+  const g = parseFloat(document.getElementById('nps-g')?.value) || 0;
+  const total = Math.round((e + c + g) * 100) / 100;
+  const tot   = document.getElementById('nps-alloc-total');
+  const err   = document.getElementById('nps-alloc-err');
+  if (tot) { tot.textContent = 'Total: ' + total + '%'; tot.style.color = total === 100 ? 'var(--gn)' : 'var(--rd)'; }
+  if (err)  err.style.display = (total !== 100) ? 'block' : 'none';
+  npsUpdateBar(e, c, g);
+}
+
+function npsUpdateBar(e, c, g) {
+  const total = (e + c + g) || 100;
+  const ep = (e / total * 100).toFixed(1), cp = (c / total * 100).toFixed(1), gp = (g / total * 100).toFixed(1);
+  const be = document.getElementById('nps-bar-e'), bc = document.getElementById('nps-bar-c'), bg = document.getElementById('nps-bar-g');
+  if (be) be.style.width = ep + '%'; if (bc) bc.style.width = cp + '%'; if (bg) bg.style.width = gp + '%';
+  const le = document.getElementById('nps-bar-e-lbl'), lc2 = document.getElementById('nps-bar-c-lbl'), lg = document.getElementById('nps-bar-g-lbl');
+  if (le) le.textContent = e + '%'; if (lc2) lc2.textContent = c + '%'; if (lg) lg.textContent = g + '%';
+}
+
+function nps_till_change(val) {
+  const v = parseInt(val);
+  document.getElementById('nps-till-lbl').textContent = v;
+  /* Exit age must be >= till age */
+  const exitR = document.getElementById('nps-exit-r');
+  if (exitR && parseInt(exitR.value) < v) {
+    exitR.value = Math.min(v, 75);
+    document.getElementById('nps-exit-lbl').textContent = exitR.value;
+  }
+  if (exitR) exitR.min = v;
+  const warn = document.getElementById('nps-till-warn');
+  const yg   = document.getElementById('nps-yearly-group');
+  const sel  = document.getElementById('nps-till-selected');
+  const show = v < 60;
+  if (warn) warn.style.display = show ? 'block' : 'none';
+  if (yg)   yg.style.display   = show ? 'block' : 'none';
+  if (sel)  sel.textContent    = v;
+}
+
+function npsExitChange(val) {
+  const v     = parseInt(val);
+  const tillR = document.getElementById('nps-till-r');
+  const till  = parseInt(tillR?.value || 60);
+  const clamped = Math.max(v, till);
+  document.getElementById('nps-exit-r').value = clamped;
+  document.getElementById('nps-exit-lbl').textContent = clamped;
+}
+
+function npsCheckCorpus() {
+  const c = parseFloat(document.getElementById('nps-corpus')?.value)  || 0;
+  const m = parseFloat(document.getElementById('nps-monthly')?.value) || 0;
+  const err = document.getElementById('nps-corpus-err');
+  if (err) err.style.display = (c <= 0 && m <= 0) ? 'block' : 'none';
+}
+
+function resetNPS() {
+  ['nps-dob','nps-corpus','nps-monthly','nps-yearly'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  document.getElementById('nps-scheme').value = 'lc75';
+  const sliders = {
+    'nps-ret-r':    { val:'10', lbl:'nps-ret-lbl',    sfx:'%' },
+    'nps-inc-r':    { val:'0',  lbl:'nps-inc-lbl',    sfx:'%' },
+    'nps-exit-r':   { val:'60', lbl:'nps-exit-lbl',   sfx:''  },
+    'nps-ann-r':    { val:'40', lbl:'nps-ann-lbl',    sfx:'%' },
+    'nps-annrate-r':{ val:'6',  lbl:'nps-annrate-lbl',sfx:'%' },
+    'nps-till-r':   { val:'60', lbl:'nps-till-lbl',   sfx:''  },
+  };
+  Object.entries(sliders).forEach(([id,{val,lbl,sfx}]) => {
+    const el = document.getElementById(id); if (el) { el.value = val; if (id==='nps-exit-r') el.min=60; }
+    const lb = document.getElementById(lbl); if (lb) lb.textContent = val + sfx;
+  });
+  ['nps-age-display','nps-till-warn','nps-yearly-group','nps-results','nps-main-err','nps-corpus-err']
+    .forEach(id => { const e=document.getElementById(id); if(e) e.style.display='none'; });
+  npsOnSchemeChange();
+  dc('nps-donut');
+}
+
+/* ── MAIN CALCULATION ──────────────────────────────────────────────────────
+   Contribution model:
+   • First contribution: today's date
+   • Subsequent: same day-of-month, each calendar month
+   • Last contribution: user's birth-month of the "till-age exit year", same day-of-month as today
+   • After contributions stop: corpus grows until "exit age" date (birth-month of exit year, same day)
+   • Annual step-up applied on each anniversary of the first contribution date
+──────────────────────────────────────────────────────────────────────────── */
+function calcNPS() {
+  /* ── 1. Validate inputs ─────────────────────────────────────── */
+  const dob    = npsGetDOB();
+  const curAge = npsCurrentAge();
+  if (!dob || !curAge) { npsErr('Please enter a valid date of birth (age 18–74).'); return; }
+
+  const scheme      = document.getElementById('nps-scheme')?.value || 'lc75';
+  const corpusEx    = Math.max(0, parseFloat(document.getElementById('nps-corpus')?.value)  || 0);
+  const monthlyInit = Math.max(0, parseFloat(document.getElementById('nps-monthly')?.value) || 0);
+  if (corpusEx <= 0 && monthlyInit <= 0) { npsErr('Enter at least an existing corpus or a monthly contribution.'); return; }
+
+  if (scheme === 'active') {
+    const eA = parseFloat(document.getElementById('nps-e')?.value) || 0;
+    const cA = parseFloat(document.getElementById('nps-c')?.value) || 0;
+    const gA = parseFloat(document.getElementById('nps-g')?.value) || 0;
+    if (Math.round((eA + cA + gA) * 100) / 100 !== 100) { npsErr('Equity + Corporate Debt + Govt Bonds must total exactly 100%.'); return; }
+  }
+
+  const tillAge  = parseInt(document.getElementById('nps-till-r')?.value)      || 60;
+  const exitAge  = Math.max(tillAge, parseInt(document.getElementById('nps-exit-r')?.value) || 60);
+  const retRate  = parseFloat(document.getElementById('nps-ret-r')?.value)     || 10;
+  const incRate  = parseFloat(document.getElementById('nps-inc-r')?.value)     || 0;
+  const annPct   = parseFloat(document.getElementById('nps-ann-r')?.value)     || 40;
+  const annRate  = parseFloat(document.getElementById('nps-annrate-r')?.value) || 6;
+  const yearlyMin= Math.max(1000, parseFloat(document.getElementById('nps-yearly')?.value) || 1000);
+
+  const rm = retRate / 1200;   // monthly interest rate
+
+  /* ── 2. Build contribution timeline ─────────────────────────── */
+  const today      = new Date();
+  const todayDay   = today.getDate();
+  const birthMonth = dob.getMonth();   // 0-indexed
+
+  /* Year in which the contributor turns tillAge */
+  const tillYear = dob.getFullYear() + tillAge;
+  /* Last contribution date: birth-month of tillYear, same day as today */
+  const lastContribDate = npsBirthMonthDate(tillYear, todayDay, birthMonth);
+  /* First contribution date: today */
+  const firstContribDate = new Date(today.getFullYear(), today.getMonth(), todayDay);
+
+  /* Year in which contributor turns exitAge — corpus growth ends here */
+  const exitYear    = dob.getFullYear() + exitAge;
+  const exitDate    = npsBirthMonthDate(exitYear, todayDay, birthMonth);
+
+  /* Total months of contribution */
+  const totalContribMonths = Math.max(0, monthsBetween(firstContribDate, lastContribDate) + 1);
+  /* Total months of corpus growth (from today to exit date) */
+  const totalGrowthMonths  = Math.max(0, monthsBetween(firstContribDate, exitDate));
+
+  /* ── 3. Month-by-month simulation ───────────────────────────── */
+  let bal            = corpusEx;
+  let curMonthly     = monthlyInit;
+  let totalInvested  = corpusEx;
+  let anniversaryMo  = 12;   // next step-up after 12 months
+  const monthRows    = [];   // for year-by-year aggregation
+
+  for (let mo = 0; mo < totalGrowthMonths; mo++) {
+    const contribDate   = addMonths(firstContribDate, mo);
+    const contributorAge = curAge + Math.floor(mo / 12);
+    const isContrib      = mo < totalContribMonths;
+
+    /* Annual step-up at each 12-month mark */
+    if (mo > 0 && mo === anniversaryMo && isContrib && incRate > 0) {
+      curMonthly  *= (1 + incRate / 100);
+      anniversaryMo += 12;
+    } else if (mo > 0 && mo % 12 === 0) {
+      anniversaryMo = mo + 12;
+    }
+
+    /* Allocation for this month based on contributor's age */
+    let eA, cA, gA;
+    if (scheme === 'active') {
+      eA = parseFloat(document.getElementById('nps-e')?.value) || 75;
+      cA = parseFloat(document.getElementById('nps-c')?.value) || 10;
+      gA = parseFloat(document.getElementById('nps-g')?.value) || 15;
+    } else {
+      const alloc = getLCAlloc(scheme, contributorAge);
+      eA = alloc.e; cA = alloc.c; gA = alloc.g;
+    }
+
+    const openBal   = bal;
+    const contrib   = isContrib ? curMonthly : 0;
+
+    /* Monthly compounding then add contribution (end-of-month) */
+    bal = bal * (1 + rm) + contrib;
+    totalInvested += contrib;
+
+    monthRows.push({
+      mo, yr: Math.floor(mo / 12) + 1,
+      age: contributorAge,
+      e: eA, c: cA, g: gA,
+      contrib: Math.round(contrib),
+      growth:  Math.round(bal - openBal - contrib),
+      closing: Math.round(bal),
+    });
+  }
+
+  /* After last month-row: check for residual months where only existing min applies (till < 60) */
+  /* (Already handled in loop by isContrib flag via totalContribMonths) */
+
+  const FV         = Math.round(bal);
+  const totalGains = Math.max(0, FV - totalInvested);
+  const annuityAmt = Math.round(FV * annPct / 100);
+  const lumpSum    = FV - annuityAmt;
+  const monthlyPens= Math.round(annuityAmt * annRate / 1200);
+
+  npsHideErr();
+
+  /* ── 4. Build year-level summary rows ───────────────────────── */
+  const yearMap = {};
+  monthRows.forEach(mr => {
+    if (!yearMap[mr.yr]) yearMap[mr.yr] = { age:mr.age, e:mr.e, c:mr.c, g:mr.g, contrib:0, growth:0, closing:0 };
+    yearMap[mr.yr].contrib  += mr.contrib;
+    yearMap[mr.yr].growth   += mr.growth;
+    yearMap[mr.yr].closing   = mr.closing;
+    yearMap[mr.yr].e = mr.e; yearMap[mr.yr].c = mr.c; yearMap[mr.yr].g = mr.g;
+  });
+
+  /* ── 5. Render summary KPIs ─────────────────────────────────── */
+  document.getElementById('nps-results').style.display = 'block';
+  sh('nps-fv-big',     INR(FV));
+  const contribPeriodYrs = (totalContribMonths / 12).toFixed(1);
+  const growthPeriodYrs  = (totalGrowthMonths  / 12).toFixed(1);
+  sh('nps-fv-sub',
+    'Exit age ' + exitAge + ' &nbsp;|&nbsp; ' +
+    contribPeriodYrs + ' yrs contributing (' + totalContribMonths + ' months)' +
+    ' &nbsp;|&nbsp; ' + growthPeriodYrs + ' yrs total growth &nbsp;|&nbsp; ' +
+    retRate + '% p.a.'
+  );
+  sh('nps-r-invested', INR(Math.round(totalInvested)));
+  sh('nps-r-gains',    INR(totalGains));
+  sh('nps-r-lumpsum',  annPct >= 100 ? '₹0 (100% Annuity chosen)' : INR(lumpSum));
+  sh('nps-r-annuity',  INR(annuityAmt));
+  sh('nps-r-pension',
+    INR(monthlyPens) + '<span style="font-size:12px;font-weight:normal;color:var(--mu)"> / month</span>'
+  );
+  sh('nps-donut-val', INR(FV));
+
+  /* ── 6. Summary table ────────────────────────────────────────── */
+  const stb = document.getElementById('nps-sum-tbody'); stb.innerHTML = '';
+  const pct = v => FV > 0 ? (v / FV * 100).toFixed(1) + '%' : '—';
+  const sumRows = [
+    { name:'🏛️  Total NPS Corpus (FV)',            val:FV,                       pct:'100%',          color:'var(--ac)', bold:true  },
+    { name:'💳  Total Contributions Made',           val:Math.round(totalInvested),pct:pct(totalInvested),color:'#60A5FA',  bold:false },
+    { name:'📈  Total Investment Gains',             val:totalGains,               pct:pct(totalGains),  color:'var(--gn)', bold:false },
+    { name:'💜  Annuity Corpus (' + annPct + '%)', val:annuityAmt,               pct:pct(annuityAmt),  color:'#A78BFA',  bold:false },
+    { name:'🟡  Lump Sum (Tax-free)',                val:lumpSum,                  pct:pct(lumpSum),     color:'#F59E0B',  bold:false, hide:annPct>=100 },
+    { name:'🟢  Estimated Monthly Pension',          val:monthlyPens,              pct:'— /mo',          color:'var(--gn)', bold:true  },
+  ];
+  sumRows.filter(r => !r.hide).forEach(r => {
+    stb.innerHTML += `<tr>
+      <td style="color:${r.color};${r.bold?'font-weight:bold':''}">${r.name}</td>
+      <td class="r" style="color:${r.color};${r.bold?'font-weight:bold':''}">${INR(r.val)}</td>
+      <td class="r" style="color:var(--mu);font-size:11px">${r.pct}</td>
+    </tr>`;
+  });
+
+  /* ── 7. Year-by-year table ───────────────────────────────────── */
+  const ytb = document.getElementById('nps-yr-tbody'); ytb.innerHTML = '';
+  Object.entries(yearMap).forEach(([yr, row]) => {
+    ytb.innerHTML += `<tr>
+      <td>${yr}</td>
+      <td style="font-weight:bold">${row.age}</td>
+      <td style="font-size:10px;color:var(--mu)">${row.e}% / ${row.c}% / ${row.g}%</td>
+      <td class="r">${row.contrib > 0 ? INR(row.contrib / 12) + '/mo' : '—'}</td>
+      <td class="r g">${row.contrib > 0 ? INR(row.contrib) : '—'}</td>
+      <td class="r" style="color:var(--ac)">${INR(row.growth)}</td>
+      <td class="r ac" style="font-weight:bold">${INR(row.closing)}</td>
+    </tr>`;
+  });
+
+  /* ── 8. 3-Ring Donut Chart ───────────────────────────────────── */
+  dc('nps-donut');
+  const ctx = document.getElementById('nps-donut'); if (!ctx) return;
+
+  const midData    = annPct >= 100 ? [annuityAmt]       : [lumpSum, annuityAmt];
+  const midLabels  = annPct >= 100 ? ['Annuity (100%)'] : ['Lump Sum', 'Annuity'];
+  const midBg      = annPct >= 100 ? ['rgba(167,139,250,0.8)'] : ['rgba(245,158,11,0.8)', 'rgba(167,139,250,0.8)'];
+  const midBorder  = annPct >= 100 ? ['#A78BFA']        : ['#F59E0B', '#A78BFA'];
+
+  CH['nps-donut'] = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      datasets: [
+        /* OUTER — Invested vs Gains */
+        { label:'Outer: Composition',
+          data: [Math.round(totalInvested), totalGains],
+          backgroundColor: ['rgba(96,165,250,0.75)', 'rgba(16,185,129,0.75)'],
+          borderColor:     ['#60A5FA', '#10B981'], borderWidth:2,
+          hoverBackgroundColor:['#60A5FA','#10B981'], hoverOffset:18, weight:3 },
+        /* MIDDLE — Lump Sum vs Annuity */
+        { label:'Middle: Allocation',
+          data: midData, backgroundColor: midBg, borderColor: midBorder, borderWidth:2,
+          hoverBackgroundColor: midBorder, hoverOffset:14, weight:2 },
+        /* INNER — Total Corpus glow */
+        { label:'Inner: Total Corpus',
+          data: [FV], backgroundColor:['rgba(245,158,11,0.18)'],
+          borderColor:['#F59E0B'], borderWidth:2,
+          hoverBackgroundColor:['rgba(245,158,11,0.35)'], hoverOffset:10, weight:1 },
+      ],
+      labels: ['Total Invested','Total Gains', ...midLabels, 'Total Corpus']
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false, cutout:'28%',
+      plugins: {
+        legend: {
+          display:true, position:'bottom',
+          labels:{
+            color:'#8AAAC8', font:{size:11}, usePointStyle:true, pointStyleWidth:12, padding:14,
+            generateLabels: () => [
+              {text:'Total Invested',  fillStyle:'#60A5FA', strokeStyle:'#60A5FA', lineWidth:0, pointStyle:'circle'},
+              {text:'Total Gains',     fillStyle:'#10B981', strokeStyle:'#10B981', lineWidth:0, pointStyle:'circle'},
+              ...midLabels.map((l,i)=>({text:l, fillStyle:midBorder[i], strokeStyle:midBorder[i], lineWidth:0, pointStyle:'circle'})),
+              {text:'Total Corpus',   fillStyle:'#F59E0B', strokeStyle:'#F59E0B', lineWidth:0, pointStyle:'circle'},
+            ]
+          }
+        },
+        tooltip: {
+          callbacks: {
+            title: ctx2 => {
+              const ds = ctx2[0]?.datasetIndex;
+              return ds===0 ? 'Outer Ring — Composition' : ds===1 ? 'Middle Ring — Allocation' : 'Inner Ring — Total Corpus';
+            },
+            label: ctx2 => {
+              const val  = ctx2.raw;
+              const p    = FV > 0 ? (val / FV * 100).toFixed(1) : '—';
+              const nm   = ctx2.datasetIndex===0 ? ['Total Invested','Total Gains'][ctx2.dataIndex]
+                         : ctx2.datasetIndex===1 ? midLabels[ctx2.dataIndex]
+                         : 'Total Corpus';
+              return ' ' + nm + ': ' + INR(val) + ' (' + p + '%)';
+            }
+          },
+          backgroundColor:'#0A0F1E', titleColor:'#94A3B8', bodyColor:'#E2E8F0',
+          borderColor:'rgba(255,255,255,.12)', borderWidth:1, padding:12,
+          titleFont:{size:11}, bodyFont:{size:13}
+        }
+      }
+    }
+  });
+
+  document.getElementById('nps-results').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function npsErr(msg)  { const e=document.getElementById('nps-main-err');  if(e){e.textContent=msg; e.style.display='block';} }
+function npsHideErr() { const e=document.getElementById('nps-main-err');  if(e) e.style.display='none'; }
+
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => { try { npsOnSchemeChange(); } catch(ex) {} }, 500);
+});
+
+/* ─────────────────────────────────────
+   THEME TOGGLE (Dark / Light Mode)
+───────────────────────────────────── */
+let _isDark = true;  // default dark
+
+function toggleTheme() {
+  _isDark = !_isDark;
+  applyTheme(_isDark);
+  try { localStorage.setItem('mfn-theme', _isDark ? 'dark' : 'light'); } catch(e) {}
+}
+
+function applyTheme(dark) {
+  if (dark) {
+    document.documentElement.classList.remove('light');
+  } else {
+    document.documentElement.classList.add('light');
+  }
+  _isDark = dark;
+  // Update chart tooltip colours to match theme
+  if (typeof Chart !== 'undefined') {
+    Chart.defaults.color = dark ? '#8AAAC8' : '#5A6E8A';
+    // Refresh any open charts with new tooltip bg
+    Object.values(CH || {}).forEach(ch => {
+      try {
+        if (ch.options?.plugins?.tooltip) {
+          ch.options.plugins.tooltip.backgroundColor = dark ? '#0A0F1E' : '#ffffff';
+          ch.options.plugins.tooltip.titleColor      = dark ? '#94A3B8' : '#5A6E8A';
+          ch.options.plugins.tooltip.bodyColor       = dark ? '#E2E8F0' : '#1A2440';
+          ch.options.plugins.tooltip.borderColor     = dark ? 'rgba(255,255,255,.12)' : 'rgba(0,0,0,.12)';
+          ch.update('none');
+        }
+      } catch(e) {}
+    });
+  }
+}
+
+// Restore saved theme preference on load
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    const saved = localStorage.getItem('mfn-theme');
+    if (saved === 'light') {
+      _isDark = false;
+      applyTheme(false);
+    }
+  } catch(e) {}
+});
+
+</script>
+</body>
+</html>

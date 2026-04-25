@@ -1,0 +1,620 @@
+<!-- © 2025 My Finance Nest. All rights reserved. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="My Finance Nest — Child's Future & Retirement Blueprint: 75-year wealth projection with 6 mutual funds, customizable withdrawals & year horizon.">
+<meta name="keywords" content="retirement blueprint, child future planning, SIP calculator, mutual fund projection, CAGR calculator, India">
+<meta name="author" content="My Finance Nest">
+<meta property="og:title" content="Child's Future & Retirement Blueprint — My Finance Nest">
+<meta property="og:description" content="75-year wealth projection with 6 mutual funds, customizable withdrawals & year horizon.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.myfinnest.com/calculators/blueprint.html">
+<meta name="robots" content="index, follow">
+<title>Child's Future & Retirement Blueprint | My Finance Nest</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23060B14'/><text y='72' x='50' text-anchor='middle' font-size='64' font-family='system-ui'>🪺</text></svg>">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3885698230040302" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="../styles/blueprint.css">
+</head>
+<body>
+
+
+
+<!-- NAV -->
+<nav>
+  <div class="hbg" onclick="openMenu()" aria-label="Menu" role="button" tabindex="0" onkeydown="if(event.key==='Enter')openMenu()">
+    <span></span><span></span><span></span>
+  </div>
+  <div class="brand" onclick="go('home')">
+    <span id="nav-sym">₹</span> My Finance Nest
+    <small id="nav-sub">SMART MONEY TOOLS</small>
+  </div>
+  <div class="nav-right">
+    
+    <div class="nav-links"><a href="../terms_privacy/about.html" target="_blank" rel="noopener" data-icon="about"><span class="nav-lbl">About</span></a><a href="../terms_privacy/disclaimer.html" target="_blank" rel="noopener" data-icon="disclaimer"><span class="nav-lbl">Disclaimer</span></a><a href="../terms_privacy/privacy.html" target="_blank" rel="noopener" data-icon="privacy"><span class="nav-lbl">Privacy</span></a><a href="../terms_privacy/terms.html" target="_blank" rel="noopener" data-icon="terms"><span class="nav-lbl">Terms</span></a></div><button class="tt" id="theme-toggle" onclick="toggleTheme()"><span class="ttd">🌙</span><span class="ttl">☀️</span></button>
+  </div>
+</nav>
+
+<!-- OVERLAY + SIDE MENU -->
+<div class="ov" id="ov" onclick="closeMenu()"></div>
+<div class="sm" id="sm">
+  <div class="mhdr">
+    <span class="mhdr-brand"><span id="menu-sym">₹</span> My Finance Nest</span>
+    <button class="mclose" onclick="closeMenu()">✕</button>
+  </div>
+  
+  <div class="mi" onclick="go('home')"><div class="ic">🏠</div><div class="lb">Home</div></div>
+  <hr class="mdiv">
+  <div class="mi" onclick="go('si')"><div class="ic">📐</div><div class="lb">Simple Interest Calculator</div></div>
+  <div class="mi" onclick="go('ci')"><div class="ic">📈</div><div class="lb">Compound Interest Calculator</div></div>
+  <div class="mi" onclick="go('emi')"><div class="ic">🏦</div><div class="lb">EMI Calculator</div></div>
+  <div class="mi" onclick="go('prepay')"><div class="ic">💳</div><div class="lb">Loan Prepayment Calculator</div></div>
+  <div class="mi act" onclick="go('bp')"><div class="ic">🌳</div><div class="lb">Child's Future &amp; Retirement</div></div>
+  <div class="mi" onclick="go('retire')"><div class="ic">🌴</div><div class="lb">Retirement Planning Calculator</div></div>
+  <div class="mi" onclick="go('fire')"><div class="ic">🔥</div><div class="lb">FIRE Calculator</div></div>
+  <div class="mi" onclick="go('infl')"><div class="ic">📊</div><div class="lb">Inflation Calculator</div></div>
+  <div class="mi" id="menu-crore-item" onclick="go('crore')"><div class="ic">🏆</div><div class="lb" id="menu-crore-lbl">First Crore Calculator</div></div>
+  <div class="mi" onclick="go('swp')"><div class="ic">💸</div><div class="lb">SWP Calculator</div></div>
+  <div class="mi" id="menu-nps-item" onclick="go('nps')"><div class="ic">🏛️</div><div class="lb">NPS Calculator</div></div>
+  <hr class="mdiv">
+  <hr class="mdiv"><div class="mi" onclick="window.open('../terms_privacy/about.html','_blank')"><div class="ic">🌱</div><div class="lb">About Us</div></div><div class="mi" onclick="window.open('../terms_privacy/disclaimer.html','_blank')"><div class="ic">⚠️</div><div class="lb">Disclaimer</div></div><div class="mi" onclick="window.open('../terms_privacy/privacy.html','_blank')"><div class="ic">🔒</div><div class="lb">Privacy Policy</div></div><div class="mi" onclick="window.open('../terms_privacy/terms.html','_blank')"><div class="ic">📜</div><div class="lb">Terms of Use</div></div><div id="upstox-menu" style="display:block;padding:10px 16px">
+    <a href="https://upstox.onelink.me/0H1s/FY9686" target="_blank" rel="noopener sponsored" style="text-decoration:none;display:block">
+      <div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.22);border-radius:11px;padding:12px 13px;transition:border-color .2s" onmouseover="this.style.borderColor='#F59E0B'" onmouseout="this.style.borderColor='rgba(245,158,11,.22)'">
+        <div style="font-size:12px;font-weight:700;color:var(--ac);margin-bottom:4px">📈 Open a Demat Account — Upstox</div>
+        <div style="font-size:10px;color:var(--mu);line-height:1.5;margin-bottom:6px">₹0 delivery brokerage. Start investing in stocks &amp; mutual funds today.</div>
+        <div style="font-size:9px;color:var(--dm);line-height:1.5;font-style:italic;margin-bottom:7px">🙏 Signing up via our link costs you nothing extra — it helps us keep this website free and build more tools for you.</div>
+        <div style="background:var(--ac);color:#000;font-weight:bold;font-size:10px;padding:6px 12px;border-radius:7px;text-align:center;font-family:var(--mono)">Open Free Account →</div>
+      </div>
+    </a>
+  </div>
+  <div style="padding:10px 16px;font-size:10px;color:var(--dm);font-family:var(--mono);line-height:1.5">⚠️ Educational use only.<br>Not financial advice.</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     BLUEPRINT PAGE
+══════════════════════════════════════ -->
+<div class="pg" id="pg-bp">
+  <div class="wrap-wide">
+    <div class="back" onclick="go('home')">← Home</div>
+    <div class="phdr">
+      <h2>🌳 Child's Future &amp; <em>Retirement Blueprint</em></h2>
+      <p>75-year wealth projection — customizable funds, withdrawals &amp; year horizon</p>
+    </div>
+
+    <!-- Fund Configuration -->
+    <div class="card" style="margin-bottom:13px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:13px">
+        <div class="ctitle" style="margin-bottom:0">Mutual Fund Configuration — Edit Fund Name &amp; CAGR</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn bout bsm" onclick="resetFunds()">↩ Reset Defaults</button>
+          <button class="btn bprim bsm" onclick="recalcBP()">⚡ Recalculate</button>
+        </div>
+      </div>
+      <div id="fcgrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px"></div>
+    </div>
+
+    <!-- Controls Row -->
+    <div class="g3" style="margin-bottom:13px">
+      <div class="card">
+        <div class="ctitle">Initial Investment</div>
+        <div class="pfx"><span class="px c-sym">₹</span><input class="fi" id="bp-init" type="number" value="1000000" min="1000" oninput="recalcBP()"></div>
+        <div class="sw" style="margin-top:9px">
+          <input type="range" min="100000" max="50000000" step="100000" value="1000000" oninput="document.getElementById('bp-init').value=this.value;recalcBP()">
+          <div class="sl"><span>1L</span><span>5Cr</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ctitle">Year Horizon: <strong id="bp-yr-lbl" style="color:var(--ac)">75</strong> yrs</div>
+        <div class="sw">
+          <input type="range" min="1" max="75" value="75" id="bp-yrs-r" oninput="document.getElementById('bp-yr-lbl').textContent=this.value;document.getElementById('bp-yrs').value=this.value;recalcBP()">
+          <div class="sl"><span>1</span><span>75</span></div>
+        </div>
+        <div class="sfx" style="margin-top:8px">
+          <span class="sx">yrs</span>
+          <input class="fi" id="bp-yrs" type="number" value="75" min="1" max="75" oninput="this.value=Math.min(75,Math.max(1,this.value||1));document.getElementById('bp-yrs-r').value=this.value;document.getElementById('bp-yr-lbl').textContent=this.value;recalcBP()">
+        </div>
+      </div>
+      <div class="card">
+        <div class="ctitle">Active Fund for Table / KPI</div>
+        <!-- Options populated dynamically on load with real fund names -->
+        <select class="fsel" id="bp-afund" onchange="recalcBP()">
+          <option value="0">Original Plan</option>
+          <option value="1">Parag Parikh Flexi Cap</option>
+          <option value="2">HDFC Flexi Cap Fund</option>
+          <option value="3">Motilal Oswal Midcap</option>
+          <option value="4">HDFC Mid Cap Opp.</option>
+          <option value="5">Nippon India Small Cap</option>
+        </select>
+        <div style="margin-top:10px;font-size:var(--fs-sm);color:var(--mu);font-family:var(--mono)">Total Withdrawn: <strong id="bp-tout" style="color:var(--rd)">—</strong></div>
+      </div>
+    </div>
+
+    <!-- Section Bulk Fill -->
+    <div class="card" style="margin-bottom:13px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:13px">
+        <div class="ctitle" style="margin-bottom:0">Section Bulk Fill — Populate Multiple Years At Once</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn bout bsm" onclick="resetBPW()">↩ Reset to Defaults</button>
+          <button class="btn bsm" style="background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.3);color:var(--rd)" onclick="clearBPW()">🗑 Clear All</button>
+        </div>
+      </div>
+      <div id="bpsec" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px"></div>
+    </div>
+
+    <!-- KPI Strip -->
+    <div class="kstrip" id="bp-kpi"></div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tbtn on" onclick="bpTab('chart',this)">📈 Chart</button>
+      <button class="tbtn" onclick="bpTab('table',this)">📋 Year Table</button>
+      <button class="tbtn" onclick="bpTab('compare',this)">⚖️ Compare Funds</button>
+    </div>
+
+    <!-- Chart Tab -->
+    <div id="bpt-chart">
+      <div class="cbox" style="margin-bottom:13px"><canvas id="bp-chart" height="340"></canvas></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap" id="bp-legend"></div>
+    </div>
+
+    <!-- Table Tab -->
+    <div id="bpt-table" style="display:none">
+      <div style="max-height:500px;overflow-y:auto;overflow-x:auto;border-radius:10px;border:1px solid var(--bd)">
+        <table id="bp-tbl">
+          <thead><tr><th>Yr</th><th>Phase</th><th>Opening</th><th>Withdrawal ✏️</th><th>Type</th><th>Timing</th><th>Closing</th><th>Growth</th></tr></thead>
+          <tbody id="bp-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Compare Tab -->
+    <div id="bpt-compare" style="display:none">
+      <div id="bp-ccards" style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:15px"></div>
+      <div class="card">
+        <div class="ctitle">Final Corpus at Year Horizon — All Funds</div>
+        <div id="bp-cbars"></div>
+      </div>
+    </div>
+
+    <div class="disc">⚠️ Projections use historical CAGR. Past performance is not indicative of future returns. Not financial advice.</div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+/* ─────────────────────────────────────
+   CURRENCY CONFIG — INR only
+───────────────────────────────────── */
+const CURRENCIES = [
+  {code:'INR', sym:'₹', name:'Indian Rupee', flag:'🇮🇳', target:'crore', tval:1e7, tlbl:'1 Crore', tshort:'Crore'},
+];
+
+let CUR = CURRENCIES[0]; // always INR
+
+// Stubs — modal is removed; these are kept so any lingering references don't crash
+function buildCurrencyGrid(){ /* no-op: currency modal removed */ }
+function selectCurrency(code){ applyCurrency(); }
+
+function applyCurrency(){
+  const s = CUR.sym; // always ₹
+  document.querySelectorAll('.c-sym').forEach(el => el.textContent = s);
+  const setEl = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
+  setEl('nav-sym',       s);
+  setEl('cur-sym-badge', s);
+  setEl('cur-code-badge', 'INR');
+  setEl('menu-sym',      s);
+  setEl('nav-sub',       'SMART MONEY TOOLS');
+  setEl('menu-crore-lbl', 'First Crore Calculator');
+  const upMenu = document.getElementById('upstox-menu');
+  if (upMenu) upMenu.style.display = 'block';
+  const npsItem = document.getElementById('menu-nps-item');
+  if (npsItem) npsItem.style.display = '';
+  updateBPFunds();
+}
+
+/* ─────────────────────────────────────
+   UTILITIES
+───────────────────────────────────── */
+const INR = (v, d=2) => {
+  if (v===null||v===undefined||isNaN(v)||!isFinite(v)) return '—';
+  const a=Math.abs(v), sg=v<0?'-':'', sym=CUR.sym;
+  if (a>=1e7) return sg+sym+(a/1e7).toFixed(d)+' Cr';
+  if (a>=1e5) return sg+sym+(a/1e5).toFixed(d)+' L';
+  if (a>=1e3) return sg+sym+(a/1e3).toFixed(1)+'K';
+  return sg+sym+Math.round(a).toLocaleString('en-IN');
+};
+
+const gv = id => parseFloat(document.getElementById(id)?.value)||0;
+const sh = (id,v) => { const e=document.getElementById(id); if(e) e.innerHTML=v; };
+const sd = (id,d) => { const e=document.getElementById(id); if(e) e.style.display=d; };
+
+let CH={};
+const dc = id => { if(CH[id]){try{CH[id].destroy();}catch(e){} delete CH[id];} };
+
+const COPTS = () => ({
+  responsive:true, maintainAspectRatio:false,
+  plugins:{
+    legend:{display:false},
+    tooltip:{mode:'index',intersect:false,
+      backgroundColor:()=>_isDark?'#0A0F1E':'#ffffff',
+      titleColor:()=>_isDark?'#94A3B8':'#5A6E8A',
+      bodyColor:()=>_isDark?'#E2E8F0':'#1A2440',
+      borderColor:()=>_isDark?'rgba(255,255,255,0.12)':'rgba(0,0,0,0.12)',
+      borderWidth:1,padding:10,titleFont:{size:12},bodyFont:{size:13},
+      callbacks:{label:c=>' '+c.dataset.label+': '+INR(c.parsed.y)}}
+  },
+  scales:{
+    x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#5A7090',font:{size:11},maxTicksLimit:10}},
+    y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#5A7090',font:{size:11},callback:v=>INR(v,0)}}
+  },
+  interaction:{mode:'index',intersect:false},
+  elements:{line:{borderWidth:2}},
+});
+
+/* ─────────────────────────────────────
+   NAVIGATION
+───────────────────────────────────── */
+function openMenu(){ document.getElementById('sm').classList.add('on'); document.getElementById('ov').classList.add('on'); }
+function closeMenu(){ document.getElementById('sm').classList.remove('on'); document.getElementById('ov').classList.remove('on'); }
+
+/* go() is overridden below by FILE_MAP routing */
+function go(p){ window.scrollTo(0,0); }
+
+
+/* ─────────────────────────────────────
+   5. BLUEPRINT
+───────────────────────────────────── */
+const FUND_DB = {
+  INR:[
+    {name:'Original Plan',           cagr:13},
+    {name:'Parag Parikh Flexi Cap',  cagr:21.8},
+    {name:'HDFC Flexi Cap Fund',     cagr:24},
+    {name:'Motilal Oswal Midcap',    cagr:32.08},
+    {name:'HDFC Mid Cap Opp.',       cagr:27.6},
+    {name:'Nippon India Small Cap',  cagr:28.2},
+  ],
+};
+
+const FC = ['#94A3B8','#14B8A6','#EC4899','#6366F1','#10B981','#F59E0B'];
+const DF = [
+  {name:'Original Plan',          cagr:13},
+  {name:'Parag Parikh Flexi Cap', cagr:21.8},
+  {name:'HDFC Flexi Cap',         cagr:24},
+  {name:'Motilal Oswal Midcap',   cagr:32.08},
+  {name:'HDFC Mid Cap Opp.',      cagr:27.6},
+  {name:'Nippon India Small Cap', cagr:28.2},
+];
+const BST = {
+  School:     {e:'🎒',c:'#60A5FA',t:'start'},
+  UG:         {e:'🎓',c:'#A78BFA',t:'start'},
+  PG:         {e:'📚',c:'#F472B6',t:'start'},
+  Marriage:   {e:'💍',c:'#F59E0B',t:'end'},
+  Retirement: {e:'🌴',c:'#34D399',t:'start'},
+  Custom:     {e:'✏️',c:'#FB923C',t:'start'},
+};
+const YL = {4:'Pre-KG',5:'LKG',6:'UKG',7:'Cls 1',8:'Cls 2',9:'Cls 3',10:'Cls 4',11:'Cls 5',12:'Cls 6',13:'Cls 7',14:'Cls 8',15:'Cls 9',16:'Cls 10',17:'Cls 11',18:'Cls 12',19:'UG 1',20:'UG 2',21:'UG 3',22:'UG 4',23:'PG 1',24:'PG 2',28:'Marriage'};
+
+function yrLbl(y){ if(y>=61&&y<=75) return 'Ret.'+(y-60); return YL[y]||'Yr '+y; }
+
+let bpF = (FUND_DB['INR']||DF).map(f=>({...f}));
+let bpW = {}, bpInit = 1000000, bpYrs = 75, bpReady = false, bpCurTab = 'chart';
+
+function updateBPFunds(){
+  bpF = (FUND_DB['INR'] || DF).map(f => ({...f}));
+  if(document.getElementById('fcgrid')?.innerHTML !== '') renderFC();
+  if(bpReady) recalcBP();
+  const sel = document.getElementById('bp-fund-sel');
+  if(sel){ for(let i=0;i<6;i++) if(sel.options[i]) sel.options[i].text = bpF[i]?.name || 'Fund '+(i+1); }
+}
+
+function defBPW(){
+  const w={};
+  for(let y=1;y<=75;y++){
+    if(y>=4  && y<=18) w[y]={amount:100000, type:'School',     timing:'start'};
+    else if(y>=19 && y<=22) w[y]={amount:500000,  type:'UG',         timing:'start'};
+    else if(y>=23 && y<=24) w[y]={amount:1000000, type:'PG',         timing:'start'};
+    else if(y===28)         w[y]={amount:5000000, type:'Marriage',   timing:'end'};
+    else if(y>=61 && y<=75) w[y]={amount:2400000, type:'Retirement', timing:'start'};
+    else                    w[y]={amount:0,        type:null,         timing:'start'};
+  }
+  return w;
+}
+
+function resetFunds(){ bpF=[...DF.map(f=>({...f}))]; renderFC(); recalcBP(); updateBPFunds(); }
+function resetBPW(){ bpW=defBPW(); recalcBP(); if(bpCurTab==='table')renderBPT(); }
+function clearBPW(){ for(let y=1;y<=75;y++) bpW[y]={amount:0,type:null,timing:'start'}; recalcBP(); if(bpCurTab==='table')renderBPT(); }
+
+function initBP(){
+  if(!bpReady){ bpW=defBPW(); bpReady=true; }
+  renderFC();
+  renderBPS();
+  recalcBP();
+}
+
+function renderFC(){
+  const g=document.getElementById('fcgrid'); if(!g)return; g.innerHTML='';
+  bpF.forEach((f,i)=>{
+    const c=FC[i], d=document.createElement('div');
+    d.style.cssText=`background:var(--sf);border:1px solid ${c}33;border-left:3px solid ${c};border-radius:10px;padding:12px;display:flex;align-items:center;gap:9px;`;
+    d.innerHTML=`<span style="width:10px;height:10px;border-radius:50%;background:${c};flex-shrink:0;display:inline-block"></span>
+    <div style="flex:1;min-width:0">
+      <input data-fi="${i}" data-fp="name" style="width:100%;background:transparent;border:none;border-bottom:1px solid var(--bd);color:var(--tx);font-size:13px;font-family:var(--mono);outline:none;padding:2px 0;margin-bottom:6px" value="${f.name}" placeholder="Fund Name">
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" data-fi="${i}" data-fp="cagr" step="0.01" style="width:70px;background:rgba(255,255,255,.07);border:1px solid ${c}55;border-radius:6px;color:${c};font-size:14px;font-family:var(--mono);outline:none;padding:4px 7px;text-align:right" value="${f.cagr}">
+        <span style="font-size:11px;color:${c};font-family:var(--mono)">% CAGR</span>
+      </div>
+    </div>`;
+    d.querySelectorAll('input').forEach(inp=>inp.addEventListener('input',function(){
+      const fi=parseInt(this.dataset.fi), fp=this.dataset.fp;
+      if(fp==='name'){ bpF[fi].name=this.value; updateSelectOption(fi); }
+      else bpF[fi].cagr=parseFloat(this.value)||0;
+      recalcBP();
+    }));
+    g.appendChild(d);
+  });
+}
+
+// ✅ Sync a single dropdown option when fund name is edited inline
+function updateSelectOption(i){
+  const sel=document.getElementById('bp-afund');
+  if(sel&&sel.options[i]) sel.options[i].text = bpF[i]?.name||'Fund '+(i+1);
+}
+
+function renderBPS(){
+  const g=document.getElementById('bpsec'); if(!g)return; g.innerHTML='';
+  const secs=[
+    {k:'school',  l:'🎒 School',     ty:'School',     hint:'₹1L/yr per school year'},
+    {k:'ug',      l:'🎓 UG',         ty:'UG',         hint:'₹5L/yr for undergrad'},
+    {k:'pg',      l:'📚 PG',         ty:'PG',         hint:'₹10L/yr for postgrad'},
+    {k:'marriage',l:'💍 Marriage',   ty:'Marriage',   hint:'One-time marriage corpus'},
+    {k:'retire',  l:'🌴 Retirement', ty:'Retirement', hint:'₹2L/mo retirement SWP'},
+    {k:'custom',  l:'✏️ Custom',     ty:'Custom',     hint:'Any custom withdrawal'},
+  ];
+  secs.forEach(s=>{
+    const tm=BST[s.ty], wrap=document.createElement('div');
+    wrap.style.cssText=`background:${tm.c}0D;border:1px solid ${tm.c}33;border-radius:10px;padding:12px;`;
+    wrap.innerHTML=`<div style="font-size:13px;color:${tm.c};font-family:var(--mono);font-weight:bold;margin-bottom:9px">${s.l}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:end">
+        <div><div style="font-size:9px;color:var(--mu);margin-bottom:3px">FROM YEAR</div><input type="number" id="bps-f-${s.k}" class="fi" min="1" max="75" placeholder="e.g. 4" style="padding:7px 9px;font-size:12px"></div>
+        <div><div style="font-size:9px;color:var(--mu);margin-bottom:3px">TO YEAR</div><input type="number" id="bps-t-${s.k}" class="fi" min="1" max="75" placeholder="e.g. 18" style="padding:7px 9px;font-size:12px"></div>
+        <div><div style="font-size:9px;color:var(--mu);margin-bottom:3px">AMT/YEAR</div><input type="number" id="bps-a-${s.k}" class="fi" placeholder="100000" style="padding:7px 9px;font-size:12px"></div>
+        <button class="btn bsm" style="background:${tm.c};color:#000;border:none;white-space:nowrap;font-size:12px" onclick="applyBPS('${s.k}','${s.ty}','${tm.t}')">Apply</button>
+      </div>
+      <div style="font-size:10px;color:var(--mu);margin-top:5px;font-family:var(--mono)">💡 ${s.hint}</div>`;
+    g.appendChild(wrap);
+  });
+}
+
+function applyBPS(k,ty,timing){
+  const fr=parseInt(document.getElementById('bps-f-'+k)?.value)||0;
+  const to=parseInt(document.getElementById('bps-t-'+k)?.value)||0;
+  const amt=parseFloat(document.getElementById('bps-a-'+k)?.value)||0;
+  if(!fr||!to||fr>to){ alert('Enter valid From and To years (From ≤ To).'); return; }
+  for(let y=fr;y<=Math.min(to,75);y++) bpW[y]={amount:amt,type:amt>0?ty:null,timing};
+  recalcBP(); if(bpCurTab==='table')renderBPT();
+}
+
+function bpCorpus(cagr,init,w,maxY){
+  const r=cagr/100, rows=[]; let bal=init;
+  for(let y=1;y<=maxY;y++){
+    const wd=w[y]||{amount:0,type:null,timing:'start'}, op=bal, wa=Math.max(0,wd.amount||0);
+    let cl = wa>0 ? (wd.timing==='end' ? Math.max(0,op*(1+r)-wa) : Math.max(0,(op-wa)*(1+r))) : op*(1+r);
+    rows.push({y,lbl:yrLbl(y),op:Math.round(op),wa:Math.round(wa),type:wd.type,timing:wd.timing,cl:Math.round(cl)});
+    bal=Math.max(0,cl);
+  }
+  return rows;
+}
+
+function recalcBP(){
+  bpInit = gv('bp-init')||1000000;
+  bpYrs  = Math.min(75,Math.max(1,parseInt(document.getElementById('bp-yrs')?.value)||75));
+  // ✅ Sync dropdown with current fund names every recalc
+  const sel=document.getElementById('bp-afund');
+  if(sel){ for(let i=0;i<6;i++) if(sel.options[i]) sel.options[i].text=(bpF[i]?.name||'Fund '+(i+1)); }
+  const all=bpF.map(f=>bpCorpus(f.cagr,bpInit,bpW,bpYrs));
+  let tot=0; for(let y=1;y<=bpYrs;y++) tot+=(bpW[y]?.amount||0);
+  sh('bp-tout',INR(tot));
+  renderBPKPI(all); renderBPChart(all);
+  if(bpCurTab==='table') renderBPT();
+  if(bpCurTab==='compare') renderBPCmp(all);
+}
+
+function renderBPKPI(all){
+  const fi=parseInt(document.getElementById('bp-afund')?.value)||0;
+  const rows=all[fi]; if(!rows||!rows.length) return;
+  const strip=document.getElementById('bp-kpi'); if(!strip) return;
+  const safe=i=>rows[Math.min(i,rows.length-1)];
+  const kpis=[
+    {l:'🎒 School (Yr 4)',    v:safe(3).op,              s:'1L/yr×15'},
+    {l:'🎓 UG (Yr 19)',       v:safe(18).op,             s:'5L/yr×4'},
+    {l:'📚 PG (Yr 23)',       v:safe(22).op,             s:'10L×2'},
+    {l:'💍 Marriage (Yr 28)', v:safe(27).cl,             s:'50L out'},
+    {l:'🌴 Retire (Yr 61)',   v:safe(60).op,             s:'2L/mo'},
+    {l:'🏆 Final @ Yr '+bpYrs,v:rows[rows.length-1].cl,  s:'Legacy corpus'},
+  ];
+  strip.innerHTML=kpis.map(k=>`<div class="kpi" style="border-top:3px solid ${FC[fi]}"><div class="kl">${k.l}</div><div class="kv">${INR(k.v)}</div><div class="ks">${k.s}</div></div>`).join('');
+}
+
+function renderBPChart(all){
+  const labs=[]; for(let y=1;y<=bpYrs;y++) labs.push('Y'+y);
+  const ds=bpF.map((f,i)=>({label:f.name||'Fund '+(i+1),data:(all[i]||[]).map(r=>r.cl),borderColor:FC[i],backgroundColor:FC[i]+'18',fill:true,tension:.4,pointRadius:0,borderWidth:2}));
+  dc('bp');
+  const ctx=document.getElementById('bp-chart'); if(!ctx) return;
+  const opts=COPTS(); opts.plugins.legend={display:true,labels:{color:'#8AAAC8',font:{size:12},usePointStyle:true,boxWidth:9}};
+  CH['bp']=new Chart(ctx,{type:'line',data:{labels:labs,datasets:ds},options:opts});
+  const leg=document.getElementById('bp-legend');
+  if(leg) leg.innerHTML=bpF.map((f,i)=>`<span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-family:var(--mono);color:${FC[i]}"><span style="width:9px;height:9px;border-radius:50%;background:${FC[i]};display:inline-block"></span>${f.name||'Fund '+(i+1)} (${f.cagr}%)</span>`).join('');
+}
+
+function renderBPT(){
+  const fi=parseInt(document.getElementById('bp-afund')?.value)||0;
+  const rows=bpCorpus(bpF[fi]?.cagr||13,bpInit,bpW,bpYrs);
+  const tb=document.getElementById('bp-tbody'); if(!tb) return; tb.innerHTML='';
+  rows.forEach(row=>{
+    const w=bpW[row.y]||{amount:0,type:null,timing:'start'}, tm=w.type?BST[w.type]:null, gr=row.cl-row.op+(row.wa||0);
+    const typeOpts=Object.keys(BST).map(t=>`<option value="${t}"${w.type===t?' selected':''}>${BST[t].e} ${t}</option>`).join('');
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${row.y}</td><td style="color:${tm?tm.c:'var(--mu)'}">${row.lbl}</td><td class="r">${INR(row.op)}</td>
+      <td><input type="number" class="bri" data-yr="${row.y}" value="${w.amount||''}" placeholder="0" style="width:115px"></td>
+      <td><select class="bri" data-yr="${row.y}" data-f="type" style="width:110px"><option value="">—</option>${typeOpts}</select></td>
+      <td><select class="bri" data-yr="${row.y}" data-f="timing" style="width:82px"><option value="start"${w.timing!=='end'?' selected':''}>↑ Start</option><option value="end"${w.timing==='end'?' selected':''}>↓ End</option></select></td>
+      <td class="r ac">${INR(row.cl)}</td><td class="r g">+${INR(gr)}</td>`;
+    tb.appendChild(tr);
+    tr.querySelector('input[data-yr]').addEventListener('change',function(){
+      const y=parseInt(this.dataset.yr);
+      if(!bpW[y]) bpW[y]={amount:0,type:null,timing:'start'};
+      bpW[y].amount=parseFloat(this.value)||0; recalcBP();
+    });
+    tr.querySelectorAll('select[data-yr]').forEach(sel=>sel.addEventListener('change',function(){
+      const y=parseInt(this.dataset.yr), f=this.dataset.f;
+      if(!bpW[y]) bpW[y]={amount:0,type:null,timing:'start'};
+      bpW[y][f]=this.value||null; if(f==='type'&&!this.value) bpW[y].type=null; recalcBP();
+    }));
+  });
+}
+
+function renderBPCmp(all){
+  if(!all) all=bpF.map(f=>bpCorpus(f.cagr,bpInit,bpW,bpYrs));
+  const maxV=Math.max(...all.map(d=>d.length?d[d.length-1].cl:0),1);
+  const cc=document.getElementById('bp-ccards'), cb=document.getElementById('bp-cbars'); if(!cc||!cb) return;
+  cc.innerHTML=bpF.map((f,i)=>{const d=all[i]||[],fin=d.length?d[d.length-1].cl:0;return `<div style="background:var(--sf);border:1px solid ${FC[i]}44;border-radius:11px;padding:14px;cursor:pointer" onclick="document.getElementById('bp-afund').value=${i};recalcBP()"><div style="display:flex;align-items:center;gap:6px;margin-bottom:9px"><span style="width:9px;height:9px;border-radius:50%;background:${FC[i]};display:inline-block"></span><div><div style="font-size:12px;color:var(--tx)">${f.name}</div><div style="font-size:10px;color:var(--mu);font-family:var(--mono)">${f.cagr}% CAGR</div></div></div><div style="font-size:10px;color:var(--mu)">School</div><div style="font-size:12px;font-family:var(--mono);margin-bottom:5px">${INR((d[3]||{op:0}).op)}</div><div style="font-size:10px;color:var(--mu)">Final @ Yr${bpYrs}</div><div style="font-size:14px;font-family:var(--mono);font-weight:bold;color:${FC[i]}">${INR(fin)}</div></div>`;}).join('');
+  cb.innerHTML=bpF.map((f,i)=>{const d=all[i]||[],fin=d.length?d[d.length-1].cl:0,pct=(fin/maxV*100).toFixed(1);return `<div style="margin-bottom:13px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px;color:${FC[i]}">● ${f.name} (${f.cagr}%)</span><span style="font-size:13px;font-family:var(--mono);font-weight:bold;color:${FC[i]}">${INR(fin)}</span></div><div class="pbar"><div class="pfill" style="width:${pct}%;background:${FC[i]};box-shadow:0 0 7px ${FC[i]}55"></div></div></div>`;}).join('');
+}
+
+function bpTab(tab,btn){
+  bpCurTab=tab;
+  ['chart','table','compare'].forEach(t=>sd('bpt-'+t, t===tab?'block':'none'));
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  const all=bpF.map(f=>bpCorpus(f.cagr,bpInit,bpW,bpYrs));
+  if(tab==='table') renderBPT();
+  else if(tab==='compare') renderBPCmp(all);
+  else renderBPChart(all);
+}
+
+/* ─────────────────────────────────────
+   THEME TOGGLE
+───────────────────────────────────── */
+let _isDark = true;
+
+function toggleTheme(){
+  _isDark = !_isDark;
+  applyTheme(_isDark);
+  try { localStorage.setItem('mfn-theme', _isDark ? 'dark' : 'light'); } catch(e) {}
+}
+
+function applyTheme(dark){
+  dark ? document.documentElement.classList.remove('light') : document.documentElement.classList.add('light');
+  _isDark = dark;
+  if(typeof Chart !== 'undefined'){
+    Chart.defaults.color = dark ? '#8AAAC8' : '#5A6E8A';
+    Object.values(CH||{}).forEach(ch=>{
+      try{
+        if(ch.options?.plugins?.tooltip){
+          ch.options.plugins.tooltip.backgroundColor = dark ? '#0A0F1E' : '#ffffff';
+          ch.options.plugins.tooltip.titleColor      = dark ? '#94A3B8' : '#5A6E8A';
+          ch.options.plugins.tooltip.bodyColor       = dark ? '#E2E8F0' : '#1A2440';
+          ch.options.plugins.tooltip.borderColor     = dark ? 'rgba(255,255,255,.12)' : 'rgba(0,0,0,.12)';
+          ch.update('none');
+        }
+      }catch(e){}
+    });
+  }
+}
+
+/* ─────────────────────────────────────
+   DOM READY
+───────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  // Restore theme preference
+  try {
+    const savedTheme = localStorage.getItem('mfn-theme');
+    if(savedTheme === 'light'){ _isDark = false; applyTheme(false); }
+  } catch(e) {}
+
+  // Always INR — apply currency symbols and fund defaults
+  applyCurrency();
+
+  // Initialise Blueprint so dropdown shows real fund names immediately
+  initBP();
+
+  // Show page
+  document.getElementById('pg-bp').classList.add('on');
+});
+
+// Currency badge click-through listener (for dynamically-built grid items)
+
+
+</script>
+
+<!-- PAGE ROUTING: override go() with file-based navigation -->
+<script>
+(function(){
+  var FILE_MAP = {
+    'home':   '../home.html',
+    'si':     'simple-interest.html',
+    'ci':     'compound-interest.html',
+    'emi':    'emi.html',
+    'prepay': 'loan-prepayment.html',
+    'bp':     'blueprint.html',
+    'retire': 'retirement.html',
+    'fire':   'fire.html',
+    'infl':   'inflation.html',
+    'crore':  'first-crore.html',
+    'swp':    'swp.html',
+    'nps':    'nps.html',
+  };
+  window.go = function(page){
+    var f = FILE_MAP[page];
+    if(f) window.location.href = f;
+  };
+  document.querySelectorAll('.brand').forEach(function(el){
+    el.onclick = function(){ window.location.href = FILE_MAP['home']; };
+  });
+})();
+</script>
+<script>
+(function () {
+  // INR-only initialisation — no currency persistence needed
+  function mfnInit() {
+    function set(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
+    function blk(id, show) { var el = document.getElementById(id); if (el) el.style.display = show ? 'block' : 'none'; }
+    function vis(id)       { var el = document.getElementById(id); if (el) el.style.display = ''; }
+
+    document.querySelectorAll('.c-sym').forEach(function(el){ el.textContent = '₹'; });
+    set('nav-sym',        '₹');
+    set('cur-sym-badge',  '₹');
+    set('cur-code-badge', 'INR');
+    set('menu-sym',       '₹');
+    set('nav-sub', 'SMART MONEY TOOLS');
+    set('menu-crore-lbl', 'First Crore Calculator');
+
+    blk('upstox-menu', true);
+    vis('menu-nps-item');
+
+    // Trigger applyCurrency so fund dropdown & BP compute with INR
+    try { if (typeof applyCurrency === 'function') applyCurrency(); } catch(e) {}
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', mfnInit);
+  } else {
+    mfnInit();
+  }
+})();
+</script>
+<footer style="background:var(--sf);border-top:1px solid var(--bd);padding:28px 20px;font-size:.82rem;color:var(--dm);font-family:var(--mono);text-align:center;">
+  <div style="margin-bottom:10px">© 2025 My Finance Nest. All rights reserved.</div>
+  <div>
+    <a href="../terms_privacy/about.html" target="_blank" rel="noopener" style="color:var(--mu);text-decoration:none;margin:0 8px">About Us</a>
+    <a href="../terms_privacy/privacy.html" target="_blank" rel="noopener" style="color:var(--mu);text-decoration:none;margin:0 8px">Privacy Policy</a>
+    <a href="../terms_privacy/terms.html" target="_blank" rel="noopener" style="color:var(--mu);text-decoration:none;margin:0 8px">Terms of Use</a>
+    <a href="../terms_privacy/disclaimer.html" target="_blank" rel="noopener" style="color:var(--mu);text-decoration:none;margin:0 8px">Disclaimer</a>
+  </div>
+  <div style="margin-top:10px;font-size:10px;color:var(--dm)">⚠️ Educational use only. Not financial advice.</div>
+</footer>
+</body>
+</html>

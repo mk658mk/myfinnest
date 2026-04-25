@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>FinanceCompass</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#060B14;--sf:rgba(255,255,255,0.03);--bd:rgba(255,255,255,0.08);--tx:#E2E8F0;--mu:#64748B;--dm:#334155;--ac:#F59E0B;--gn:#10B981;--rd:#F87171;--bl:#60A5FA;--pu:#A78BFA;--te:#14B8A6;--mono:'Courier New',monospace;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--tx);font-family:system-ui,sans-serif;min-height:100vh;}
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(6,11,20,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--bd);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:56px;}
+.brand{font-family:Georgia,serif;font-size:18px;color:var(--ac);cursor:pointer;letter-spacing:1px;}
+.brand small{display:block;font-size:10px;color:var(--mu);font-family:var(--mono);letter-spacing:2px;}
+.hbg{width:36px;height:36px;background:var(--sf);border:1px solid var(--bd);border-radius:8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;}
+.hbg span{display:block;width:18px;height:1.5px;background:var(--tx);border-radius:2px;}
+.hbg:hover{border-color:var(--ac);}
+/* SIDE MENU */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:190;display:none;}
+.overlay.on{display:block;}
+.sidemenu{position:fixed;top:0;right:-290px;width:270px;height:100vh;background:#0D1526;border-left:1px solid var(--bd);z-index:200;transition:right .3s;overflow-y:auto;padding:16px 0;}
+.sidemenu.on{right:0;}
+.mhdr{display:flex;align-items:center;justify-content:space-between;padding:0 16px 14px;border-bottom:1px solid var(--bd);margin-bottom:6px;}
+.mclose{background:none;border:1px solid var(--bd);color:var(--mu);width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:13px;}
+.mi{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;border-left:3px solid transparent;transition:all .15s;}
+.mi:hover,.mi.act{background:rgba(245,158,11,.08);border-left-color:var(--ac);color:var(--ac);}
+.mi .ic{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;background:var(--sf);flex-shrink:0;}
+.mi .lb{font-size:11px;}
+.mdiv{border:none;border-top:1px solid var(--bd);margin:6px 16px;}
+/* PAGES */
+.pg{display:none;min-height:calc(100vh - 56px);}
+.pg.on{display:block;}
+/* LAYOUT */
+.wrap{max-width:1100px;margin:0 auto;padding:22px 18px;}
+.phdr{margin-bottom:24px;}
+.phdr h1{font-family:Georgia,serif;font-size:23px;font-weight:normal;color:#F1F5F9;}
+.phdr h1 em{color:var(--ac);font-style:italic;}
+.phdr p{font-size:11px;color:var(--mu);font-family:var(--mono);margin-top:4px;}
+.back{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--mu);font-family:var(--mono);cursor:pointer;margin-bottom:14px;padding:4px 9px;border:1px solid var(--bd);border-radius:6px;background:var(--sf);}
+.back:hover{color:var(--ac);border-color:var(--ac);}
+/* CARD */
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:18px;}
+.ctitle{font-size:10px;color:var(--mu);font-family:var(--mono);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;}
+/* FORM */
+.fg{margin-bottom:14px;}
+.fl{display:block;font-size:10px;color:var(--mu);font-family:var(--mono);margin-bottom:5px;}
+.fi,.fsel{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--bd);border-radius:8px;padding:9px 13px;color:var(--tx);font-size:13px;font-family:var(--mono);outline:none;transition:border-color .2s;}
+.fi:focus,.fsel:focus{border-color:var(--ac);}
+.fi::placeholder{color:var(--dm);}
+.fsel{cursor:pointer;background:#0D1526;}
+.fsel option{background:#0D1526;}
+.pfx{position:relative;display:flex;align-items:center;}
+.pfx .px{position:absolute;left:11px;color:var(--ac);font-weight:bold;font-size:14px;pointer-events:none;}
+.pfx .fi{padding-left:24px;}
+.sfx{position:relative;display:flex;align-items:center;}
+.sfx .sx{position:absolute;right:11px;color:var(--mu);font-size:12px;pointer-events:none;}
+.sfx .fi{padding-right:32px;}
+.emsg{font-size:9px;color:var(--rd);font-family:var(--mono);margin-top:3px;display:none;}
+.emsg.on{display:block;}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:8px;padding:9px 18px;font-size:12px;font-family:var(--mono);cursor:pointer;font-weight:bold;}
+.bprim{background:var(--ac);color:#000;}
+.bprim:hover{background:#D97706;}
+.bout{background:transparent;border:1px solid var(--bd);color:var(--mu);}
+.bout:hover{border-color:var(--ac);color:var(--ac);}
+.bsm{padding:5px 11px;font-size:10px;}
+/* RESULT */
+.rbox{background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(255,255,255,.02));border:1px solid rgba(245,158,11,.25);border-radius:12px;padding:18px;}
+.rbig{font-size:34px;font-weight:bold;color:var(--ac);font-family:var(--mono);}
+.rlbl{font-size:10px;color:var(--mu);font-family:var(--mono);margin-bottom:5px;}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;}
+.ritem{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:13px;}
+.rv{font-size:18px;font-weight:bold;font-family:var(--mono);color:var(--tx);}
+/* TABLE */
+.twrap{overflow-x:auto;border-radius:10px;border:1px solid var(--bd);}
+table{width:100%;border-collapse:collapse;}
+th{background:rgba(255,255,255,.04);padding:8px 11px;font-size:9px;color:var(--mu);font-family:var(--mono);text-align:left;text-transform:uppercase;border-bottom:1px solid var(--bd);}
+td{padding:7px 11px;font-size:11px;border-bottom:1px solid rgba(255,255,255,.04);font-family:var(--mono);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.03);}
+td.r{text-align:right;}
+td.g{color:var(--gn);}
+td.rr{color:var(--rd);}
+td.ac{color:var(--ac);font-weight:bold;}
+/* SLIDER */
+.sw{margin-top:5px;}
+input[type=range]{width:100%;accent-color:var(--ac);cursor:pointer;}
+.sl{display:flex;justify-content:space-between;font-size:9px;color:var(--dm);font-family:var(--mono);margin-top:3px;}
+/* GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+@media(max-width:680px){.g2,.g3,.g4,.hgrid{grid-template-columns:1fr!important;}}
+/* HOME */
+.hero{text-align:center;padding:44px 18px 32px;background:linear-gradient(160deg,rgba(245,158,11,.06),transparent);}
+.hero h1{font-family:Georgia,serif;font-size:30px;font-weight:normal;color:#F1F5F9;margin-bottom:8px;}
+.hero p{color:var(--mu);font-size:13px;max-width:500px;margin:0 auto;}
+.hgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:13px;}
+.hcard{background:var(--sf);border:1px solid var(--bd);border-radius:13px;padding:18px 14px;cursor:pointer;transition:all .22s;text-align:center;position:relative;overflow:hidden;}
+.hcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--cc,var(--ac));border-radius:13px 13px 0 0;}
+.hcard:hover{border-color:var(--cc,var(--ac));transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.4);}
+.hcard .ico{font-size:26px;margin-bottom:9px;}
+.hcard .ht{font-size:12px;color:#F1F5F9;font-weight:600;margin-bottom:4px;line-height:1.3;}
+.hcard .hd{font-size:10px;color:var(--mu);line-height:1.4;}
+/* TABS */
+.tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+.tbtn{background:var(--sf);border:1px solid var(--bd);color:var(--mu);border-radius:7px;padding:6px 13px;cursor:pointer;font-size:11px;font-family:var(--mono);}
+.tbtn.on{background:rgba(245,158,11,.18);border-color:var(--ac);color:var(--ac);}
+/* KPI */
+.kstrip{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:16px;}
+.kpi{background:var(--sf);border:1px solid var(--bd);border-radius:9px;padding:11px 12px;}
+.kv{font-size:13px;font-weight:bold;color:#F1F5F9;font-family:var(--mono);}
+.kl{font-size:9px;color:var(--mu);margin-bottom:4px;line-height:1.3;}
+.ks{font-size:9px;color:var(--dm);margin-top:2px;font-family:var(--mono);}
+@media(max-width:780px){.kstrip{grid-template-columns:repeat(3,1fr)!important;}}
+/* CHART BOX */
+.cbox{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:14px;position:relative;}
+/* PROGRESS */
+.pbar{background:rgba(255,255,255,.05);border-radius:6px;height:10px;overflow:hidden;margin-top:5px;}
+.pfill{height:100%;border-radius:6px;transition:width .7s;}
+/* TOGGLE */
+.tgrp{display:flex;background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:8px;overflow:hidden;}
+.topt{flex:1;padding:8px;text-align:center;cursor:pointer;font-size:11px;font-family:var(--mono);color:var(--mu);background:none;border:none;}
+.topt.on{background:var(--ac);color:#000;font-weight:bold;}
+/* BP row input */
+.bri{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--bd);border-radius:5px;padding:4px 7px;color:var(--tx);font-size:11px;font-family:var(--mono);outline:none;text-align:right;}
+.bri:focus{border-color:var(--ac);}
+/* DISC */
+.disc{font-size:9px;color:var(--dm);text-align:center;font-family:var(--mono);margin-top:14px;padding:7px;background:var(--sf);border-radius:6px;}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-thumb{background:var(--dm);border-radius:3px;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="brand" onclick="go('home')">₹ FinanceCompass<small>SMART MONEY TOOLS</small></div>
+  <div class="hbg" onclick="openMenu()"><span></span><span></span><span></span></div>
+</nav>
+<div class="overlay" id="ov" onclick="closeMenu()"></div>
+<div class="sidemenu" id="sm">
+  <div class="mhdr">
+    <span style="font-family:Georgia,serif;color:var(--ac)">₹ Menu</span>
+    <button class="mclose" onclick="closeMenu()">✕</button>
+  </div>
+  <div class="mi" onclick="go('home')"><div class="ic">🏠</div><div class="lb">Home</div></div>
+  <hr class="mdiv">
+  <div class="mi" onclick="go('si')"><div class="ic">📐</div><div class="lb">Simple Interest</div></div>
+  <div class="mi" onclick="go('ci')"><div class="ic">📈</div><div class="lb">Compound Interest</div></div>
+  <div class="mi" onclick="go('emi')"><div class="ic">🏦</div><div class="lb">EMI Calculator</div></div>
+  <div class="mi" onclick="go('prepay')"><div class="ic">💳</div><div class="lb">Loan Prepayment</div></div>
+  <div class="mi" onclick="go('bp')"><div class="ic">🌳</div><div class="lb">Child's Future & Retirement</div></div>
+  <div class="mi" onclick="go('retire')"><div class="ic">🌴</div><div class="lb">Retirement Planning</div></div>
+  <div class="mi" onclick="go('fire')"><div class="ic">🔥</div><div class="lb">FIRE Calculator</div></div>
+  <div class="mi" onclick="go('infl')"><div class="ic">📊</div><div class="lb">Inflation Calculator</div></div>
+  <div class="mi" onclick="go('crore')"><div class="ic">🏆</div><div class="lb">First Crore Calculator</div></div>
+  <div class="mi" onclick="go('swp')"><div class="ic">💸</div><div class="lb">SWP Calculator</div></div>
+  <hr class="mdiv">
+  <div style="padding:8px 16px;font-size:9px;color:var(--dm);font-family:var(--mono);">⚠️ Educational use only. Not financial advice.</div>
+</div>
+
+<!-- ══════════════ HOME ══════════════ -->
+<div class="pg on" id="pg-home">
+  <div class="hero">
+    <div style="font-size:10px;letter-spacing:3px;color:var(--mu);font-family:var(--mono);margin-bottom:10px">YOUR PERSONAL FINANCE TOOLKIT</div>
+    <h1>₹ FinanceCompass</h1>
+    <p>10 powerful calculators to plan wealth, retirement, loans & financial independence.</p>
+  </div>
+  <div class="wrap">
+    <div class="hgrid">
+      <div class="hcard" style="--cc:#60A5FA" onclick="go('si')"><div class="ico">📐</div><div class="ht">Simple Interest</div><div class="hd">Calculate interest on principal over time</div></div>
+      <div class="hcard" style="--cc:#10B981" onclick="go('ci')"><div class="ico">📈</div><div class="ht">Compound Interest</div><div class="hd">Monthly SIP with variance &amp; bull/bear scenarios</div></div>
+      <div class="hcard" style="--cc:#EC4899" onclick="go('emi')"><div class="ico">🏦</div><div class="ht">EMI Calculator</div><div class="hd">Loan EMI with full repayment schedule</div></div>
+      <div class="hcard" style="--cc:#F59E0B" onclick="go('prepay')"><div class="ico">💳</div><div class="ht">Loan Prepayment</div><div class="hd">Save years &amp; lakhs with extra EMIs</div></div>
+      <div class="hcard" style="--cc:#14B8A6" onclick="go('bp')"><div class="ico">🌳</div><div class="ht">Child's Future &amp; Retirement</div><div class="hd">75-year wealth blueprint with 6 mutual funds</div></div>
+      <div class="hcard" style="--cc:#A78BFA" onclick="go('retire')"><div class="ico">🌴</div><div class="ht">Retirement Planning</div><div class="hd">Know exactly how much corpus you need</div></div>
+      <div class="hcard" style="--cc:#F87171" onclick="go('fire')"><div class="ico">🔥</div><div class="ht">FIRE Calculator</div><div class="hd">Financial Independence, Retire Early</div></div>
+      <div class="hcard" style="--cc:#FB923C" onclick="go('infl')"><div class="ico">📊</div><div class="ht">Inflation Calculator</div><div class="hd">See how inflation erodes purchasing power</div></div>
+      <div class="hcard" style="--cc:#FBBF24" onclick="go('crore')"><div class="ico">🏆</div><div class="ht">First Crore</div><div class="hd">When will you hit your first ₹1 Crore?</div></div>
+      <div class="hcard" style="--cc:#34D399" onclick="go('swp')"><div class="ico">💸</div><div class="ht">SWP Calculator</div><div class="hd">Plan systematic withdrawals from your corpus</div></div>
+    </div>
+    <div class="disc" style="margin-top:24px">⚠️ All calculators are for educational purposes only. Not financial advice. Consult a SEBI-registered advisor before investing.</div>
+  </div>
+</div>
+
+<!-- ══════════════ 1. SIMPLE INTEREST ══════════════ -->
+<div class="pg" id="pg-si">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Home</div>
+    <div class="phdr"><h1>📐 Simple <em>Interest Calculator</em></h1><p>SI = Principal × Rate × Time ÷ 100</p></div>
+    <div class="g2" style="align-items:start">
+      <div class="card">
+        <div class="ctitle">Input Parameters</div>
+        <div class="fg"><label class="fl">Principal Amount (₹)</label><div class="pfx"><span class="px">₹</span><input class="fi" id="si-p" type="number" placeholder="e.g. 1,00,000" min="1" oninput="calcSI()"></div></div>
+        <div class="fg"><label class="fl">Annual Rate of Interest (%)</label><div class="sfx"><span class="sx">%</span><input class="fi" id="si-r" type="number" placeholder="e.g. 8.5" step="0.1" min="0.01" oninput="calcSI()"></div></div>
+        <div class="fg"><label class="fl">Time Period: <strong id="si-yr-lbl" style="color:var(--ac)">5</strong> years</label>
+          <div class="sw"><input type="range" min="1" max="50" value="5" oninput="document.getElementById('si-yr-lbl').textContent=this.value;document.getElementById('si-t').value=this.value;calcSI()"><div class="sl"><span>1 yr</span><span>50 yrs</span></div></div>
+          <div class="sfx" style="margin-top:6px"><span class="sx">yrs</span><input class="fi" id="si-t" type="number" value="5" min="1" max="50" oninput="this.value=Math.min(50,Math.max(1,this.value||1));document.getElementById('si-yr-lbl').textContent=this.value;calcSI()"></div>
+        </div>
+      </div>
+      <div>
+        <div id="si-out" style="display:none">
+          <div class="rbox"><div class="rlbl">Simple Interest Earned</div><div class="rbig" id="si-int">—</div></div>
+          <div class="rgrid" style="margin-top:12px">
+            <div class="ritem"><div class="rlbl">Total Amount</div><div class="rv" id="si-tot" style="color:var(--ac)">—</div></div>
+            <div class="ritem"><div class="rlbl">Principal</div><div class="rv" id="si-pr">—</div></div>
+            <div class="ritem"><div class="rlbl">Interest Earned</div><div class="rv" id="si-ie" style="color:var(--gn)">—</div></div>
+          </div>
+          <div class="card" style="margin-top:14px">
+            <div class="ctitle">Year-by-Year Breakdown</div>
+            <div class="twrap" style="max-height:360px;overflow-y:auto"><table id="si-tbl"><thead><tr><th>Year</th><th>Interest (Yr)</th><th>Cumulative Interest</th><th>Total Amount</th></tr></thead><tbody></tbody></table></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ 2. COMPOUND INTEREST ══════════════ -->
+<div class="pg" id="pg-ci">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Home</div>
+    <div class="phdr"><h1>📈 Compound <em>Interest Calculator</em></h1><p>Watch your money grow with the power of compounding + monthly SIP</p></div>
+    <div class="g2" style="align-items:start">
+      <div class="card">
+        <div class="ctitle">Input Parameters</div>
+        <div class="fg"><label class="fl">Initial Investment (₹)</label><div class="pfx"><span class="px">₹</span><input class="fi" id="ci-init" type="number" placeholder="e.g. 1,00,000" oninput="calcCI()"></div><div class="emsg" id="ci-e1">Please enter a valid amount (min ₹100)</div></div>
+        <div class="fg"><label class="fl">Monthly Contribution / SIP (₹) <span style="color:var(--dm)">(0 for lump sum)</span></label><div class="pfx"><span class="px">₹</span><input class="fi" id="ci-mo" type="number" placeholder="e.g. 5,000" value="0" min="0" oninput="calcCI()"></div></div>
+        <div class="fg"><label class="fl">Expected Annual Return (%)</label><div class="sfx"><span class="sx">%</span><input class="fi" id="ci-rate" type="number" placeholder="e.g. 12" step="0.1" oninput="calcCI()"></div><div class="emsg" id="ci-e2">Please enter a valid rate (0.1–50%)</div></div>
+        <div class="fg"><label class="fl">Return Variance / Risk (±%) <span style="color:var(--dm)">(optional)</span></label><div class="sfx"><span class="sx">%</span><input class="fi" id="ci-var" type="number" placeholder="e.g. 3" value="0" min="0" step="0.1" oninput="calcCI()"></div></div>
+        <div class="fg"><label class="fl">Investment Period: <strong id="ci-yr-lbl" style="color:var(--ac)">10</strong> years</label>
+          <div class="sw"><input type="range" min="1" max="75" value="10" oninput="document.getElementById('ci-yr-lbl').textContent=this.value;document.getElementById('ci-yrs').value=this.value;calcCI()"><div class="sl"><span>1</span><span>75 yrs</span></div></div>
+          <div class="sfx" style="margin-top:6px"><span class="sx">yrs</span><input class="fi" id="ci-yrs" type="number" value="10" min="1" max="75" oninput="this.value=Math.min(75,Math.max(1,this.value||1));document.getElementById('ci-yr-lbl').textContent=this.value;calcCI()"></div>
+          <div class="emsg" id="ci-e3">Years must be between 1 and 75</div>
+        </div>
+      </div>
+      <div>
+        <div id="ci-out" style="display:none">
+          <div class="rbox"><div class="rlbl">Total Corpus</div><div class="rbig" id="ci-corpus">—</div></div>
+          <div class="rgrid" style="margin-top:12px">
+            <div class="ritem"><div class="rlbl">Total Invested</div><div class="rv" id="ci-inv">—</div></div>
+            <div class="ritem"><div class="rlbl">Interest Earned</div><div class="rv" id="ci-earn" style="color:var(--gn)">—</div></div>
+            <div class="ritem"><div class="rlbl">Return Multiplier</div><div class="rv" id="ci-mult" style="color:var(--ac)">—</div></div>
+            <div class="ritem"><div class="rlbl">Bull Case</div><div class="rv" id="ci-bull" style="color:var(--gn)">—</div></div>
+            <div class="ritem"><div class="rlbl">Bear Case</div><div class="rv" id="ci-bear" style="color:var(--rd)">—</div></div>
+          </div>
+          <div class="cbox" style="margin-top:14px"><canvas id="ci-chart" height="220"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ 3. EMI ══════════════ -->
+<div class="pg" id="pg-emi">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Home</div>
+    <div class="phdr"><h1>🏦 EMI <em>Calculator</em></h1><p>Calculate monthly EMI with complete repayment schedule</p></div>
+    <div class="g2" style="align-items:start">
+      <div class="card">
+        <div class="ctitle">Loan Details</div>
+        <div class="fg"><label class="fl">Principal Amount (₹)</label><div class="pfx"><span class="px">₹</span><input class="fi" id="emi-p" type="number" placeholder="e.g. 50,00,000" min="1" oninput="calcEMI()"></div></div>
+        <div class="fg"><label class="fl">Annual Interest Rate (%)</label><div class="sfx"><span class="sx">%</span><input class="fi" id="emi-r" type="number" placeholder="e.g. 8.5" step="0.1" min="0.1" oninput="calcEMI()"></div></div>
+        <div class="fg"><label class="fl">Loan Tenure: <strong id="emi-yr-lbl" style="color:var(--ac)">20</strong> years</label>
+          <div class="sw"><input type="range" min="1" max="30" value="20" oninput="document.getElementById('emi-yr-lbl').textContent=this.value;document.getElementById('emi-t').value=this.value;calcEMI()"><div class="sl"><span>1 yr</span><span>30 yrs</span></div></div>
+          <div class="sfx" style="margin-top:6px"><span class="sx">yrs</span><input class="fi" id="emi-t" type="number" value="20" min="1" max="30" oninput="this.value=Math.min(30,Math.max(1,this.value||1));document.getElementById('emi-yr-lbl').textContent=this.value;calcEMI()"></div>
+        </div>
+        <div id="emi-sum" style="display:none">
+          <div style="background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(255,255,255,.02));border:1px solid rgba(245,158,11,.25);border-radius:10px;padding:14px;margin-top:14px">
+            <div style="font-size:10px;color:var(--mu);font-family:var(--mono);margin-bottom:6px">MONTHLY EMI</div>
+            <div style="font-size:30px;font-weight:bold;color:var(--ac);font-family:var(--mono)" id="emi-val">—</div>
+          </div>
+          <div class="rgrid" style="margin-top:12px">
+            <div class="ritem"><div class="rlbl">Total Amount Paid</div><div class="rv" id="emi-total" style="color:var(--ac)">—</div></div>
+            <div class="ritem"><div class="rlbl">Total Interest</div><div class="rv" id="emi-tint" style="color:var(--rd)">—</div></div>
+            <div class="ritem"><div class="rlbl">Principal</div><div class="rv" id="emi-prr">—</div></div>
+          </div>
+          <div class="cbox" style="margin-top:14px"><canvas id="emi-chart" height="180"></canvas></div>
+        </div>
+      </div>
+      <div class="card" id="emi-tcard" style="display:none">
+        <div class="ctitle">Yearly Repayment Schedule</div>
+        <div class="twrap" style="max-height:520px;overflow-y:auto">
+          <table id="emi-tbl"><thead><tr><th>Year</th><th>Principal Paid</th><th>Interest Paid</th><th>Total Paid</th><th>Balance</th></tr></thead><tbody></tbody></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ 4. PREPAYMENT ══════════════ -->
+<div class="pg" id="pg-prepay">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Home</div>
+    <div class="phdr"><h1>💳 Loan Prepayment <em>Calculator</em></h1><p>See how extra EMIs every year saves you lakhs and years of debt</p></div>
+    <div class="g2" style="align-items:start">
+      <div class="card">
+        <div class="ctitle">Loan Details</div>
+        <div class="fg"><label class="fl">Principal Amount (₹)</label><div class="pfx"><span class="px">₹</span><input class="fi" id="pp-p" type="number" placeholder="e.g. 50,00,000" min="1" oninput="calcPrepay()"></div></div>
+        <div class="fg"><label class="fl">Annual Interest Rate (%)</label><div class="sfx"><span class="sx">%</span><input class="fi" id="pp-r" type="number" placeholder="e.g. 8.5" step="0.1" min="0.1" oninput="calcPrepay()"></div></div>
+        <div class="fg"><label class="fl">Loan Tenure: <strong id="pp-yr-lbl" style="color:var(--ac)">20</strong> years</label>
+          <div class="sw"><input type="range" min="1" max="30" value="20" oninput="document.getElementById('pp-yr-lbl').textContent=this.value;document.getElementById('pp-t').value=this.value;calcPrepay()"><div class="sl"><span>1 yr</span><span>30 yrs</span></div></div>
+          <div class="sfx" style="margin-top:6px"><span class="sx">yrs</span><input class="fi" id="pp-t" type="number" value="20" min="1" max="30" oninput="this.value=Math.min(30,Math.max(1,this.value||1));document.getElementById('pp-yr-lbl').textContent=this.value;calcPrepay()"></div>
+        </div>
+        <div id="pp-base" style="display:none;margin-top:12px;padding:12px;background:var(--sf);border:1px solid var(--bd);border-radius:10px">
+          <div class="ctitle">BASE LOAN (No Prepayment)</div>
+          <div class="g2">
+            <div><div class="rlbl">Monthly EMI</div><div style="font-size:16px;font-family:var(--mono);font-weight:bold;color:var(--ac)" id="pp-emi">—</div></div>
+            <div><div class="rlbl">Total Interest</div><div style="font-size:16px;font-family:var(--mono);font-weight:bold;color:var(--rd)" id="pp-bint">—</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card" id="pp-rcard" style="display:none">
+        <div class="ctitle">Extra EMIs Per Year — Savings Analysis</div>
+        <div class="twrap">
+          <table><thead><tr><th>Extra EMIs/Yr</th><th>Months Saved</th><th>New Tenure</th><th>Interest Saved</th></tr></thead><tbody id="pp-tbody"></tbody></table>
+        </div>
+        <div class="cbox" style="margin-top:14px"><canvas id="pp-chart" height="220"></canvas></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ 5. BLUEPRINT ══════════════ -->
+<div class="pg" id="pg-bp">
+  <div class="wrap" style="max-width:1200px">
+    <div class="back" onclick="go('home')">← Home</div>
+    <div class="phdr"><h1>🌳 Child's Future & <em>Retirement Blueprint</em></h1><p>75-year wealth projection — customizable funds, withdrawals, year horizon</p></div>
+
+    <!-- Fund Config -->
+    <div class="card" style="margin-bottom:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+        <div class="ctitle" style="margin-bottom:0">Mutual Fund Configuration (6 Funds — Edit Name & CAGR)</div>
+        <div style="display:flex;gap:8px"><button class="btn bout bsm" onclick="resetFunds()">↩ Reset Defaults</button><button class="btn bprim bsm" onclick="recalcBP()">⚡ Recalculate</button></div>
+      </div>
+      <div id="fcgrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px"></div>
+    </div>
+
+    <!-- Settings -->
+    <div class="g3" style="margin-bottom:12px">
+      <div class="card">
+        <div class="ctitle">Initial Investment</div>
+        <div class="pfx"><span class="px">₹</span><input class="fi" id="bp-init" type="number" value="1000000" min="1000" oninput="recalcBP()"></div>
+        <div class="sw" style="margin-top:8px"><input type="range" min="100000" max="50000000" step="100000" value="1000000" oninput="document.getElementById('bp-init').value=this.value;recalcBP()"><div class="sl"><span>₹1L</span><span>₹5Cr</span></div></div>
+      </div>
+      <div class="card">
+        <div class="ctitle">Year Horizon: <strong id="bp-yr-lbl" style="color:var(--ac)">75</strong> yrs</div>
+        <div class="sw"><input type="range" min="1" max="75" value="75" id="bp-yrs-r" oninput="document.getElementById('bp-yr-lbl').textContent=this.value;document.getElementById('bp-yrs').value=this.value;recalcBP()"><div class="sl"><span>1</span><span>75</span></div></div>
+        <div class="sfx" style="margin-top:8px"><span class="sx">yrs</span><input class="fi" id="bp-yrs" type="number" value="75" min="1" max="75" oninput="this.value=Math.min(75,Math.max(1,this.value||1));document.getElementById('bp-yrs-r').value=this.value;document.getElementById('bp-yr-lbl').textContent=this.value;recalcBP()"></div>
+      </div>
+      <div class="card">
+        <div class="ctitle">Active Fund for Table/KPI</div>
+        <select class="fsel" id="bp-afund" onchange="recalcBP()"><option value="0">Fund 1</option><option value="1">Fund 2</option><option value="2">Fund 3</option><option value="3">Fund 4</option><option value="4">Fund 5</option><option value="5">Fund 6</option></select>
+        <div style="margin-top:10px;font-size:11px;color:var(--mu);font-family:var(--mono)">Total Withdrawn: <strong id="bp-tout" style="color:var(--rd)">₹0</strong></div>
+      </div>
+    </div>
+
+    <!-- Section Bulk Fill -->
+    <div class="card" style="margin-bottom:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+        <div class="ctitle" style="margin-bottom:0">Section Bulk Fill — Populate Multiple Years At Once</div>
+        <div style="display:flex;gap:8px"><button class="btn bout bsm" onclick="resetBPW()">↩ Reset to Defaults</button><button class="btn bsm" style="background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.3);color:var(--rd)" onclick="clearBPW()">🗑 Clear All</button></div>
+      </div>
+      <div id="bpsec"></div>
+    </div>
+
+    <!-- KPI -->
+    <div class="kstrip" id="bp-kpi"></div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tbtn on" onclick="bpTab('chart',this)">📈 Chart</button>
+      <button class="tbtn" onclick="bpTab('table',this)">📋 Year Table</button>
+      <button class="tbtn" onclick="bpTab('compare',this)">⚖️ Compare Funds</button>
+    </div>
+
+    <div id="bpt-chart">
+      <div class="cbox" style="margin-bottom:12px"><canvas id="bp-chart" height="340"></canvas></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap" id="bp-legend"></div>
+    </div>
+    <div id="bpt-table" style="display:none">
+      <div style="max-height:500px;overflow-y:auto;border-radius:10px;border:1px solid var(--bd)">
+        <table id="bp-tbl">
+          <thead><tr><th>Yr</th><th>Phase</th><th>Opening</th><th>Withdrawal (₹) ✏️</th><th>Type</th><th>Timing</th><th>Closing</th><th>Growth</th></tr></thead>
+          <tbody id="bp-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div id="bpt-compare" style="display:none">
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:14px" id="bp-ccards"></div>
+      <div class="card"><div class="ctitle">Final Corpus at Year Horizon — All Funds</div><div id="bp-cbars"></div></div>
+    </div>
+    <div class="disc">⚠️ Projections use historical CAGR. Past performance is not indicative of future returns. Not financial advice.</div>
+  </div>
+</div>
+
+<!-- ══════════════ 6. RETIREMENT ══════════════ -->
+<div class="pg" id="pg-retire">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Home</div>
+    <div class="phdr"><h1>🌴 Retirement <em>Planning Calculator</em></h1><p>Find out how much corpus you need and how to get there</p></div>
+    <div class="g2" style="align-items:start">
+      <div class="card">
+        <div class="ctitle">Your Details</div>
+        <div class="fg"><label class="fl">Current Age</label><div class="sfx"><span class="sx">yrs</span><input class="fi" id="ret-ca" type="number" placeholder="30" min="18" max="80" oninput="calcRetire()"></div></div>
+        <div class="fg"><label class="fl">Retirement Age</label><div class="sfx"><span class="sx">yrs</span><input class="fi" id="ret-ra" type="number" placeholder="60" min="30" max="80" oninput="calcRetire()"></div></div>
+        <div class="fg"><label class="fl">Life Expectancy</label><div class="sfx"><span class="sx">yrs</span><input class="fi" id="ret-le" type="number" placeholder="85" value="85" min="50" max="100" oninput="calcRetire()"></div></div>
+        <div class="fg"><label class="fl">Current Monthly Expenses (₹)</label><div class="pfx"><span class="px">₹</span><input class="fi" id="ret-exp" type="number" placeholder="50,000" min="1" oninput="calcRetire()"></div></div>
+        <div class="fg"><label class="fl">Inflation Rate (%)</label><div class="sfx"><span class="sx">%</span><input class="fi" id="ret-inf" type="number" value="6" step="0.1" min="1" oninput="calcRetire()"></div></div>
+        <div class="fg"><label class="fl">Expected Investment Return (%)</label><div class="sfx"><span class="sx">%</span><input class="fi" id="ret-ret" type="number" value="12" step="0.1" min="1" oninput="calcRetire()"></div></div>
+        <div class="fg"><label class="fl">Post-Retirement Return (%)</label><div class="sfx"><span class="sx">%</span><input class="fi" id="ret-pr" type="number" value="7" step="0.1" min="1" oninput="calcRetire()"></div></div>
+        <div class="fg"><label class="fl">Existing Savings / Corpus (₹)</label><div class="pfx"><span class="px">₹</span><input class="fi" id="ret-sv" type="number" placeholder="0" value="0" min="0" oninput="calcRetire()"></div></div>
+      </div>
+      <div id="ret-out" style="display:none">
+        <div class="rbox"><div class="rlbl">Required Retirement Corpus</div><div class="rbig" id="ret-corpus">—</div></div>
+        <div class="rgrid" style="margin-top:12px">
+          <div class="ritem"><div class="rlbl">Monthly Expense at Retirement</div><div class="rv" id="ret-fexp" style="color:var(--ac)">—</div></div>
+          <div class="ritem"><div class="rlbl">Monthly SIP Needed</div><div class="rv" id="ret-sip" style="color:var(--gn)">—</div></div>
+          <div class="ritem"><div class="rlbl">Lump Sum Shortfall</div><div class="rv" id="ret-short" style="color:var(--rd)">—</div></div>
+          <div class="ritem"><div class="rlbl">Years to Retirement</div><div class="rv" id="ret-yrs">—</div></div>
+          <div class="ritem"><div class="rlbl">Retirement Duration</div><div class="rv" id="ret-dur">—</div></div>
+          <div class="ritem"><div class="rlbl">Savings Grown at Retirement</div><div class="rv" id="ret-sg" style="color:var(--te)">—</div></div>
+        </div>
+        <div class="cbox" style="margin-top:14px"><canvas id="ret-chart" height="220"></canvas></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ 7. FIRE ══════════════ -->
+<div class="pg" id="pg-fire">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Home</div>
+    <div class="phdr"><h1>🔥 FIRE <em>Calculator</em></h1><p>Financial Independence, Retire Early — calculate your FI number and timeline</p></div>
+    <div class="g2" style="align-items:start">
+      <div class="card">
+        <div class="ctitle">Your Financial Picture</div>
+        <div class="fg"><label class="fl">Current Age</label><div class="sfx"><span class="sx">yrs</span><input class="fi" id="fire-ca" type="number" placeholder="28" min="18" oninput="calcFIRE()"></div></div>
+        <div class="fg"><label class="fl">Current Net Worth / Corpus (₹)</label><div class="pfx"><span class="px">₹</span><input class="fi" id="fire-nw" type="number" placeholder="20,00,000" value="0" min="0" oninput="calcFIRE()"></div></div>
+        <div class="fg"><label class="fl">Monthly Savings / Investment (₹)</label><div class="pfx"><span class="px">₹</span><input class="fi" id="fire-sv" type="number" placeholder="50,000" min="1" oninput="calcFIRE()"></div></div>
+        <div class="fg"><label class="fl">Current Monthly Expenses (₹)</label><div class="pfx"><span class="px">₹</span><input class="fi" id="fire-exp" type="number" placeholder="60,000" min="1" oninput="calcFIRE()"></div></div>
+        <div class="fg"><label class="fl">Expected Annual Return (%)</label><div class="sfx"><span class="sx">%</span><input class="fi" id="fire-ret" type="number" value="12" step="0.1" min="1" oninput="calcFIRE()"></div></div>
+        <div class="fg"><label class="fl">Inflation Rate (%)</label><div class="sfx"><span class="sx">%</span><input class="fi" id="fire-inf" type="number" value="6" step="0.1" min="0" oninput="calcFIRE()"></div></div>
+        <div class="fg"><label class="fl">Safe Withdrawal Rate (%)<span style="color:var(--mu)"> (4% standard)</span></label><div class="sfx"><span class="sx">%</span><input class="fi" id="fire-swr" type="number" value="4" step="0.1" min="1" oninput="calcFIRE()"></div></div>
+      </div>
+      <div id="fire-out" style="display:none">
+        <div class="rbox"><div class="rlbl">🎯 Your FIRE Number</div><div class="rbig" id="fire-num">—</div><div style="margin-top:6px;font-size:12px;color:var(--mu)">Corpus at which you can retire and never work again</div></div>
+        <div class="rgrid" style="margin-top:12px">
+          <div class="ritem"><div class="rlbl">FIRE Age</div><div class="rv" id="fire-age" style="color:var(--gn)">—</div></div>
+          <div class="ritem"><div class="rlbl">Years to FIRE</div><div class="rv" id="fire-yrs" style="color:var(--ac)">—</div></div>
+          <div class="ritem"><div class="rlbl">Monthly Income at FIRE</div><div class="rv" id="fire-inc" style="color:var(--te)">—</div></div>
+          <div class="ritem"><div class="rlbl">Savings Rate</div><div class="rv" id="fire-sr">—</div></div>
+          <div class="ritem"><div class="rlbl">Progress Today</div><div class="rv" id="fire-prog" style="color:var(--pu)">—</div></div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <div class="ctitle">Progress to FIRE</div>
+          <div class="pbar" style="height:14px"><div class="pfill" id="fire-pbar" style="background:linear-gradient(90deg,var(--gn),var(--ac));width:0%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--mu);font-family:var(--mono);margin-top:4px"><span>₹0</span><span id="fire-plbl">FIRE Number</span></div>
+        </div>
+        <div class="cbox" style="margin-top:14px"><canvas id="fire-chart" height="220"></canvas></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ 8. INFLATION ══════════════ -->
+<div class="pg" id="pg-infl">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Home</div>
+    <div class="phdr"><h1>📊 Inflation <em>Calculator</em></h1><p>Understand how inflation silently erodes your money's purchasing power</p></div>
+    <div class="g2" style="align-items:start">
+      <div class="card">
+        <div class="ctitle">Inputs</div>
+        <div class="fg"><label class="fl">Current Amount / Value (₹)</label><div class="pfx"><span class="px">₹</span><input class="fi" id="inf-amt" type="number" placeholder="1,00,000" min="1" oninput="calcInfl()"></div></div>
+        <div class="fg"><label class="fl">Annual Inflation Rate (%)</label><div class="sfx"><span class="sx">%</span><input class="fi" id="inf-rate" type="number" value="6" step="0.1" min="0.1" oninput="calcInfl()"></div></div>
+        <div class="fg"><label class="fl">Number of Years: <strong id="inf-yr-lbl" style="color:var(--ac)">20</strong></label>
+          <div class="sw"><input type="range" min="1" max="50" value="20" oninput="document.getElementById('inf-yr-lbl').textContent=this.value;document.getElementById('inf-yrs').value=this.value;calcInfl()"><div class="sl"><span>1</span><span>50 yrs</span></div></div>
+          <div class="sfx" style="margin-top:6px"><span class="sx">yrs</span><input class="fi" id="inf-yrs" type="number" value="20" min="1" max="50" oninput="this.value=Math.min(50,Math.max(1,this.value||1));document.getElementById('inf-yr-lbl').textContent=this.value;calcInfl()"></div>
+        </div>
+        <div class="fg"><label class="fl">Expected Investment Return (%) <span style="color:var(--mu)">(to beat inflation)</span></label><div class="sfx"><span class="sx">%</span><input class="fi" id="inf-inv" type="number" value="12" step="0.1" min="0.1" oninput="calcInfl()"></div></div>
+      </div>
+      <div id="inf-out" style="display:none">
+        <div class="rbox"><div class="rlbl">Future Cost of Today's ₹<span id="inf-today">—</span></div><div class="rbig" id="inf-fut">—</div></div>
+        <div class="rgrid" style="margin-top:12px">
+          <div class="ritem"><div class="rlbl">Purchasing Power Lost</div><div class="rv" id="inf-lost" style="color:var(--rd)">—</div></div>
+          <div class="ritem"><div class="rlbl">Real Value of ₹1L then</div><div class="rv" id="inf-real">—</div></div>
+          <div class="ritem"><div class="rlbl">Amount Needed (Invested)</div><div class="rv" id="inf-need" style="color:var(--gn)">—</div></div>
+          <div class="ritem"><div class="rlbl">Real Return (after inflation)</div><div class="rv" id="inf-rr" style="color:var(--ac)">—</div></div>
+        </div>
+        <div class="cbox" style="margin-top:14px"><canvas id="inf-chart" height="220"></canvas></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ 9. FIRST CRORE ══════════════ -->
+<div class="pg" id="pg-crore">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Home</div>
+    <div class="phdr"><h1>🏆 When Will I Reach <em>My First Crore?</em></h1><p>Calculate your journey to ₹1 Crore across different strategies</p></div>
+    <div class="g2" style="align-items:start">
+      <div class="card">
+        <div class="ctitle">Investment Details</div>
+        <div style="margin-bottom:14px"><div class="tgrp"><button class="topt on" id="cr-sip-btn" onclick="crMode('sip')">📅 Monthly SIP</button><button class="topt" id="cr-lp-btn" onclick="crMode('lump')">💰 Lump Sum</button></div></div>
+        <div class="fg" id="cr-sip-g"><label class="fl">Monthly SIP Amount (₹)</label><div class="pfx"><span class="px">₹</span><input class="fi" id="cr-sip" type="number" placeholder="10,000" min="1" oninput="calcCrore()"></div></div>
+        <div class="fg" id="cr-lp-g" style="display:none"><label class="fl">Lump Sum Amount (₹)</label><div class="pfx"><span class="px">₹</span><input class="fi" id="cr-lump" type="number" placeholder="5,00,000" min="1" oninput="calcCrore()"></div></div>
+        <div class="fg"><label class="fl">Already Have (Existing Corpus) (₹)</label><div class="pfx"><span class="px">₹</span><input class="fi" id="cr-exist" type="number" placeholder="0" value="0" min="0" oninput="calcCrore()"></div></div>
+        <div class="fg"><label class="fl">Expected Annual Return (%)</label><div class="sfx"><span class="sx">%</span><input class="fi" id="cr-rate" type="number" placeholder="12" step="0.1" min="0.1" oninput="calcCrore()"></div></div>
+      </div>
+      <div id="cr-out" style="display:none">
+        <div class="rbox"><div class="rlbl">Time to Reach ₹1 Crore</div><div class="rbig" id="cr-time">—</div></div>
+        <div class="rgrid" style="margin-top:12px">
+          <div class="ritem"><div class="rlbl">Total Invested</div><div class="rv" id="cr-inv">—</div></div>
+          <div class="ritem"><div class="rlbl">Market Gains</div><div class="rv" id="cr-gains" style="color:var(--gn)">—</div></div>
+          <div class="ritem"><div class="rlbl">Return on Investment</div><div class="rv" id="cr-roi" style="color:var(--ac)">—</div></div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <div class="ctitle">Time to ₹1 Crore at Different Return Rates</div>
+          <div class="twrap"><table><thead><tr><th>Return Rate</th><th>Time Needed</th><th>Total Invested</th><th>Gains</th></tr></thead><tbody id="cr-rtbl"></tbody></table></div>
+        </div>
+        <div class="cbox" style="margin-top:14px"><canvas id="cr-chart" height="200"></canvas></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ 10. SWP ══════════════ -->
+<div class="pg" id="pg-swp">
+  <div class="wrap">
+    <div class="back" onclick="go('home')">← Home</div>
+    <div class="phdr"><h1>💸 Systematic Withdrawal Plan <em>(SWP) Calculator</em></h1><p>Plan how long your corpus will last with regular monthly withdrawals</p></div>
+    <div class="g2" style="align-items:start">
+      <div class="card">
+        <div class="ctitle">SWP Details</div>
+        <div class="fg"><label class="fl">Initial Corpus (₹)</label><div class="pfx"><span class="px">₹</span><input class="fi" id="swp-c" type="number" placeholder="1,00,00,000" min="1" oninput="calcSWP()"></div></div>
+        <div class="fg"><label class="fl">Monthly Withdrawal (₹)</label><div class="pfx"><span class="px">₹</span><input class="fi" id="swp-w" type="number" placeholder="50,000" min="1" oninput="calcSWP()"></div></div>
+        <div class="fg"><label class="fl">Expected Annual Return (%)</label><div class="sfx"><span class="sx">%</span><input class="fi" id="swp-r" type="number" placeholder="8" step="0.1" min="0.1" oninput="calcSWP()"></div></div>
+        <div class="fg"><label class="fl">Annual Withdrawal Increase (%) <span style="color:var(--mu)">(0 = fixed)</span></label><div class="sfx"><span class="sx">%</span><input class="fi" id="swp-inc" type="number" value="0" step="0.1" min="0" oninput="calcSWP()"></div></div>
+        <div class="fg"><label class="fl">Inflation Rate (%)</label><div class="sfx"><span class="sx">%</span><input class="fi" id="swp-inf" type="number" value="6" step="0.1" min="0" oninput="calcSWP()"></div></div>
+      </div>
+      <div id="swp-out" style="display:none">
+        <div class="rbox"><div class="rlbl">Corpus Sustains For</div><div class="rbig" id="swp-dur">—</div></div>
+        <div class="rgrid" style="margin-top:12px">
+          <div class="ritem"><div class="rlbl">Total Withdrawn</div><div class="rv" id="swp-tout" style="color:var(--rd)">—</div></div>
+          <div class="ritem"><div class="rlbl">Remaining Corpus</div><div class="rv" id="swp-rem" style="color:var(--gn)">—</div></div>
+          <div class="ritem"><div class="rlbl">Returns Generated</div><div class="rv" id="swp-ret" style="color:var(--te)">—</div></div>
+        </div>
+        <div class="cbox" style="margin-top:14px"><canvas id="swp-chart" height="200"></canvas></div>
+        <div class="card" style="margin-top:14px">
+          <div class="ctitle">Yearly SWP Summary</div>
+          <div class="twrap" style="max-height:340px;overflow-y:auto"><table><thead><tr><th>Year</th><th>Monthly Withdrawal</th><th>Total Withdrawn</th><th>Return Earned</th><th>Closing Balance</th></tr></thead><tbody id="swp-tbody"></tbody></table></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// UTILITIES
+// ══════════════════════════════════════════════
+const INR = (v, d=2) => {
+  if(v===null||v===undefined||isNaN(v)||!isFinite(v)) return '—';
+  const a=Math.abs(v), s=v<0?'-':'';
+  if(a>=1e7) return s+'₹'+(a/1e7).toFixed(d)+' Cr';
+  if(a>=1e5) return s+'₹'+(a/1e5).toFixed(d)+' L';
+  if(a>=1e3) return s+'₹'+(a/1e3).toFixed(1)+'K';
+  return s+'₹'+Math.round(a).toLocaleString('en-IN');
+};
+const gv = id => parseFloat(document.getElementById(id)?.value)||0;
+const gi = id => parseInt(document.getElementById(id)?.value)||0;
+const sh = (id,v) => { const e=document.getElementById(id); if(e) e.innerHTML=v; };
+const sd = (id,d) => { const e=document.getElementById(id); if(e) e.style.display=d; };
+const showEl = id => sd(id,'block');
+const hideEl = id => sd(id,'none');
+const fmtM = m => { const y=Math.floor(m/12),mo=Math.round(m%12); return y>0?(y+'y'+(mo>0?' '+mo+'m':'')):(mo+'m'); };
+
+let CH={};
+const dc = id => { if(CH[id]){try{CH[id].destroy();}catch(e){} delete CH[id];} };
+
+const COPTS = () => ({
+  responsive:true, maintainAspectRatio:false,
+  plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,backgroundColor:'#0A0F1E',titleColor:'#64748B',bodyColor:'#E2E8F0',borderColor:'rgba(255,255,255,0.1)',borderWidth:1,callbacks:{label:c=>' '+c.dataset.label+': '+INR(c.parsed.y)}}},
+  scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#475569',font:{size:9},maxTicksLimit:10}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#475569',font:{size:9},callback:v=>INR(v,0)}}},
+  interaction:{mode:'index',intersect:false},elements:{line:{borderWidth:2}},
+});
+
+// ══════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════
+const PAGES=['home','si','ci','emi','prepay','bp','retire','fire','infl','crore','swp'];
+function go(p){
+  PAGES.forEach(id=>{ const e=document.getElementById('pg-'+id); if(e) e.classList.remove('on'); });
+  const e=document.getElementById('pg-'+p); if(e) e.classList.add('on');
+  closeMenu(); window.scrollTo(0,0);
+  if(p==='bp') setTimeout(initBP,80);
+}
+function openMenu(){ document.getElementById('sm').classList.add('on'); document.getElementById('ov').classList.add('on'); }
+function closeMenu(){ document.getElementById('sm').classList.remove('on'); document.getElementById('ov').classList.remove('on'); }
+
+// ══════════════════════════════════════════════
+// 1. SIMPLE INTEREST
+// ══════════════════════════════════════════════
+function calcSI(){
+  const P=gv('si-p'),R=gv('si-r'),T=gv('si-t');
+  if(!P||!R||!T||P<0||R<0||T<0){hideEl('si-out');return;}
+  const SI=(P*R*T)/100, tot=P+SI;
+  showEl('si-out');
+  sh('si-int',INR(SI)); sh('si-tot',INR(tot)); sh('si-pr',INR(P)); sh('si-ie',INR(SI));
+  const tb=document.querySelector('#si-tbl tbody'); tb.innerHTML='';
+  for(let y=1;y<=T;y++){
+    const yi=(P*R)/100, cum=yi*y;
+    tb.innerHTML+=`<tr><td>${y}</td><td class="r g">${INR(yi)}</td><td class="r">${INR(cum)}</td><td class="r ac">${INR(P+cum)}</td></tr>`;
+  }
+}
+
+// ══════════════════════════════════════════════
+// 2. COMPOUND INTEREST
+// ══════════════════════════════════════════════
+function calcCI(){
+  const init=gv('ci-init'), mo=gv('ci-mo'), rate=gv('ci-rate'), vari=gv('ci-var'), yrs=gv('ci-yrs');
+  let ok=true;
+  ['ci-e1','ci-e2','ci-e3'].forEach(id=>document.getElementById(id).classList.remove('on'));
+  if(!init||init<100){document.getElementById('ci-e1').classList.add('on');ok=false;}
+  if(!rate||rate<0.1||rate>50){document.getElementById('ci-e2').classList.add('on');ok=false;}
+  if(!yrs||yrs<1||yrs>75){document.getElementById('ci-e3').classList.add('on');ok=false;}
+  if(!ok){hideEl('ci-out');return;}
+  const corpus=ciCalc(init,mo,rate,yrs);
+  const bullC=vari>0?ciCalc(init,mo,rate+vari,yrs):null;
+  const bearC=vari>0?ciCalc(init,mo,Math.max(0.1,rate-vari),yrs):null;
+  const invested=init+mo*12*yrs, earned=corpus-invested;
+  showEl('ci-out');
+  sh('ci-corpus',INR(corpus)); sh('ci-inv',INR(invested)); sh('ci-earn',INR(earned));
+  sh('ci-mult',(invested>0?(corpus/invested).toFixed(2):'—')+'x');
+  sh('ci-bull',bullC!==null?INR(bullC):'N/A'); sh('ci-bear',bearC!==null?INR(bearC):'N/A');
+  // Chart
+  dc('ci');
+  const labs=[], base=[], bull=[], bear=[];
+  for(let y=0;y<=yrs;y++){
+    labs.push('Yr'+y); base.push(Math.round(ciCalc(init,mo,rate,y)));
+    if(vari>0){bull.push(Math.round(ciCalc(init,mo,rate+vari,y)));bear.push(Math.round(ciCalc(init,mo,Math.max(0.1,rate-vari),y)));}
+  }
+  const ds=[{label:'Base ('+rate+'%)',data:base,borderColor:'#F59E0B',backgroundColor:'rgba(245,158,11,.1)',fill:true,tension:.4,pointRadius:0}];
+  if(vari>0){
+    ds.push({label:'Bull (+'+vari+'%)',data:bull,borderColor:'#10B981',backgroundColor:'rgba(16,185,129,.06)',fill:true,tension:.4,pointRadius:0,borderDash:[5,3]});
+    ds.push({label:'Bear (-'+vari+'%)',data:bear,borderColor:'#F87171',backgroundColor:'rgba(248,113,113,.06)',fill:true,tension:.4,pointRadius:0,borderDash:[5,3]});
+  }
+  const opts=COPTS(); opts.plugins.legend={display:true,labels:{color:'#94A3B8',font:{size:10}}};
+  CH['ci']=new Chart(document.getElementById('ci-chart'),{type:'line',data:{labels:labs,datasets:ds},options:opts});
+}
+function ciCalc(init,mo,rate,yrs){
+  const rm=rate/1200; let b=init;
+  for(let m=0;m<yrs*12;m++) b=b*(1+rm)+mo;
+  return b;
+}
+
+// ══════════════════════════════════════════════
+// 3. EMI
+// ══════════════════════════════════════════════
+function calcEMI(){
+  const P=gv('emi-p'), rA=gv('emi-r'), T=gv('emi-t');
+  if(!P||!rA||!T||P<=0||rA<=0||T<=0){hideEl('emi-sum');hideEl('emi-tcard');return;}
+  const r=rA/1200, n=T*12;
+  const pwr=Math.pow(1+r,n);
+  const emi=P*r*pwr/(pwr-1);
+  if(!isFinite(emi)){return;}
+  const tot=emi*n, tint=tot-P;
+  showEl('emi-sum'); showEl('emi-tcard');
+  sh('emi-val',INR(emi)); sh('emi-total',INR(tot)); sh('emi-tint',INR(tint)); sh('emi-prr',INR(P));
+  // Donut
+  dc('emi');
+  CH['emi']=new Chart(document.getElementById('emi-chart'),{type:'doughnut',data:{labels:['Principal','Interest'],datasets:[{data:[Math.round(P),Math.round(tint)],backgroundColor:['#10B981','#F87171'],borderWidth:0}]},options:{plugins:{legend:{labels:{color:'#94A3B8',font:{size:11}}}},cutout:'65%',responsive:true,maintainAspectRatio:false}});
+  // Yearly table
+  const tb=document.querySelector('#emi-tbl tbody'); tb.innerHTML='';
+  let bal=P;
+  for(let y=1;y<=T;y++){
+    let yp=0,yi=0;
+    for(let m=0;m<12&&bal>0.01;m++){
+      const ip=bal*r, pp=Math.min(emi-ip,bal);
+      yi+=ip; yp+=pp; bal=Math.max(0,bal-pp);
+    }
+    tb.innerHTML+=`<tr><td>${y}</td><td class="r g">${INR(yp)}</td><td class="r rr">${INR(yi)}</td><td class="r">${INR(yp+yi)}</td><td class="r ac">${INR(Math.max(0,bal))}</td></tr>`;
+  }
+}
+
+// ══════════════════════════════════════════════
+// 4. PREPAYMENT
+// ══════════════════════════════════════════════
+function calcPrepay(){
+  const P=gv('pp-p'), rA=gv('pp-r'), T=gv('pp-t');
+  if(!P||!rA||!T||P<=0||rA<=0||T<=0){hideEl('pp-base');hideEl('pp-rcard');return;}
+  const r=rA/1200, n=T*12, pwr=Math.pow(1+r,n);
+  const emi=P*r*pwr/(pwr-1);
+  if(!isFinite(emi)){return;}
+  const bint=emi*n-P;
+  showEl('pp-base'); showEl('pp-rcard');
+  sh('pp-emi',INR(emi)); sh('pp-bint',INR(bint));
+  const tb=document.getElementById('pp-tbody'); tb.innerHTML='';
+  const labs=[], sav=[];
+  for(let ex=1;ex<=10;ex++){
+    const res=ppSim(P,r,emi,ex);
+    const ms=Math.max(0,n-res.m), saved=Math.max(0,bint-res.int);
+    tb.innerHTML+=`<tr><td><strong style="color:var(--ac)">${ex}</strong></td><td class="g">${ms} months</td><td>${fmtM(res.m)}</td><td class="g">${INR(saved)}</td></tr>`;
+    labs.push(ex+' extra'); sav.push(Math.round(saved));
+  }
+  dc('pp');
+  CH['pp']=new Chart(document.getElementById('pp-chart'),{type:'bar',data:{labels:labs,datasets:[{label:'Interest Saved (₹)',data:sav,backgroundColor:'rgba(16,185,129,.55)',borderColor:'#10B981',borderWidth:1,borderRadius:5}]},options:COPTS()});
+}
+function ppSim(P,r,emi,ex){
+  let bal=P,m=0,int=0;
+  while(bal>0.01&&m<480){
+    const ip=bal*r, pp=Math.min(Math.max(0,emi-ip),bal);
+    int+=ip; bal=Math.max(0,bal-pp); m++;
+    if(m%12===0&&bal>0){bal=Math.max(0,bal-emi*ex);}
+  }
+  return {m,int};
+}
+
+// ══════════════════════════════════════════════
+// 5. BLUEPRINT
+// ══════════════════════════════════════════════
+const FC=['#94A3B8','#14B8A6','#EC4899','#6366F1','#10B981','#F59E0B'];
+const DF=[
+  {name:'Original Plan',cagr:13},{name:'Parag Parikh Flexi Cap',cagr:21.8},
+  {name:'HDFC Flexi Cap',cagr:24},{name:'Motilal Oswal Midcap',cagr:32.08},
+  {name:'HDFC Mid Cap Opp.',cagr:27.6},{name:'Nippon India Small Cap',cagr:28.2},
+];
+const BST={School:{e:'🎒',c:'#60A5FA',t:'start'},UG:{e:'🎓',c:'#A78BFA',t:'start'},PG:{e:'📚',c:'#F472B6',t:'start'},Marriage:{e:'💍',c:'#F59E0B',t:'end'},Retirement:{e:'🌴',c:'#34D399',t:'start'},Custom:{e:'✏️',c:'#FB923C',t:'start'}};
+const YL={4:'Pre-KG',5:'LKG',6:'UKG',7:'Cls 1',8:'Cls 2',9:'Cls 3',10:'Cls 4',11:'Cls 5',12:'Cls 6',13:'Cls 7',14:'Cls 8',15:'Cls 9',16:'Cls 10',17:'Cls 11',18:'Cls 12',19:'UG 1',20:'UG 2',21:'UG 3',22:'UG 4',23:'PG 1',24:'PG 2',28:'Marriage'};
+function yrLbl(y){if(y>=61&&y<=75)return 'Ret.'+(y-60);return YL[y]||'Yr '+y;}
+
+let bpF=[...DF.map(f=>({...f}))];
+let bpW={}, bpInit=1000000, bpYrs=75, bpReady=false, bpCurTab='chart';
+
+function defBPW(){
+  const w={};
+  for(let y=1;y<=75;y++){
+    if(y>=4&&y<=18) w[y]={amount:100000,type:'School',timing:'start'};
+    else if(y>=19&&y<=22) w[y]={amount:500000,type:'UG',timing:'start'};
+    else if(y>=23&&y<=24) w[y]={amount:1000000,type:'PG',timing:'start'};
+    else if(y===28) w[y]={amount:5000000,type:'Marriage',timing:'end'};
+    else if(y>=61&&y<=75) w[y]={amount:2400000,type:'Retirement',timing:'start'};
+    else w[y]={amount:0,type:null,timing:'start'};
+  }
+  return w;
+}
+function resetFunds(){bpF=[...DF.map(f=>({...f}))];renderFC();recalcBP();}
+function resetBPW(){bpW=defBPW();recalcBP();if(bpCurTab==='table')renderBPT();}
+function clearBPW(){for(let y=1;y<=75;y++)bpW[y]={amount:0,type:null,timing:'start'};recalcBP();if(bpCurTab==='table')renderBPT();}
+
+function initBP(){
+  if(!bpReady){bpW=defBPW();bpReady=true;}
+  renderFC(); renderBPS(); recalcBP();
+}
+
+function renderFC(){
+  const g=document.getElementById('fcgrid'); if(!g)return;
+  g.innerHTML='';
+  bpF.forEach((f,i)=>{
+    const c=FC[i];
+    const d=document.createElement('div');
+    d.style.cssText=`background:var(--sf);border:1px solid ${c}33;border-left:3px solid ${c};border-radius:10px;padding:11px;display:flex;align-items:center;gap:8px;`;
+    d.innerHTML=`<span style="width:9px;height:9px;border-radius:50%;background:${c};flex-shrink:0;display:inline-block"></span>
+    <div style="flex:1;min-width:0">
+      <input data-fi="${i}" data-fp="name" style="width:100%;background:transparent;border:none;border-bottom:1px solid var(--bd);color:var(--tx);font-size:11px;font-family:var(--mono);outline:none;padding:2px 0;margin-bottom:5px" value="${f.name}" placeholder="Fund Name">
+      <div style="display:flex;align-items:center;gap:5px">
+        <input type="number" data-fi="${i}" data-fp="cagr" step="0.01" style="width:65px;background:rgba(255,255,255,.06);border:1px solid ${c}44;border-radius:5px;color:${c};font-size:12px;font-family:var(--mono);outline:none;padding:3px 6px;text-align:right" value="${f.cagr}">
+        <span style="font-size:9px;color:${c};font-family:var(--mono)">% CAGR</span>
+      </div>
+    </div>`;
+    d.querySelectorAll('input').forEach(inp=>{
+      inp.addEventListener('input',function(){
+        const fi=parseInt(this.dataset.fi), fp=this.dataset.fp;
+        if(fp==='name') bpF[fi].name=this.value;
+        else bpF[fi].cagr=parseFloat(this.value)||0;
+        recalcBP();
+      });
+    });
+    g.appendChild(d);
+  });
+}
+
+function renderBPS(){
+  const g=document.getElementById('bpsec'); if(!g)return;
+  const secs=[
+    {k:'school',l:'🎒 School',ty:'School',hint:'₹1L/yr per school year'},
+    {k:'ug',l:'🎓 UG',ty:'UG',hint:'₹5L/yr for undergrad'},
+    {k:'pg',l:'📚 PG',ty:'PG',hint:'₹10L/yr for postgrad'},
+    {k:'marriage',l:'💍 Marriage',ty:'Marriage',hint:'One-time marriage corpus'},
+    {k:'retire',l:'🌴 Retirement',ty:'Retirement',hint:'₹2L/mo retirement SWP'},
+    {k:'custom',l:'✏️ Custom',ty:'Custom',hint:'Set any custom withdrawal'},
+  ];
+  g.innerHTML='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">';
+  secs.forEach(s=>{
+    const tm=BST[s.ty];
+    const wrap=document.createElement('div');
+    wrap.style.cssText=`background:${tm.c}0D;border:1px solid ${tm.c}33;border-radius:10px;padding:11px;`;
+    wrap.innerHTML=`
+      <div style="font-size:11px;color:${tm.c};font-family:var(--mono);font-weight:bold;margin-bottom:8px">${s.l}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:5px;align-items:end">
+        <div><div style="font-size:8px;color:var(--mu);margin-bottom:2px">FROM YEAR</div><input type="number" id="bps-f-${s.k}" class="fi" min="1" max="75" placeholder="4" style="padding:5px 7px;font-size:11px"></div>
+        <div><div style="font-size:8px;color:var(--mu);margin-bottom:2px">TO YEAR</div><input type="number" id="bps-t-${s.k}" class="fi" min="1" max="75" placeholder="18" style="padding:5px 7px;font-size:11px"></div>
+        <div><div style="font-size:8px;color:var(--mu);margin-bottom:2px">AMT/YEAR (₹)</div><input type="number" id="bps-a-${s.k}" class="fi" placeholder="100000" style="padding:5px 7px;font-size:11px"></div>
+        <button class="btn bsm" style="background:${tm.c};color:#000;border:none;white-space:nowrap" onclick="applyBPS('${s.k}','${s.ty}','${tm.t}')">Apply</button>
+      </div>
+      <div style="font-size:8px;color:var(--mu);margin-top:4px;font-family:var(--mono)">💡 ${s.hint}</div>`;
+    g.appendChild(wrap);
+  });
+}
+
+function applyBPS(k,ty,timing){
+  const fr=parseInt(document.getElementById('bps-f-'+k)?.value)||0;
+  const to=parseInt(document.getElementById('bps-t-'+k)?.value)||0;
+  const amt=parseFloat(document.getElementById('bps-a-'+k)?.value)||0;
+  if(!fr||!to||fr>to){alert('Enter valid From and To years (From ≤ To).');return;}
+  for(let y=fr;y<=Math.min(to,75);y++) bpW[y]={amount:amt,type:amt>0?ty:null,timing};
+  recalcBP(); if(bpCurTab==='table')renderBPT();
+}
+
+function bpCorpus(cagr,init,w,maxY){
+  const r=cagr/100, rows=[];
+  let bal=init;
+  for(let y=1;y<=maxY;y++){
+    const wd=w[y]||{amount:0,type:null,timing:'start'};
+    const op=bal, wa=Math.max(0,wd.amount||0);
+    let cl;
+    if(wa>0) cl=wd.timing==='end'?Math.max(0,op*(1+r)-wa):Math.max(0,(op-wa)*(1+r));
+    else cl=op*(1+r);
+    rows.push({y,lbl:yrLbl(y),op:Math.round(op),wa:Math.round(wa),type:wd.type,timing:wd.timing,cl:Math.round(cl)});
+    bal=Math.max(0,cl);
+  }
+  return rows;
+}
+
+function recalcBP(){
+  bpInit=gv('bp-init')||1000000;
+  const yv=parseInt(document.getElementById('bp-yrs')?.value)||75;
+  bpYrs=Math.min(75,Math.max(1,yv));
+  // Update fund selector labels
+  const sel=document.getElementById('bp-afund');
+  if(sel){for(let i=0;i<6;i++) if(sel.options[i]) sel.options[i].text=(bpF[i]?.name||'Fund '+(i+1));}
+  const all=bpF.map(f=>bpCorpus(f.cagr,bpInit,bpW,bpYrs));
+  let tot=0; for(let y=1;y<=bpYrs;y++) tot+=(bpW[y]?.amount||0);
+  sh('bp-tout',INR(tot));
+  renderBPKPI(all); renderBPChart(all);
+  if(bpCurTab==='table') renderBPT();
+  if(bpCurTab==='compare') renderBPCmp(all);
+}
+
+function renderBPKPI(all){
+  const fi=parseInt(document.getElementById('bp-afund')?.value)||0;
+  const rows=all[fi]; if(!rows||!rows.length)return;
+  const strip=document.getElementById('bp-kpi'); if(!strip)return;
+  const safe=i=>rows[Math.min(i,rows.length-1)];
+  const kpis=[
+    {l:'🎒 School (Yr 4)',v:safe(3).op,s:'₹1L/yr × 15'},
+    {l:'🎓 UG (Yr 19)',v:safe(18).op,s:'₹5L/yr × 4'},
+    {l:'📚 PG (Yr 23)',v:safe(22).op,s:'₹10L × 2'},
+    {l:'💍 Marriage (Yr 28)',v:safe(27).cl,s:'₹50L out'},
+    {l:'🌴 Retire (Yr 61)',v:safe(60).op,s:'₹2L/mo'},
+    {l:'🏆 Final @ Yr '+bpYrs,v:rows[rows.length-1].cl,s:'Legacy corpus'},
+  ];
+  strip.innerHTML=kpis.map(k=>`<div class="kpi" style="border-top:3px solid ${FC[fi]}"><div class="kl">${k.l}</div><div class="kv">${INR(k.v)}</div><div class="ks">${k.s}</div></div>`).join('');
+}
+
+function renderBPChart(all){
+  const labs=[]; for(let y=1;y<=bpYrs;y++) labs.push('Y'+y);
+  const ds=bpF.map((f,i)=>({label:f.name||'Fund '+(i+1),data:(all[i]||[]).map(r=>r.cl),borderColor:FC[i],backgroundColor:FC[i]+'18',fill:true,tension:.4,pointRadius:0,borderWidth:2}));
+  dc('bp');
+  const ctx=document.getElementById('bp-chart'); if(!ctx)return;
+  const opts=COPTS();
+  opts.plugins.legend={display:true,labels:{color:'#94A3B8',font:{size:10},usePointStyle:true,boxWidth:8}};
+  CH['bp']=new Chart(ctx,{type:'line',data:{labels:labs,datasets:ds},options:opts});
+  const leg=document.getElementById('bp-legend');
+  if(leg) leg.innerHTML=bpF.map((f,i)=>`<span style="display:flex;align-items:center;gap:5px;font-size:10px;font-family:var(--mono);color:${FC[i]}"><span style="width:8px;height:8px;border-radius:50%;background:${FC[i]};display:inline-block"></span>${f.name||'Fund '+(i+1)} (${f.cagr}%)</span>`).join('');
+}
+
+function renderBPT(){
+  const fi=parseInt(document.getElementById('bp-afund')?.value)||0;
+  const rows=bpCorpus(bpF[fi]?.cagr||13,bpInit,bpW,bpYrs);
+  const tb=document.getElementById('bp-tbody'); if(!tb)return;
+  tb.innerHTML='';
+  rows.forEach(row=>{
+    const w=bpW[row.y]||{amount:0,type:null,timing:'start'};
+    const tm=w.type?BST[w.type]:null;
+    const gr=row.cl-row.op+(row.wa||0);
+    const typeOpts=Object.keys(BST).map(t=>`<option value="${t}"${w.type===t?' selected':''}>${BST[t].e} ${t}</option>`).join('');
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${row.y}</td>
+      <td style="color:${tm?tm.c:'var(--mu)'}">${row.lbl}</td>
+      <td class="r">${INR(row.op)}</td>
+      <td><input type="number" class="bri" data-yr="${row.y}" value="${w.amount||''}" placeholder="0" style="width:110px"></td>
+      <td><select class="bri" data-yr="${row.y}" data-f="type" style="width:105px"><option value="">—</option>${typeOpts}</select></td>
+      <td><select class="bri" data-yr="${row.y}" data-f="timing" style="width:78px"><option value="start"${w.timing!=='end'?' selected':''}>↑ Start</option><option value="end"${w.timing==='end'?' selected':''}>↓ End</option></select></td>
+      <td class="r ac">${INR(row.cl)}</td>
+      <td class="r g">+${INR(gr)}</td>`;
+    // Wire events after append
+    tb.appendChild(tr);
+    tr.querySelector('input[data-yr]').addEventListener('change',function(){
+      const y=parseInt(this.dataset.yr);
+      if(!bpW[y])bpW[y]={amount:0,type:null,timing:'start'};
+      bpW[y].amount=parseFloat(this.value)||0;
+      recalcBP();
+    });
+    tr.querySelectorAll('select[data-yr]').forEach(sel=>{
+      sel.addEventListener('change',function(){
+        const y=parseInt(this.dataset.yr),f=this.dataset.f;
+        if(!bpW[y])bpW[y]={amount:0,type:null,timing:'start'};
+        bpW[y][f]=this.value||null;
+        if(f==='type'&&!this.value) bpW[y].type=null;
+        recalcBP();
+      });
+    });
+  });
+}
+
+function renderBPCmp(all){
+  if(!all)all=bpF.map(f=>bpCorpus(f.cagr,bpInit,bpW,bpYrs));
+  const maxV=Math.max(...all.map(d=>d.length?d[d.length-1].cl:0),1);
+  const cc=document.getElementById('bp-ccards'); const cb=document.getElementById('bp-cbars');
+  if(!cc||!cb)return;
+  cc.innerHTML=bpF.map((f,i)=>{
+    const d=all[i]||[]; const fin=d.length?d[d.length-1].cl:0;
+    return `<div style="background:var(--sf);border:1px solid ${FC[i]}44;border-radius:11px;padding:13px;cursor:pointer" onclick="document.getElementById('bp-afund').value=${i};recalcBP()">
+      <div style="display:flex;align-items:center;gap:5px;margin-bottom:8px"><span style="width:8px;height:8px;border-radius:50%;background:${FC[i]};display:inline-block"></span><div><div style="font-size:10px;color:var(--tx)">${f.name}</div><div style="font-size:9px;color:var(--mu);font-family:var(--mono)">${f.cagr}% CAGR</div></div></div>
+      <div style="font-size:9px;color:var(--mu)">School (Yr4)</div><div style="font-size:10px;font-family:var(--mono);margin-bottom:4px">${INR((d[3]||{op:0}).op)}</div>
+      <div style="font-size:9px;color:var(--mu)">Final @ Yr${bpYrs}</div><div style="font-size:13px;font-family:var(--mono);font-weight:bold;color:${FC[i]}">${INR(fin)}</div>
+    </div>`;
+  }).join('');
+  cb.innerHTML=bpF.map((f,i)=>{
+    const d=all[i]||[]; const fin=d.length?d[d.length-1].cl:0;
+    const pct=(fin/maxV*100).toFixed(1);
+    return `<div style="margin-bottom:11px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:11px;color:${FC[i]}">● ${f.name} (${f.cagr}%)</span><span style="font-size:11px;font-family:var(--mono);font-weight:bold;color:${FC[i]}">${INR(fin)}</span></div>
+      <div class="pbar"><div class="pfill" style="width:${pct}%;background:${FC[i]};box-shadow:0 0 6px ${FC[i]}55"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function bpTab(tab,btn){
+  bpCurTab=tab;
+  ['chart','table','compare'].forEach(t=>{sd('bpt-'+t,t===tab?'block':'none');});
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  const all=bpF.map(f=>bpCorpus(f.cagr,bpInit,bpW,bpYrs));
+  if(tab==='table') renderBPT();
+  else if(tab==='compare') renderBPCmp(all);
+  else renderBPChart(all);
+}
+
+// ══════════════════════════════════════════════
+// 6. RETIREMENT PLANNING
+// ══════════════════════════════════════════════
+function calcRetire(){
+  const ca=gv('ret-ca'),ra=gv('ret-ra'),le=gv('ret-le')||85;
+  const exp=gv('ret-exp'),inf=gv('ret-inf')||6,ret=gv('ret-ret')||12;
+  const pr=gv('ret-pr')||7, sv=gv('ret-sv')||0;
+  if(!ca||!ra||!exp||ra<=ca){hideEl('ret-out');return;}
+  const ytr=ra-ca, dur=le-ra;
+  if(dur<=0){hideEl('ret-out');return;}
+  const fe=exp*Math.pow(1+inf/100,ytr);
+  const afe=fe*12, rr=pr/100, ri=inf/100;
+  const realR=(rr-ri)/(1+ri);
+  const corpus=Math.abs(realR)<0.0001?afe*dur:afe*(1-Math.pow(1+realR,-dur))/realR;
+  const sg=sv*Math.pow(1+ret/100,ytr);
+  const short=Math.max(0,corpus-sg);
+  const sip=sipNeeded(short,ret,ytr);
+  showEl('ret-out');
+  sh('ret-corpus',INR(corpus)); sh('ret-fexp',INR(fe));
+  sh('ret-sip',INR(sip)); sh('ret-short',INR(short));
+  sh('ret-yrs',ytr+' years'); sh('ret-dur',dur+' years'); sh('ret-sg',INR(sg));
+  dc('ret');
+  const labs=[],cd=[],ed=[];
+  for(let y=0;y<=ytr;y++){
+    labs.push('Age '+(ca+y));
+    cd.push(Math.round(sv*Math.pow(1+ret/100,y)+sip*12*((Math.pow(1+ret/100,y)-1)/(ret/100||0.001))));
+    ed.push(Math.round(exp*Math.pow(1+inf/100,y)));
+  }
+  const opts=COPTS(); opts.plugins.legend={display:true,labels:{color:'#94A3B8',font:{size:10}}};
+  CH['ret']=new Chart(document.getElementById('ret-chart'),{type:'line',data:{labels:labs,datasets:[
+    {label:'Projected Corpus',data:cd,borderColor:'#10B981',backgroundColor:'rgba(16,185,129,.1)',fill:true,tension:.4,pointRadius:0},
+    {label:'Monthly Expense',data:ed,borderColor:'#F87171',borderDash:[5,3],fill:false,tension:.4,pointRadius:0},
+  ]},options:opts});
+}
+function sipNeeded(t,rate,yrs){
+  if(t<=0||yrs<=0)return 0;
+  const r=rate/1200;
+  const denom=Math.pow(1+r,yrs*12)-1;
+  return denom>0?t*r/denom:t/(yrs*12);
+}
+
+// ══════════════════════════════════════════════
+// 7. FIRE
+// ══════════════════════════════════════════════
+function calcFIRE(){
+  const ca=gv('fire-ca'),nw=gv('fire-nw')||0,sv=gv('fire-sv'),exp=gv('fire-exp');
+  const ret=gv('fire-ret')||12,swr=gv('fire-swr')||4;
+  if(!ca||!exp||!ret||!swr){hideEl('fire-out');return;}
+  const fireN=(exp*12*100)/swr;
+  if(nw>=fireN){sh('fire-num',INR(fireN));sh('fire-age',ca+' yrs');sh('fire-yrs','Already FIRE!');showEl('fire-out');return;}
+  // Monthly simulation
+  const rm=ret/1200; let bal=nw, months=0;
+  while(bal<fireN&&months<1200){bal=bal*(1+rm)+(sv||0);months++;}
+  const fireAge=ca+months/12;
+  const inc=(fireN*swr/100)/12;
+  const sr=sv&&exp?(sv/(sv+exp)*100):0;
+  const prog=Math.min(100,nw/fireN*100);
+  showEl('fire-out');
+  sh('fire-num',INR(fireN)); sh('fire-age',fireAge.toFixed(1)+' yrs');
+  sh('fire-yrs',(months/12).toFixed(1)+' years'); sh('fire-inc',INR(inc)+'/mo');
+  sh('fire-sr',sr.toFixed(1)+'%'); sh('fire-prog',prog.toFixed(1)+'%');
+  document.getElementById('fire-pbar').style.width=prog.toFixed(1)+'%';
+  sh('fire-plbl',INR(fireN));
+  // Chart
+  dc('fire');
+  const labs=[],cd=[],td=[];
+  let b=nw;
+  const step=Math.max(1,Math.floor(months/40));
+  for(let m=0;m<=months+step;m+=step){
+    labs.push('Yr '+Math.round(m/12));
+    cd.push(Math.round(b)); td.push(Math.round(fireN));
+    for(let i=0;i<step;i++) b=b*(1+rm)+(sv||0);
+  }
+  const opts=COPTS(); opts.plugins.legend={display:true,labels:{color:'#94A3B8',font:{size:10}}};
+  CH['fire']=new Chart(document.getElementById('fire-chart'),{type:'line',data:{labels:labs,datasets:[
+    {label:'Your Corpus',data:cd,borderColor:'#F59E0B',backgroundColor:'rgba(245,158,11,.1)',fill:true,tension:.4,pointRadius:0},
+    {label:'FIRE Number',data:td,borderColor:'#10B981',borderDash:[6,3],fill:false,tension:.4,pointRadius:0},
+  ]},options:opts});
+}
+
+// ══════════════════════════════════════════════
+// 8. INFLATION
+// ══════════════════════════════════════════════
+function calcInfl(){
+  const amt=gv('inf-amt'),rate=gv('inf-rate')||6,yrs=gv('inf-yrs')||20,inv=gv('inf-inv')||12;
+  if(!amt||amt<=0){hideEl('inf-out');return;}
+  const fut=amt*Math.pow(1+rate/100,yrs);
+  const realV=amt/Math.pow(1+rate/100,yrs);
+  const realR=((1+inv/100)/(1+rate/100)-1)*100;
+  const invGrown=amt*Math.pow(1+inv/100,yrs);
+  showEl('inf-out');
+  sh('inf-today',INR(amt)); sh('inf-fut',INR(fut));
+  sh('inf-lost',((1-amt/fut)*100).toFixed(1)+'% of purchasing power');
+  sh('inf-real',INR(realV)); sh('inf-need',INR(invGrown));
+  sh('inf-rr',realR.toFixed(2)+'%');
+  dc('infl');
+  const labs=[],md=[],id2=[];
+  for(let y=0;y<=yrs;y++){
+    labs.push('Yr '+y);
+    md.push(Math.round(amt/Math.pow(1+rate/100,y)));
+    id2.push(Math.round(amt*Math.pow(1+inv/100,y)));
+  }
+  const opts=COPTS(); opts.plugins.legend={display:true,labels:{color:'#94A3B8',font:{size:10}}};
+  CH['infl']=new Chart(document.getElementById('inf-chart'),{type:'line',data:{labels:labs,datasets:[
+    {label:'Real Value (after inflation)',data:md,borderColor:'#F87171',backgroundColor:'rgba(248,113,113,.1)',fill:true,tension:.4,pointRadius:0},
+    {label:'Invested @ '+inv+'%',data:id2,borderColor:'#10B981',backgroundColor:'rgba(16,185,129,.08)',fill:true,tension:.4,pointRadius:0},
+  ]},options:opts});
+}
+
+// ══════════════════════════════════════════════
+// 9. FIRST CRORE
+// ══════════════════════════════════════════════
+let crMode_='sip';
+function crMode(m){
+  crMode_=m;
+  sd('cr-sip-g',m==='sip'?'block':'none'); sd('cr-lp-g',m==='lump'?'block':'none');
+  document.getElementById('cr-sip-btn').classList.toggle('on',m==='sip');
+  document.getElementById('cr-lp-btn').classList.toggle('on',m==='lump');
+  calcCrore();
+}
+function calcCrore(){
+  const rate=gv('cr-rate'), exist=gv('cr-exist')||0;
+  if(!rate||rate<=0){hideEl('cr-out');return;}
+  const T=1e7, rm=rate/1200;
+  let months=0, invested=0;
+  if(crMode_==='sip'){
+    const sip=gv('cr-sip'); if(!sip||sip<=0){hideEl('cr-out');return;}
+    let b=exist;
+    if(b>=T){months=0;invested=exist;}
+    else{while(b<T&&months<1200){b=b*(1+rm)+sip;months++;} invested=exist+sip*months;}
+  } else {
+    const lump=gv('cr-lump'); if(!lump||lump<=0){hideEl('cr-out');return;}
+    const tot=exist+lump;
+    if(tot>=T){months=0;invested=tot;}
+    else{months=Math.ceil(Math.log(T/tot)/Math.log(1+rate/100)*12); invested=tot;}
+  }
+  const gains=Math.max(0,T-invested);
+  showEl('cr-out');
+  sh('cr-time',months===0?'Already there!':fmtM(months));
+  sh('cr-inv',INR(invested)); sh('cr-gains',INR(gains));
+  sh('cr-roi',invested>0?((gains/invested)*100).toFixed(1)+'%':'—');
+  // Rates table
+  const tb=document.getElementById('cr-rtbl'); tb.innerHTML='';
+  [6,8,10,12,15,18,20,24].forEach(r=>{
+    const rm2=r/1200; let m2=0,inv2=0;
+    if(crMode_==='sip'){
+      const sip=gv('cr-sip'); let b=exist;
+      if(b>=T){m2=0;inv2=exist;}
+      else{while(b<T&&m2<1200){b=b*(1+rm2)+sip;m2++;} inv2=exist+sip*m2;}
+    } else {
+      const lump=gv('cr-lump'), tot=exist+lump;
+      if(tot>=T){m2=0;inv2=tot;}
+      else{m2=Math.ceil(Math.log(T/tot)/Math.log(1+r/100)*12);inv2=tot;}
+    }
+    const cls=r===rate?'ac':'';
+    tb.innerHTML+=`<tr><td class="${cls}">${r}%</td><td class="${cls}">${m2===0?'Now':fmtM(m2)}</td><td class="${cls} r">${INR(inv2)}</td><td class="g r">${INR(Math.max(0,T-inv2))}</td></tr>`;
+  });
+  // Chart
+  dc('crore');
+  const labs=[],cd=[];
+  const sip2=crMode_==='sip'?gv('cr-sip'):0;
+  const lump2=crMode_==='lump'?gv('cr-lump'):0;
+  let b=exist+lump2;
+  const step=Math.max(1,Math.floor((months||12)/30));
+  for(let m=0;m<=Math.min(months||12,600);m+=step){
+    labs.push(fmtM(m||1)); cd.push(Math.round(b));
+    for(let i=0;i<step;i++) b=b*(1+rm)+sip2;
+  }
+  CH['crore']=new Chart(document.getElementById('cr-chart'),{type:'line',data:{labels:labs,datasets:[{label:'Corpus Growth',data:cd,borderColor:'#F59E0B',backgroundColor:'rgba(245,158,11,.1)',fill:true,tension:.4,pointRadius:0}]},options:COPTS()});
+}
+
+// ══════════════════════════════════════════════
+// 10. SWP
+// ══════════════════════════════════════════════
+function calcSWP(){
+  const corpus=gv('swp-c'), mw=gv('swp-w'), ret=gv('swp-r'), inc=gv('swp-inc')||0;
+  if(!corpus||!mw||!ret||corpus<=0||mw<=0||ret<=0){hideEl('swp-out');return;}
+  const rm=ret/1200;
+  let bal=corpus, totOut=0, totRet=0, month=0, curMW=mw;
+  const yd=[];
+  while(bal>0.01&&month<1200){
+    let yOut=0,yRet=0;
+    for(let m=0;m<12&&bal>0.01;m++){
+      const earn=bal*rm; bal+=earn; yRet+=earn;
+      const w=Math.min(curMW,bal); bal-=w; yOut+=w; totOut+=w;
+    }
+    month+=12; totRet+=yRet;
+    yd.push({yr:month/12,mw:Math.round(curMW),tout:Math.round(totOut),ret:Math.round(yRet),cl:Math.round(Math.max(0,bal))});
+    if(bal<=0.01)break;
+    if(inc>0)curMW*=(1+inc/100);
+  }
+  showEl('swp-out');
+  const totalYrs=month/12;
+  sh('swp-dur',totalYrs>=100?'Perpetual (100+ yrs)':fmtM(month));
+  sh('swp-tout',INR(totOut)); sh('swp-rem',INR(Math.max(0,bal))); sh('swp-ret',INR(totRet));
+  const tb=document.getElementById('swp-tbody'); tb.innerHTML='';
+  yd.slice(0,100).forEach(d=>{
+    tb.innerHTML+=`<tr><td>${d.yr}</td><td class="r">${INR(d.mw)}</td><td class="r rr">${INR(d.tout)}</td><td class="r g">${INR(d.ret)}</td><td class="r ac">${INR(d.cl)}</td></tr>`;
+  });
+  dc('swp');
+  const opts=COPTS(); opts.plugins.legend={display:true,labels:{color:'#94A3B8',font:{size:10}}};
+  CH['swp']=new Chart(document.getElementById('swp-chart'),{type:'line',data:{labels:yd.map(d=>'Yr '+d.yr),datasets:[
+    {label:'Remaining Corpus',data:yd.map(d=>d.cl),borderColor:'#10B981',backgroundColor:'rgba(16,185,129,.1)',fill:true,tension:.4,pointRadius:0},
+    {label:'Total Withdrawn',data:yd.map(d=>d.tout),borderColor:'#F87171',borderDash:[5,3],fill:false,tension:.4,pointRadius:0},
+  ]},options:opts});
+}
+</script>
+</body>
+</html>
