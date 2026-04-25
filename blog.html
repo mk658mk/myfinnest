@@ -13,62 +13,13 @@
   <title>Blog | My Finance Nest — Personal Finance Articles</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23060B14'/><text y='72' x='50' text-anchor='middle' font-size='64' font-family='system-ui'>🪺</text></svg>">
   <link rel="stylesheet" href="styles/home.css">
+  <link rel="stylesheet" href="styles/navbar.css">
+  <link rel="stylesheet" href="styles/footer.css">
 </head>
 <body>
 
-<!-- ── NAV ── -->
-<nav>
-  <div class="hbg" onclick="openMenu()" aria-label="Open menu" role="button" tabindex="0" onkeydown="if(event.key==='Enter')openMenu()">
-    <span></span><span></span><span></span>
-  </div>
-  <div class="brand" onclick="window.location.href='https://www.myfinnest.com/'">
-    <span>₹</span> My Finance Nest <small>SMART MONEY TOOLS</small>
-  </div>
-  <div class="nav-right">
-    <div class="nav-links">
-      <!-- <a href="https://www.myfinnest.com/" rel="noopener" data-icon="home"><span class="nav-lbl">Home</span></a>
-      <a href="#" data-icon="blog"><span class="nav-lbl">Blog</span></a> -->
-      <a href="https://www.myfinnest.com/terms_privacy/about.html" target="_blank" rel="noopener" data-icon="about"><span class="nav-lbl">About</span></a>
-      <a href="https://www.myfinnest.com/terms_privacy/disclaimer.html" target="_blank" rel="noopener" data-icon="disclaimer"><span class="nav-lbl">Disclaimer</span></a>
-      <a href="https://www.myfinnest.com/terms_privacy/privacy.html" target="_blank" rel="noopener" data-icon="privacy"><span class="nav-lbl">Privacy</span></a>
-      <a href="https://www.myfinnest.com/terms_privacy/terms.html" target="_blank" rel="noopener" data-icon="terms"><span class="nav-lbl">Terms</span></a>
-    </div>
-    <button class="tt" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
-      <span class="ttd">🌙</span><span class="ttl">☀️</span>
-    </button>
-  </div>
-</nav>
-
-<!-- ── MOBILE OVERLAY ── -->
-<div class="ov" id="ov" onclick="closeMenu()"></div>
-
-<!-- ── MOBILE SLIDE MENU ── -->
-<div class="sm" id="sm">
-  <div class="mhdr">
-    <span class="mhdr-brand">₹ My Finance Nest</span>
-    <button class="mclose" onclick="closeMenu()">✕</button>
-  </div>
-  <div class="mi" onclick="window.location.href='https://www.myfinnest.com/'"><div class="ic">🏠</div><div class="lb">Home</div></div>
-  <div class="mi act" onclick="closeMenu()"><div class="ic">📝</div><div class="lb">Blog</div></div>
-  <hr class="mdiv">
-  <div class="mi" onclick="window.location.href='https://www.myfinnest.com/#si'"><div class="ic">📐</div><div class="lb">Simple Interest Calculator</div></div>
-  <div class="mi" onclick="window.location.href='https://www.myfinnest.com/#ci'"><div class="ic">📈</div><div class="lb">Compound Interest Calculator</div></div>
-  <div class="mi" onclick="window.location.href='https://www.myfinnest.com/#emi'"><div class="ic">🏦</div><div class="lb">EMI Calculator</div></div>
-  <div class="mi" onclick="window.location.href='https://www.myfinnest.com/#prepay'"><div class="ic">💳</div><div class="lb">Loan Prepayment Calculator</div></div>
-  <div class="mi" onclick="window.location.href='https://www.myfinnest.com/#bp'"><div class="ic">🌳</div><div class="lb">Child's Future &amp; Retirement</div></div>
-  <div class="mi" onclick="window.location.href='https://www.myfinnest.com/#retire'"><div class="ic">🌴</div><div class="lb">Retirement Planning Calculator</div></div>
-  <div class="mi" onclick="window.location.href='https://www.myfinnest.com/#fire'"><div class="ic">🔥</div><div class="lb">FIRE Calculator</div></div>
-  <div class="mi" onclick="window.location.href='https://www.myfinnest.com/#infl'"><div class="ic">📊</div><div class="lb">Inflation Calculator</div></div>
-  <div class="mi" onclick="window.location.href='https://www.myfinnest.com/#crore'"><div class="ic">🏆</div><div class="lb">First Crore Calculator</div></div>
-  <div class="mi" onclick="window.location.href='https://www.myfinnest.com/#swp'"><div class="ic">💸</div><div class="lb">SWP Calculator</div></div>
-  <div class="mi" onclick="window.location.href='https://www.myfinnest.com/#nps'"><div class="ic">🏛️</div><div class="lb">NPS Calculator</div></div>
-  <hr class="mdiv">
-  <div class="mi" onclick="window.open('https://www.myfinnest.com/terms_privacy/about.html','_blank')"><div class="ic">🌱</div><div class="lb">About Us</div></div>
-  <div class="mi" onclick="window.open('https://www.myfinnest.com/terms_privacy/disclaimer.html','_blank')"><div class="ic">⚠️</div><div class="lb">Disclaimer</div></div>
-  <div class="mi" onclick="window.open('https://www.myfinnest.com/terms_privacy/privacy.html','_blank')"><div class="ic">🔒</div><div class="lb">Privacy Policy</div></div>
-  <div class="mi" onclick="window.open('https://www.myfinnest.com/terms_privacy/terms.html','_blank')"><div class="ic">📜</div><div class="lb">Terms of Use</div></div>
-  <div style="padding:10px 16px;font-size:10px;color:var(--dm);font-family:var(--mono);line-height:1.5">⚠️ Educational use only.<br>Not financial advice.</div>
-</div>
+<!-- ═══ NAVBAR COMPONENT ═══ -->
+<div id="mfn-navbar"></div>
 
 <!-- ── MAIN PAGE ── -->
 <div class="pg on">
@@ -117,19 +68,10 @@
   <!-- ARTICLE GRID -->
   <div class="article-grid" id="articleGrid"></div>
 
-  <!-- FOOTER -->
-  <footer class="blog-footer">
-    <p>⚠️ Educational use only. Not financial advice. Consult a SEBI-registered advisor before investing.<br/>© <span id="yr"></span> My Finance Nest. All rights reserved.</p>
-    <div class="blog-footer-links">
-      <a href="https://www.myfinnest.com/">Home</a>
-      <a href="https://www.myfinnest.com/terms_privacy/about.html">About</a>
-      <a href="https://www.myfinnest.com/terms_privacy/privacy.html">Privacy</a>
-      <a href="https://www.myfinnest.com/terms_privacy/terms.html">Terms</a>
-      <a href="https://www.myfinnest.com/terms_privacy/disclaimer.html">Disclaimer</a>
-    </div>
-  </footer>
-
 </div><!-- /.pg -->
+
+<!-- ═══ FOOTER COMPONENT ═══ -->
+<div id="mfn-footer"></div>
 
 <script>
 // ── ARTICLE DATA ──────────────────────────────────────────────────────────────
@@ -165,7 +107,6 @@ const filterBar = document.getElementById('filterBar');
 const searchEl  = document.getElementById('searchInput');
 const resultsBar = document.getElementById('resultsBar');
 
-document.getElementById('yr').textContent = new Date().getFullYear();
 document.getElementById('totalCount').textContent = ARTICLES.length;
 
 // Build category filter buttons
@@ -263,6 +204,26 @@ function closeMenu() {
   document.getElementById('sm').classList.remove('on');
   document.getElementById('ov').classList.remove('on');
 }
+
+// ── COMPONENT LOADER ──────────────────────────────────────────────────────────
+// Fetches navbar and footer partials and injects them into their placeholders.
+(function () {
+  var components = [
+    { url: 'components/navbar.html', id: 'mfn-navbar' },
+    { url: 'components/footer.html', id: 'mfn-footer' }
+  ];
+  components.forEach(function (c) {
+    fetch(c.url)
+      .then(function (r) { return r.text(); })
+      .then(function (html) {
+        var el = document.getElementById(c.id);
+        if (el) el.outerHTML = html;
+      })
+      .catch(function (err) {
+        console.warn('[MFN] Failed to load component:', c.url, err);
+      });
+  });
+})();
 </script>
 </body>
 </html>
