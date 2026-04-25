@@ -16,98 +16,7 @@
   <link rel="stylesheet" href="styles/navbar.css">
   <link rel="stylesheet" href="styles/footer.css">
 
-  <style>
-    /* ── ARTICLE READER OVERLAY ───────────────────────────────────────────── */
-    #reader-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: var(--bg, #060B14);
-      overflow-y: auto;
-      animation: rdFadeIn .22s ease;
-    }
-    #reader-overlay.open { display: block; }
 
-    @keyframes rdFadeIn {
-      from { opacity: 0; transform: translateY(14px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Sticky top bar */
-    #reader-bar {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      display: flex;
-      align-items: center;
-      gap: .75rem;
-      padding: .7rem 1.25rem;
-      background: var(--bg, #060B14);
-      border-bottom: 1px solid rgba(255,255,255,.08);
-      backdrop-filter: blur(10px);
-    }
-
-    #reader-back {
-      display: flex;
-      align-items: center;
-      gap: .35rem;
-      padding: .45rem .9rem;
-      border: 1px solid rgba(255,255,255,.18);
-      border-radius: 8px;
-      background: transparent;
-      color: inherit;
-      font-size: .84rem;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: background .15s, border-color .15s;
-    }
-    #reader-back:hover { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.35); }
-
-    #reader-title-bar {
-      flex: 1;
-      font-size: .88rem;
-      font-weight: 600;
-      opacity: .65;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    /* Article body container */
-    #reader-body {
-      max-width: 780px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem 5rem;
-    }
-
-    /* Hide the article's own navbar/footer so they don't double-render */
-    #reader-body nav,
-    #reader-body header:not(#reader-bar),
-    #reader-body footer,
-    #reader-body #navbar-container,
-    #reader-body #footer-container,
-    #reader-body script { display: none !important; }
-
-    /* Loading state */
-    #reader-spinner {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 55vh;
-      gap: 1rem;
-      opacity: .55;
-    }
-    .spin-ring {
-      width: 38px; height: 38px;
-      border: 3px solid rgba(255,255,255,.12);
-      border-top-color: currentColor;
-      border-radius: 50%;
-      animation: spinning .75s linear infinite;
-    }
-    @keyframes spinning { to { transform: rotate(360deg); } }
-  </style>
 </head>
 <body>
 
@@ -170,19 +79,7 @@
 <!-- ═══ FOOTER COMPONENT ═══ -->
 <div id="footer-container"></div>
 
-<!-- ═══ ARTICLE READER OVERLAY ═══ -->
-<div id="reader-overlay" role="dialog" aria-modal="true" aria-label="Article reader">
-  <div id="reader-bar">
-    <button id="reader-back" onclick="closeReader()">← Back to articles</button>
-    <div id="reader-title-bar"></div>
-  </div>
-  <div id="reader-body">
-    <div id="reader-spinner">
-      <div class="spin-ring"></div>
-      <span>Loading article…</span>
-    </div>
-  </div>
-</div>
+
 
 <script>
 // ─────────────────────────────────────────────────────────────────────────────
@@ -196,10 +93,7 @@ const gridEl       = document.getElementById('articleGrid');
 const filterBar    = document.getElementById('filterBar');
 const searchEl     = document.getElementById('searchInput');
 const resultsBar   = document.getElementById('resultsBar');
-const overlay      = document.getElementById('reader-overlay');
-const readerBody   = document.getElementById('reader-body');
-const readerTitle  = document.getElementById('reader-title-bar');
-const spinnerHTML  = document.getElementById('reader-spinner').outerHTML;
+
 
 // ── META HELPERS ──────────────────────────────────────────────────────────────
 function getMeta(html, name) {
@@ -236,63 +130,7 @@ async function fetchArticleMeta(filename) {
   }
 }
 
-// ── READER OVERLAY ────────────────────────────────────────────────────────────
-function openReader(article) {
-  // Show overlay with spinner
-  readerTitle.textContent = article.title;
-  readerBody.innerHTML    = spinnerHTML;
-  overlay.classList.add('open');
-  overlay.scrollTop = 0;
-  document.body.style.overflow = 'hidden';
 
-  // Push a hash so the browser back button closes the reader
-  history.pushState({ readerFile: article.file }, article.title, '#reader');
-
-  // Fetch blog/file_name.html and inject its content
-  fetch(article.file)
-    .then(r => {
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r.text();
-    })
-    .then(html => {
-      const parser  = new DOMParser();
-      const doc     = parser.parseFromString(html, 'text/html');
-
-      // Remove scripts so they don't re-execute inside the overlay
-      doc.querySelectorAll('script').forEach(s => s.remove());
-
-      // Prefer <main> or <article> block; fall back to full <body>
-      const node = doc.querySelector('main, article, .pg, [class*="content"], body');
-      readerBody.innerHTML = node ? node.innerHTML : doc.body.innerHTML;
-    })
-    .catch(() => {
-      readerBody.innerHTML = `
-        <div style="text-align:center;padding:4rem 1rem;opacity:.6">
-          <div style="font-size:2.5rem;margin-bottom:.75rem">⚠️</div>
-          <strong>Could not load article</strong><br/>
-          <small style="opacity:.7">Make sure <code>${article.file}</code> exists in your blog/ folder.</small>
-        </div>`;
-    });
-}
-
-function closeReader() {
-  overlay.classList.remove('open');
-  document.body.style.overflow = '';
-  if (location.hash === '#reader') history.back();
-}
-
-// Browser back button closes reader
-window.addEventListener('popstate', () => {
-  if (overlay.classList.contains('open')) {
-    overlay.classList.remove('open');
-    document.body.style.overflow = '';
-  }
-});
-
-// Escape key closes reader
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && overlay.classList.contains('open')) closeReader();
-});
 
 // ── SCAN blog/ FOLDER ─────────────────────────────────────────────────────────
 async function scanBlogFolder() {
@@ -344,13 +182,12 @@ async function scanBlogFolder() {
       return;
     }
     list.forEach((a, i) => {
-      const card = document.createElement('div');
-      card.className    = 'article-card';
-      card.style.cursor = 'pointer';
-      card.dataset.cat  = a.cat.toLowerCase();
-      card.setAttribute('role', 'button');
-      card.setAttribute('tabindex', '0');
-      card.setAttribute('aria-label', 'Read: ' + a.title);
+      const card = document.createElement('a');
+      card.className   = 'article-card';
+      card.href        = a.file;   // blog/file_name.html
+      card.target      = '_blank';
+      card.rel         = 'noopener noreferrer';
+      card.dataset.cat = a.cat.toLowerCase();
       card.innerHTML = `
         <div class="card-head">
           <div class="card-emoji">${a.emoji}</div>
@@ -365,11 +202,6 @@ async function scanBlogFolder() {
           <span class="read-link">Read article <span class="arrow">→</span></span>
           <span class="card-num">#${String(i + 1).padStart(2, '0')}</span>
         </div>`;
-
-      // Click or Enter key → open reader overlay fetching blog/file_name.html
-      card.addEventListener('click',   () => openReader(a));
-      card.addEventListener('keydown', e => { if (e.key === 'Enter') openReader(a); });
-
       gridEl.appendChild(card);
     });
     resultsBar.textContent = `Showing ${list.length} of ${ARTICLES.length} article${ARTICLES.length !== 1 ? 's' : ''}`;
