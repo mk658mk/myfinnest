@@ -19,7 +19,7 @@
 <body>
 
 <!-- ═══ NAVBAR COMPONENT ═══ -->
-<div id="mfn-navbar"></div>
+<div id="navbar-container"></div>
 
 <!-- ── MAIN PAGE ── -->
 <div class="pg on">
@@ -71,7 +71,7 @@
 </div><!-- /.pg -->
 
 <!-- ═══ FOOTER COMPONENT ═══ -->
-<div id="mfn-footer"></div>
+<div id="footer-container"></div>
 
 <script>
 // ── ARTICLE DATA ──────────────────────────────────────────────────────────────
@@ -80,7 +80,7 @@ const ARTICLES = [
   { file: 'what-is-sip.html',                  emoji: '📈', title: 'What is SIP and How Does It Work in India?',               cat: 'Mutual Funds',   min: 7,  desc: 'Learn how SIP, Rupee Cost Averaging and compounding work together to build long-term wealth.' },
   { file: '50-30-20-rule.html',                 emoji: '📐', title: 'The 50-30-20 Budgeting Rule: Does It Work for Indians?',   cat: 'Budgeting',      min: 6,  desc: "Adapting the global budgeting framework for India's metros, EMIs, and higher savings needs." },
   { file: 'inflation-india.html',               emoji: '📊', title: 'How Inflation Silently Erodes Your Savings in India',      cat: 'Basics',         min: 6,  desc: 'See exactly how 6% annual inflation destroys purchasing power — and how to beat it.' },
-  { file: 'compound-interest-explained.html',   emoji: '💹', title: 'Compound Interest Explained: The Secret to Building Wealth', cat: 'Basics',        min: 6,  desc: 'Understand why Einstein called compound interest the eighth wonder of the world.' },
+  // { file: 'compound-interest-explained.html',   emoji: '💹', title: 'Compound Interest Explained: The Secret to Building Wealth', cat: 'Basics',        min: 6,  desc: 'Understand why Einstein called compound interest the eighth wonder of the world.' },
   // { file: 'how-emi-works.html',                 emoji: '🏦', title: 'How Does EMI Work? A Complete Guide for Indian Borrowers',  cat: 'Loans',          min: 7,  desc: 'Decode the EMI formula, amortisation schedule and smart strategies to cut total interest paid.' },
   // { file: 'loan-prepayment-guide.html',         emoji: '💳', title: 'Loan Prepayment: Should You Prepay or Invest?',             cat: 'Loans',          min: 8,  desc: 'A data-driven comparison of loan prepayment vs investing in mutual funds for maximum benefit.' },
   // { file: 'what-is-fire.html',                  emoji: '🔥', title: 'What is FIRE? Can You Retire Early in India?',              cat: 'FIRE',           min: 8,  desc: 'The 4% rule, FIRE corpus calculation, and realistic steps for early retirement in India.' },
@@ -133,6 +133,8 @@ function renderCards(list) {
     const card = document.createElement('a');
     card.className = 'article-card';
     card.href = a.file;
+    card.target = '_blank';
+    card.rel = 'noopener noreferrer';
     card.dataset.cat = a.cat.toLowerCase();
     card.innerHTML = `
       <div class="card-head">
@@ -205,22 +207,61 @@ function closeMenu() {
   document.getElementById('ov').classList.remove('on');
 }
 
-// ── COMPONENT LOADER ──────────────────────────────────────────────────────────
-// Fetches navbar and footer partials and injects them into their placeholders.
+// ── go() — navbar menu links navigate to the main site ────────────────────────
+(function () {
+  var FILE_MAP = {
+    'home':   'home.html',
+    'si':     'calculators/simple-interest.html',
+    'ci':     'calculators/compound-interest.html',
+    'emi':    'calculators/emi.html',
+    'prepay': 'calculators/loan-prepayment.html',
+    'bp':     'calculators/blueprint.html',
+    'retire': 'calculators/retirement.html',
+    'fire':   'calculators/fire.html',
+    'infl':   'calculators/inflation.html',
+    'crore':  'calculators/first-crore.html',
+    'swp':    'calculators/swp.html',
+    'nps':    'calculators/nps.html'
+  };
+  window.go = function (page) {
+    var f = FILE_MAP[page]; if (f) window.location.href = f;
+  };
+})();
+
+// ── COMPONENT LOADER — mirrors home.html exactly ───────────────────────────────
 (function () {
   var components = [
-    { url: 'components/navbar.html', id: 'mfn-navbar' },
-    { url: 'components/footer.html', id: 'mfn-footer' }
+    { url: 'components/navbar.html', id: 'navbar-container' },
+    { url: 'components/footer.html', id: 'footer-container' }
   ];
+
+  var loaded = 0;
+
+  function tryReinit() {
+    loaded++;
+    if (loaded === components.length) {
+      // Mark the Blog menu item as active after navbar is injected
+      try {
+        document.querySelectorAll('.mi').forEach(function (el) {
+          if (el.textContent.trim().indexOf('Blog') !== -1) el.classList.add('act');
+        });
+      } catch (e) {}
+    }
+  }
+
   components.forEach(function (c) {
     fetch(c.url)
-      .then(function (r) { return r.text(); })
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.text();
+      })
       .then(function (html) {
         var el = document.getElementById(c.id);
-        if (el) el.outerHTML = html;
+        if (el) el.innerHTML = html;   // innerHTML, not outerHTML
+        tryReinit();
       })
-      .catch(function (err) {
-        console.warn('[MFN] Failed to load component:', c.url, err);
+      .catch(function () {
+        tryReinit(); // still count on failure so tryReinit always completes
       });
   });
 })();
