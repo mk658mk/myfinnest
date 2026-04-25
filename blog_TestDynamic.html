@@ -15,6 +15,99 @@
   <link rel="stylesheet" href="styles/home.css">
   <link rel="stylesheet" href="styles/navbar.css">
   <link rel="stylesheet" href="styles/footer.css">
+
+  <style>
+    /* ── ARTICLE READER OVERLAY ───────────────────────────────────────────── */
+    #reader-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: var(--bg, #060B14);
+      overflow-y: auto;
+      animation: rdFadeIn .22s ease;
+    }
+    #reader-overlay.open { display: block; }
+
+    @keyframes rdFadeIn {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Sticky top bar */
+    #reader-bar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      padding: .7rem 1.25rem;
+      background: var(--bg, #060B14);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(10px);
+    }
+
+    #reader-back {
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+      padding: .45rem .9rem;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 8px;
+      background: transparent;
+      color: inherit;
+      font-size: .84rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background .15s, border-color .15s;
+    }
+    #reader-back:hover { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.35); }
+
+    #reader-title-bar {
+      flex: 1;
+      font-size: .88rem;
+      font-weight: 600;
+      opacity: .65;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Article body container */
+    #reader-body {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 5rem;
+    }
+
+    /* Hide the article's own navbar/footer so they don't double-render */
+    #reader-body nav,
+    #reader-body header:not(#reader-bar),
+    #reader-body footer,
+    #reader-body #navbar-container,
+    #reader-body #footer-container,
+    #reader-body script { display: none !important; }
+
+    /* Loading state */
+    #reader-spinner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 55vh;
+      gap: 1rem;
+      opacity: .55;
+    }
+    .spin-ring {
+      width: 38px; height: 38px;
+      border: 3px solid rgba(255,255,255,.12);
+      border-top-color: currentColor;
+      border-radius: 50%;
+      animation: spinning .75s linear infinite;
+    }
+    @keyframes spinning { to { transform: rotate(360deg); } }
+  </style>
 </head>
 <body>
 
@@ -67,7 +160,6 @@
 
   <!-- ARTICLE GRID -->
   <div class="article-grid" id="articleGrid">
-    <!-- Skeleton placeholders while loading -->
     <div class="article-card skeleton" aria-hidden="true" style="min-height:200px;opacity:.4;pointer-events:none"></div>
     <div class="article-card skeleton" aria-hidden="true" style="min-height:200px;opacity:.4;pointer-events:none"></div>
     <div class="article-card skeleton" aria-hidden="true" style="min-height:200px;opacity:.4;pointer-events:none"></div>
@@ -78,19 +170,38 @@
 <!-- ═══ FOOTER COMPONENT ═══ -->
 <div id="footer-container"></div>
 
+<!-- ═══ ARTICLE READER OVERLAY ═══ -->
+<div id="reader-overlay" role="dialog" aria-modal="true" aria-label="Article reader">
+  <div id="reader-bar">
+    <button id="reader-back" onclick="closeReader()">← Back to articles</button>
+    <div id="reader-title-bar"></div>
+  </div>
+  <div id="reader-body">
+    <div id="reader-spinner">
+      <div class="spin-ring"></div>
+      <span>Loading article…</span>
+    </div>
+  </div>
+</div>
+
 <script>
 // ─────────────────────────────────────────────────────────────────────────────
-// AUTO-SCAN: reads blog/ directory listing, then fetches each article's meta
+// AUTO-SCAN: reads blog/ directory listing, fetches each article's meta,
+// then opens articles inline via a reader overlay (no page navigation).
 // ─────────────────────────────────────────────────────────────────────────────
 
-const BLOG_DIR = 'blog/'; // folder containing your article HTML files
+const BLOG_DIR = 'blog/';
 
-const gridEl     = document.getElementById('articleGrid');
-const filterBar  = document.getElementById('filterBar');
-const searchEl   = document.getElementById('searchInput');
-const resultsBar = document.getElementById('resultsBar');
+const gridEl       = document.getElementById('articleGrid');
+const filterBar    = document.getElementById('filterBar');
+const searchEl     = document.getElementById('searchInput');
+const resultsBar   = document.getElementById('resultsBar');
+const overlay      = document.getElementById('reader-overlay');
+const readerBody   = document.getElementById('reader-body');
+const readerTitle  = document.getElementById('reader-title-bar');
+const spinnerHTML  = document.getElementById('reader-spinner').outerHTML;
 
-// Parse a single meta tag value from raw HTML text
+// ── META HELPERS ──────────────────────────────────────────────────────────────
 function getMeta(html, name) {
   const re = new RegExp(
     '<meta[^>]+name=["\']' + name + '["\'][^>]+content=["\']([^"\']*)["\']' +
@@ -101,82 +212,130 @@ function getMeta(html, name) {
   return m ? (m[1] || m[2] || '').trim() : '';
 }
 
-// Parse <title> from raw HTML text
 function getTitle(html) {
   const m = html.match(/<title[^>]*>(.*?)<\/title>/is);
   return m ? m[1].replace(/<[^>]+>/g, '').trim() : '';
 }
 
-// Fetch one article file and extract its card metadata
+// ── FETCH ARTICLE META (for card data) ───────────────────────────────────────
 async function fetchArticleMeta(filename) {
   try {
     const res  = await fetch(BLOG_DIR + filename);
     if (!res.ok) return null;
     const html = await res.text();
     return {
-      file  : BLOG_DIR + filename,
-      emoji : getMeta(html, 'emoji')       || '📄',
-      title : getTitle(html)               || getMeta(html, 'og:title') || filename,
-      cat   : getMeta(html, 'category')    || 'General',
+      file  : BLOG_DIR + filename,          // e.g. blog/what-is-sip.html
+      emoji : getMeta(html, 'emoji')        || '📄',
+      title : getTitle(html)                || getMeta(html, 'og:title') || filename,
+      cat   : getMeta(html, 'category')     || 'General',
       min   : parseInt(getMeta(html, 'readtime'), 10) || 7,
-      desc  : getMeta(html, 'description') || '',
+      desc  : getMeta(html, 'description')  || '',
     };
   } catch {
     return null;
   }
 }
 
-// Step 1 — fetch the blog/ directory listing and pull out .html filenames
+// ── READER OVERLAY ────────────────────────────────────────────────────────────
+function openReader(article) {
+  // Show overlay with spinner
+  readerTitle.textContent = article.title;
+  readerBody.innerHTML    = spinnerHTML;
+  overlay.classList.add('open');
+  overlay.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+
+  // Push a hash so the browser back button closes the reader
+  history.pushState({ readerFile: article.file }, article.title, '#reader');
+
+  // Fetch blog/file_name.html and inject its content
+  fetch(article.file)
+    .then(r => {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.text();
+    })
+    .then(html => {
+      const parser  = new DOMParser();
+      const doc     = parser.parseFromString(html, 'text/html');
+
+      // Remove scripts so they don't re-execute inside the overlay
+      doc.querySelectorAll('script').forEach(s => s.remove());
+
+      // Prefer <main> or <article> block; fall back to full <body>
+      const node = doc.querySelector('main, article, .pg, [class*="content"], body');
+      readerBody.innerHTML = node ? node.innerHTML : doc.body.innerHTML;
+    })
+    .catch(() => {
+      readerBody.innerHTML = `
+        <div style="text-align:center;padding:4rem 1rem;opacity:.6">
+          <div style="font-size:2.5rem;margin-bottom:.75rem">⚠️</div>
+          <strong>Could not load article</strong><br/>
+          <small style="opacity:.7">Make sure <code>${article.file}</code> exists in your blog/ folder.</small>
+        </div>`;
+    });
+}
+
+function closeReader() {
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+  if (location.hash === '#reader') history.back();
+}
+
+// Browser back button closes reader
+window.addEventListener('popstate', () => {
+  if (overlay.classList.contains('open')) {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+});
+
+// Escape key closes reader
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && overlay.classList.contains('open')) closeReader();
+});
+
+// ── SCAN blog/ FOLDER ─────────────────────────────────────────────────────────
 async function scanBlogFolder() {
   let files = [];
   try {
     const res  = await fetch(BLOG_DIR);
     const html = await res.text();
-
-    // Apache directory listing: links like href="filename.html"
-    // Exclude parent dir link (..) and anything with a path separator
-    const re = /href="([^"\/]+\.html)"/gi;
+    const re   = /href="([^"\/]+\.html)"/gi;
     let m;
-    while ((m = re.exec(html)) !== null) {
-      files.push(m[1]);
-    }
-  } catch (e) {
+    while ((m = re.exec(html)) !== null) files.push(m[1]);
+  } catch {
     resultsBar.textContent = '⚠️ Could not read blog/ folder. Make sure directory listing is enabled on your server.';
     gridEl.innerHTML = '';
     return;
   }
 
   if (!files.length) {
-    gridEl.innerHTML  = '<div class="no-results"><div class="big">📂</div><strong>No articles yet</strong><br/>Upload HTML files to the <code>blog/</code> folder.</div>';
+    gridEl.innerHTML = '<div class="no-results"><div class="big">📂</div><strong>No articles yet</strong><br/>Upload HTML files to the <code>blog/</code> folder.</div>';
     resultsBar.textContent = 'No articles found.';
     document.getElementById('totalCount').textContent    = 0;
     document.getElementById('categoryCount').textContent = 0;
     return;
   }
 
-  // Step 2 — fetch all article files in parallel
   const results  = await Promise.all(files.map(fetchArticleMeta));
-  const ARTICLES = results.filter(Boolean); // drop any that failed
-
-  // Sort alphabetically by filename (stable, predictable order)
+  const ARTICLES = results.filter(Boolean);
   ARTICLES.sort((a, b) => a.file.localeCompare(b.file));
 
-  // Update hero counts
   document.getElementById('totalCount').textContent = ARTICLES.length;
   const uniqueCats = [...new Set(ARTICLES.map(a => a.cat))];
   document.getElementById('categoryCount').textContent = uniqueCats.length;
 
-  // Build filter buttons
+  // Filter buttons
   filterBar.innerHTML = '';
   ['All', ...uniqueCats.sort((a, b) => a.localeCompare(b))].forEach(cat => {
     const btn = document.createElement('button');
-    btn.className  = 'filter-btn' + (cat === 'All' ? ' active' : '');
+    btn.className   = 'filter-btn' + (cat === 'All' ? ' active' : '');
     btn.dataset.cat = cat.toLowerCase();
     btn.textContent = cat;
     filterBar.appendChild(btn);
   });
 
-  // ── Render cards ────────────────────────────────────────────────────────────
+  // ── Render cards (div, not <a> — click opens reader overlay) ──────────────
   function renderCards(list) {
     gridEl.innerHTML = '';
     if (!list.length) {
@@ -185,12 +344,13 @@ async function scanBlogFolder() {
       return;
     }
     list.forEach((a, i) => {
-      const card = document.createElement('a');
-      card.className = 'article-card';
-      card.href      = a.file;
-      card.target    = '_blank';
-      card.rel       = 'noopener noreferrer';
-      card.dataset.cat = a.cat.toLowerCase();
+      const card = document.createElement('div');
+      card.className    = 'article-card';
+      card.style.cursor = 'pointer';
+      card.dataset.cat  = a.cat.toLowerCase();
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-label', 'Read: ' + a.title);
       card.innerHTML = `
         <div class="card-head">
           <div class="card-emoji">${a.emoji}</div>
@@ -205,6 +365,11 @@ async function scanBlogFolder() {
           <span class="read-link">Read article <span class="arrow">→</span></span>
           <span class="card-num">#${String(i + 1).padStart(2, '0')}</span>
         </div>`;
+
+      // Click or Enter key → open reader overlay fetching blog/file_name.html
+      card.addEventListener('click',   () => openReader(a));
+      card.addEventListener('keydown', e => { if (e.key === 'Enter') openReader(a); });
+
       gridEl.appendChild(card);
     });
     resultsBar.textContent = `Showing ${list.length} of ${ARTICLES.length} article${ARTICLES.length !== 1 ? 's' : ''}`;
@@ -212,7 +377,7 @@ async function scanBlogFolder() {
 
   renderCards(ARTICLES);
 
-  // ── Filter + Search ─────────────────────────────────────────────────────────
+  // ── Filter + Search ────────────────────────────────────────────────────────
   let activeCat = 'all';
   let searchVal = '';
 
@@ -240,10 +405,10 @@ async function scanBlogFolder() {
   });
 }
 
-// Kick off the scan
+// Kick off
 scanBlogFolder();
 
-// ── THEME — matches home.html's toggleTheme() exactly ─────────────────────────
+// ── THEME ─────────────────────────────────────────────────────────────────────
 function toggleTheme() {
   const isNowLight = document.documentElement.classList.toggle('light');
   localStorage.setItem('mfn-theme', isNowLight ? 'light' : 'dark');
@@ -251,40 +416,22 @@ function toggleTheme() {
 (function initTheme() {
   const saved = localStorage.getItem('mfn-theme');
   const preferLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-  if (saved === 'light' || (!saved && preferLight)) {
-    document.documentElement.classList.add('light');
-  }
+  if (saved === 'light' || (!saved && preferLight)) document.documentElement.classList.add('light');
 })();
 
 // ── MOBILE MENU ───────────────────────────────────────────────────────────────
-function openMenu() {
-  document.getElementById('sm').classList.add('on');
-  document.getElementById('ov').classList.add('on');
-}
-function closeMenu() {
-  document.getElementById('sm').classList.remove('on');
-  document.getElementById('ov').classList.remove('on');
-}
+function openMenu()  { document.getElementById('sm').classList.add('on');    document.getElementById('ov').classList.add('on');    }
+function closeMenu() { document.getElementById('sm').classList.remove('on'); document.getElementById('ov').classList.remove('on'); }
 
-// ── go() — navbar menu links ──────────────────────────────────────────────────
+// ── go() ──────────────────────────────────────────────────────────────────────
 (function () {
   var FILE_MAP = {
-    'home':   'home.html',
-    'si':     'calculators/simple-interest.html',
-    'ci':     'calculators/compound-interest.html',
-    'emi':    'calculators/emi.html',
-    'prepay': 'calculators/loan-prepayment.html',
-    'bp':     'calculators/blueprint.html',
-    'retire': 'calculators/retirement.html',
-    'fire':   'calculators/fire.html',
-    'infl':   'calculators/inflation.html',
-    'crore':  'calculators/first-crore.html',
-    'swp':    'calculators/swp.html',
-    'nps':    'calculators/nps.html'
+    'home':'home.html','si':'calculators/simple-interest.html','ci':'calculators/compound-interest.html',
+    'emi':'calculators/emi.html','prepay':'calculators/loan-prepayment.html','bp':'calculators/blueprint.html',
+    'retire':'calculators/retirement.html','fire':'calculators/fire.html','infl':'calculators/inflation.html',
+    'crore':'calculators/first-crore.html','swp':'calculators/swp.html','nps':'calculators/nps.html'
   };
-  window.go = function (page) {
-    var f = FILE_MAP[page]; if (f) window.location.href = f;
-  };
+  window.go = function (page) { var f = FILE_MAP[page]; if (f) window.location.href = f; };
 })();
 
 // ── COMPONENT LOADER ──────────────────────────────────────────────────────────
@@ -295,8 +442,7 @@ function closeMenu() {
   ];
   var loaded = 0;
   function tryReinit() {
-    loaded++;
-    if (loaded === components.length) {
+    if (++loaded === components.length) {
       try {
         document.querySelectorAll('.mi').forEach(function (el) {
           if (el.textContent.trim().indexOf('Blog') !== -1) el.classList.add('act');
