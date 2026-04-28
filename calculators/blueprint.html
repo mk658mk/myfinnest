@@ -68,7 +68,7 @@
         </div>
       </div>
       <div class="card">
-        <div class="ctitle">Active Fund for Table / KPI</div>
+        <div class="ctitle">Active Fund for KPI</div>
         <!-- Options populated dynamically on load with real fund names -->
         <select class="fsel" id="bp-afund" onchange="recalcBP()">
           <option value="0">Original Plan</option>
@@ -114,7 +114,7 @@
     <div id="bpt-table" style="display:none">
       <div style="max-height:500px;overflow-y:auto;overflow-x:auto;border-radius:10px;border:1px solid var(--bd)">
         <table id="bp-tbl">
-          <thead><tr><th>Yr</th><th>Phase</th><th>Opening</th><th>Withdrawal ✏️</th><th>Type</th><th>Timing</th><th>Closing</th><th>Growth</th></tr></thead>
+          <thead id="bp-thead"><tr><th>Yr</th><th>Phase</th><th>Withdrawal ✏️</th><th>Type</th><th>Timing</th></tr></thead>
           <tbody id="bp-tbody"></tbody>
         </table>
       </div>
@@ -401,26 +401,57 @@ function renderBPChart(all){
 }
 
 function renderBPT(){
-  const fi=parseInt(document.getElementById('bp-afund')?.value)||0;
-  const rows=bpCorpus(bpF[fi]?.cagr||13,bpInit,bpW,bpYrs);
-  const tb=document.getElementById('bp-tbody'); if(!tb) return; tb.innerHTML='';
-  rows.forEach(row=>{
-    const w=bpW[row.y]||{amount:0,type:null,timing:'start'}, tm=w.type?BST[w.type]:null, gr=row.cl-row.op+(row.wa||0);
-    const typeOpts=Object.keys(BST).map(t=>`<option value="${t}"${w.type===t?' selected':''}>${BST[t].e} ${t}</option>`).join('');
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${row.y}</td><td style="color:${tm?tm.c:'var(--mu)'}">${row.lbl}</td><td class="r">${INR(row.op)}</td>
-      <td><input type="number" class="bri" data-yr="${row.y}" value="${w.amount||''}" placeholder="0" style="width:115px"></td>
-      <td><select class="bri" data-yr="${row.y}" data-f="type" style="width:110px"><option value="">—</option>${typeOpts}</select></td>
-      <td><select class="bri" data-yr="${row.y}" data-f="timing" style="width:82px"><option value="start"${w.timing!=='end'?' selected':''}>↑ Start</option><option value="end"${w.timing==='end'?' selected':''}>↓ End</option></select></td>
-      <td class="r ac">${INR(row.cl)}</td><td class="r g">+${INR(gr)}</td>`;
+  /* Build one row per year; closing-balance columns for every fund side-by-side */
+  const allRows = bpF.map(f => bpCorpus(f.cagr, bpInit, bpW, bpYrs));
+
+  /* Dynamic header — fund names + CAGR */
+  const thead = document.getElementById('bp-thead');
+  if(thead){
+    thead.innerHTML = '<tr><th>Yr</th><th>Phase</th><th>Withdrawal ✏️</th><th>Type</th><th>Timing</th>' +
+      bpF.map((f,i) =>
+        `<th style="color:${FC[i]};white-space:nowrap;font-size:11px;text-align:right">`+
+        `${f.name||'Fund '+(i+1)}<br>`+
+        `<span style="font-weight:normal;opacity:.65">${f.cagr}% CAGR</span></th>`
+      ).join('') + '</tr>';
+  }
+
+  const tb = document.getElementById('bp-tbody'); if(!tb) return; tb.innerHTML='';
+  (allRows[0]||[]).forEach((_,yi) => {
+    const row0 = allRows[0][yi];
+    const w  = bpW[row0.y]||{amount:0,type:null,timing:'start'};
+    const tm = w.type ? BST[w.type] : null;
+    const typeOpts = Object.keys(BST).map(t =>
+      `<option value="${t}"${w.type===t?' selected':''}>${BST[t].e} ${t}</option>`
+    ).join('');
+
+    /* One closing-balance cell per fund, colour-coded */
+    const fundCells = allRows.map((rows,fi) => {
+      const row  = rows[yi];
+      const gone = row.cl <= 0 && row.op <= 0;
+      return `<td class="r" style="color:${FC[fi]};font-family:var(--mono);font-size:12px${gone?';opacity:.3':''}">`+
+             `${gone ? '—' : INR(row.cl)}</td>`;
+    }).join('');
+
+    const tr = document.createElement('tr');
+    tr.innerHTML =
+      `<td>${row0.y}</td>`+
+      `<td style="color:${tm?tm.c:'var(--mu)'}">${row0.lbl}</td>`+
+      `<td><input type="number" class="bri" data-yr="${row0.y}" value="${w.amount||''}" placeholder="0" style="width:100px"></td>`+
+      `<td><select class="bri" data-yr="${row0.y}" data-f="type" style="width:100px"><option value="">—</option>${typeOpts}</select></td>`+
+      `<td><select class="bri" data-yr="${row0.y}" data-f="timing" style="width:76px">`+
+        `<option value="start"${w.timing!=='end'?' selected':''}>↑ Start</option>`+
+        `<option value="end"${w.timing==='end'?' selected':''}>↓ End</option>`+
+      `</select></td>`+
+      fundCells;
     tb.appendChild(tr);
-    tr.querySelector('input[data-yr]').addEventListener('change',function(){
-      const y=parseInt(this.dataset.yr);
+
+    tr.querySelector('input[data-yr]').addEventListener('change', function(){
+      const y = parseInt(this.dataset.yr);
       if(!bpW[y]) bpW[y]={amount:0,type:null,timing:'start'};
-      bpW[y].amount=parseFloat(this.value)||0; recalcBP();
+      bpW[y].amount = parseFloat(this.value)||0; recalcBP();
     });
-    tr.querySelectorAll('select[data-yr]').forEach(sel=>sel.addEventListener('change',function(){
-      const y=parseInt(this.dataset.yr), f=this.dataset.f;
+    tr.querySelectorAll('select[data-yr]').forEach(sel => sel.addEventListener('change', function(){
+      const y = parseInt(this.dataset.yr), f = this.dataset.f;
       if(!bpW[y]) bpW[y]={amount:0,type:null,timing:'start'};
       bpW[y][f]=this.value||null; if(f==='type'&&!this.value) bpW[y].type=null; recalcBP();
     }));
