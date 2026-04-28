@@ -33,14 +33,14 @@
       <div class="blog-stat">
         <span class="stat-icon">📚</span>
         <div>
-          <div class="stat-val" id="totalCount">22</div>
+          <div class="stat-val" id="totalCount">3</div>
           <div class="stat-lab">Articles</div>
         </div>
       </div>
       <div class="blog-stat">
         <span class="stat-icon">🏷️</span>
         <div>
-          <div class="stat-val"  id="categoryCount">0</div>
+          <div class="stat-val"  id="categoryCount">3</div>
           <div class="stat-lab">Categories</div>
         </div>
       </div>
@@ -67,6 +67,18 @@
 
   <!-- ARTICLE GRID -->
   <div class="article-grid" id="articleGrid"></div>
+
+  <!-- Static fallback for search engine crawlers (noscript) -->
+  <noscript>
+    <div id="static-article-list" style="padding: 2rem;">
+      <h2>All Articles</h2>
+      <ul>
+        <li><a href="blog/what-is-sip.html">What is SIP and How Does It Work in India?</a> — Mutual Funds</li>
+        <li><a href="blog/50-30-20-rule.html">The 50-30-20 Budgeting Rule: Does It Work for Indians?</a> — Budgeting</li>
+        <li><a href="blog/inflation-india.html">How Inflation Silently Erodes Your Savings in India</a> — Basics</li>
+      </ul>
+    </div>
+  </noscript>
 
 </div><!-- /.pg -->
 
@@ -118,7 +130,7 @@ cats.forEach(cat => {
   btn.textContent = cat;
   filterBar.appendChild(btn);
 });
-const categoriesCount = ARTICLES.length - 1; // remove "All"
+const categoriesCount = new Set(ARTICLES.map(a => a.cat)).size;
 document.getElementById('categoryCount').textContent = categoriesCount;
 
 // Render article cards
